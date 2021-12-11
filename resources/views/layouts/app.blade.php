@@ -59,7 +59,7 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="">Cadastrar Categorias</a>
+                                <a class="dropdown-item" href="">Categorias</a>
                                 <a class="dropdown-item" href="">Lançar Contas</a>
                             </div>
                         </li>
@@ -71,7 +71,8 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="">Lançar Contas</a>
+                                <a class="dropdown-item" href="">Gerar Pagamento</a>
+                                <a class="dropdown-item" href="">Consultar Recebimentos</a>
                             </div>
                         </li>
                     </ul>

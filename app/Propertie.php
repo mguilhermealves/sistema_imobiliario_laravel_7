@@ -15,7 +15,7 @@ class Propertie extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'type_propertie', 'object_propertie', 'deadline_contract', 'financial_propertie', 'financer_name', 'price_condominium', 'price_location', 'price_sale', 'price_iptu', 'isswap', 'comments', 'active',
+        'id', 'address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'type_propertie', 'object_propertie', 'deadline_contract', 'financial_propertie', 'financer_name', 'price_condominium', 'price_location', 'price_sale', 'price_iptu', 'isswap', 'comments', 'client_propertie_id', 'active',
     ];
 
     /**
@@ -24,5 +24,13 @@ class Propertie extends Model
     public function images()
     {
         return $this->hasMany('App\PropertiesImages', 'properties_id', 'id');
+    }
+
+    /**
+     * Get for properties for clients.
+     */
+    public function client_properties()
+    {
+        return $this->hasOne('App\Client', 'id', 'client_propertie_id');
     }
 }

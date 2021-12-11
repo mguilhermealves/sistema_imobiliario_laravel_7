@@ -33,6 +33,7 @@ class CreatePropertiesTable extends Migration
             $table->string('price_iptu')->nullable()->default(NULL);
             $table->string('isswap')->nullable()->default(NULL);
             $table->string('comments')->nullable()->default(NULL);
+            $table->string('client_propertie_id')->nullable();
             $table->string('active');
             $table->timestamps();
         });

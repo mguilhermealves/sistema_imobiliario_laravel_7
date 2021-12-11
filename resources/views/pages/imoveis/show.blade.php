@@ -7,7 +7,7 @@
                 <h1 class="text-center mt-3 mb-5">Editar Imóvel Código N° <strong>{{ $propertie->id }} </strong> </h1>
 
                 {{-- @php
-                    dd($propertie->images);
+                    dd($propertie->client_properties);
                 @endphp --}}
 
                 <nav>
@@ -31,8 +31,28 @@
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="endereco_imovel" role="tabpanel"
                             aria-labelledby="endereco_imovel-tab">
-                            <div class="row">
-                                <div class="col-sm-12 mt-5">
+                            <div class="row mt-5 mb-5">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Código do Proprietário</label>
+                                        <input type="text"
+                                            class="form-control" value="{{ $propertie->client_properties->id }}" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Nome do Proprietário</label>
+                                        <input type="text"
+                                            class="form-control" value="{{ $propertie->client_properties->first_name . ' ' . $propertie->client_properties->last_name }}" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <hr>
+                                </div>
+
+                                <div class="col-sm-12">
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
                                         <select class="custom-select" name="type_propertie" id="type_propertie">

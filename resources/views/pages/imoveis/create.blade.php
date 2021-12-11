@@ -1,6 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+    @if ($errors->any())
+        <div class="alert alert-danger" role="alert">
+            @foreach ($errors->all() as $error)
+                {{ $error }} <br />
+            @endforeach
+        </div>
+    @endif
+    @if (session('message'))
+        <div class="alert alert-success" role="alert">
+            {{ session('message') }}
+        </div>
+    @endif
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -26,7 +38,15 @@
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="endereco_imovel" role="tabpanel"
                             aria-labelledby="endereco_imovel-tab">
-                            <div class="row">
+                            <div class="row mt-5 mb-5">
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Código do Cliente</label>
+                                        <input type="text" name="cod_client" class="form-control"
+                                            placeholder="Consultar Cliente" autofocus>
+                                    </div>
+                                </div>
                                 <div class="col-sm-12 mt-5">
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
@@ -195,7 +215,8 @@
                                         </div>
 
                                         <div class="col-sm-12" name="text_exchange">
-                                            <textarea name="comments" id="comments" rows="5" cols="150" style="overflow: auto; resize: none;"></textarea>
+                                            <textarea name="comments" id="comments" rows="5" cols="150"
+                                                style="overflow: auto; resize: none;"></textarea>
                                         </div>
                                     </div>
                                 </div>

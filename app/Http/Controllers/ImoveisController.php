@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Propertie;
+use App\PropertiesClients;
 use App\PropertiesImages;
+use App\Client;
 
 class ImoveisController extends Controller
 {
@@ -17,7 +19,9 @@ class ImoveisController extends Controller
     {
         $properties = Propertie::all();
 
-        return view('pages.imoveis.index', compact('properties'));
+        return view('pages.imoveis.index', [
+            'properties' => $properties
+        ]);
     }
 
     /**
@@ -38,48 +42,63 @@ class ImoveisController extends Controller
      */
     public function store(Request $request)
     {
-        $isImage = false;
+        $continue = false;
 
-        $propertie = Propertie::create([
-            'address' => $request->address,
-            'number_address' => $request->address_number,
-            'complement' => $request->address_complement,
-            'code_postal' => $request->cep,
-            'district' => $request->district,
-            'city' => $request->city,
-            'uf' => $request->uf,
-            'type_propertie' => $request->type_propertie,
-            'object_propertie' => $request->object_propertie,
-            'price_location' => $request->price_location,
-            'price_sale' => $request->price_sale,
-            'price_iptu' => $request->price_iptu,
-            'price_condominium' => $request->price_condominium,
-            'deadline_contract' => $request->deadline_contract,
-            'financial_propertie' => $request->financial_propertie,
-            'financer_name' => $request->financer_name,
-            'isswap' => $request->isswap,
-            'comments' => $request->comments,
-            'active' => 1
-        ]);
+        $client = Client::where('id', $request->cod_client)->first();
 
-        //quando existir a imagem na request
-        if ($request->hasFile('images')) {
-            for ($i=0; $i < count($request->allFiles()['images']); $i++) {
-                $file = $request->allFiles()['images'][$i];
-
-                $propertieImage = new PropertiesImages();
-                $propertieImage->properties_id = $propertie->id;
-                $propertieImage->url = $file->store('propertie/' . $propertie->id);
-                $propertieImage->save();
-            }
-
-            $isImage = true;
+        if (!empty($client) && $client->count() > 0) {
+            $continue = true;
+        } else {
+            $continue= false;
         }
 
-        if (!$isImage) {
-            return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso, imagens não adicionadas na propriedade com o código N° ' . $propertie->id);
+        $isImage = false;
+
+        if ($continue) {
+            $propertie = Propertie::create([
+                'address' => $request->address,
+                'number_address' => $request->address_number,
+                'complement' => $request->address_complement,
+                'code_postal' => $request->cep,
+                'district' => $request->district,
+                'city' => $request->city,
+                'uf' => $request->uf,
+                'type_propertie' => $request->type_propertie,
+                'object_propertie' => $request->object_propertie,
+                'price_location' => $request->price_location,
+                'price_sale' => $request->price_sale,
+                'price_iptu' => $request->price_iptu,
+                'price_condominium' => $request->price_condominium,
+                'deadline_contract' => $request->deadline_contract,
+                'financial_propertie' => $request->financial_propertie,
+                'financer_name' => $request->financer_name,
+                'isswap' => $request->isswap,
+                'comments' => $request->comments,
+                'client_propertie_id' => $client['id'],
+                'active' => 1
+            ]);
+
+            //quando existir a imagem na request
+            if ($request->hasFile('images')) {
+                for ($i=0; $i < count($request->allFiles()['images']); $i++) {
+                    $file = $request->allFiles()['images'][$i];
+
+                    $propertieImage = new PropertiesImages();
+                    $propertieImage->properties_id = $propertie->id;
+                    $propertieImage->url = $file->store('propertie/' . $propertie->id);
+                    $propertieImage->save();
+                }
+
+                $isImage = true;
+            }
+
+            if (!$isImage) {
+                return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso, imagens não adicionadas na propriedade com o código N° ' . $propertie->id);
+            } else {
+                return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso...');
+            }
         } else {
-            return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso...');
+            return redirect()->route('imoveis.create')->with('message', 'O codigo do cliente não foi preenchido ou não foi encontrado, verifique novamente...');
         }
     }
 
@@ -91,7 +110,7 @@ class ImoveisController extends Controller
      */
     public function show($id)
     {
-        $propertie = Propertie::with('images')->find($id);
+        $propertie = Propertie::with('images', 'client_properties')->find($id);
 
         return view('pages.imoveis.show', compact('propertie'));
     }

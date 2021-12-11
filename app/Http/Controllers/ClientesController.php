@@ -68,7 +68,7 @@ class ClientesController extends Controller
                 'cpf_cnpj_partner' => $request->cpf_cnpj_partner,
                 'rg_partner' => $request->rg_partner,
                 'cnh_partner' => $request->cnh_partner,
-                'clients_id' => $request->client->id,
+                'clients_id' => $client->id,
                 'active' => 1
             ]);
 
@@ -78,7 +78,7 @@ class ClientesController extends Controller
 
                 $clientPartnerCertification = new ClientPartnerFile();
                 $clientPartnerCertification->clients_partners_id = $clientPartner->id;
-                $clientPartnerCertification->url = $file->store('client/partner/file' . $client->id);
+                $clientPartnerCertification->url = $file->store('client/partner/file/' . $client->id);
                 $clientPartnerCertification->save();
 
                 $isCertification = true;
