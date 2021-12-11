@@ -17,7 +17,7 @@ class ImoveisController extends Controller
      */
     public function index()
     {
-        $properties = Propertie::all();
+        $properties = Propertie::orderBy('id', 'DESC')->get();
 
         return view('pages.imoveis.index', [
             'properties' => $properties
@@ -93,12 +93,12 @@ class ImoveisController extends Controller
             }
 
             if (!$isImage) {
-                return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso, imagens não adicionadas na propriedade com o código N° ' . $propertie->id);
+                return redirect()->route('imoveis')->with(['message' => 'Imovel criado com sucesso, imagens não adicionadas na propriedade com o código N° ' . $propertie->id]);
             } else {
-                return redirect()->route('imoveis')->with('message', 'Imovel criado com sucesso...');
+                return redirect()->route('imoveis')->with(['message' => 'Imovel criado com sucesso...']);
             }
         } else {
-            return redirect()->route('imoveis.create')->with('message', 'O codigo do cliente não foi preenchido ou não foi encontrado, verifique novamente...');
+            return redirect()->route('imoveis.create')->withErrors(['message' => 'O codigo do cliente não foi preenchido ou não foi encontrado, verifique novamente...']);
         }
     }
 

@@ -28,7 +28,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'SISMOB') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -40,9 +40,6 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">{{ __('Inicio') }}</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('clientes') }}">{{ __('Clientes') }}</a>
                         </li>
@@ -60,7 +57,7 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="">Categorias</a>
-                                <a class="dropdown-item" href="">Lançar Contas</a>
+                                <a class="dropdown-item" href="">Consultar Pagamentos</a>
                             </div>
                         </li>
 
@@ -71,7 +68,6 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="">Gerar Pagamento</a>
                                 <a class="dropdown-item" href="">Consultar Recebimentos</a>
                             </div>
                         </li>

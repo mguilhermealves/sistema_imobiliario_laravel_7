@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="container text-right mt-5">
-                    <a class="btn btn-primary btn-sm" href="{{ route('imoveis.create') }}">Criar Imóvel</a>
+                    <a class="btn btn-primary btn-sm" href="{{ route('imoveis.create') }}">Cadastrar Imóvel</a>
                 </div>
 
                 <div class="row">
@@ -32,6 +32,7 @@
                                     <th>Bairro</th>
                                     <th>Cidade</th>
                                     <th>Estado</th>
+                                    <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -43,6 +44,7 @@
                                         <td>{{ $propertie->district }}</td>
                                         <td>{{ $propertie->city }}</td>
                                         <td>{{ $propertie->uf }}</td>
+                                        <td>{{ $propertie->active == 1 ? 'Ativo' : 'Inativo' }}</td>
                                         <td>
                                             <a href="{{ route('imoveis.show', $propertie->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
                                             <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
@@ -50,7 +52,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <th colspan="6" style="text-align: center">Nenhum imóvel criado...</th>
+                                        <th colspan="6" style="text-align: center">Nenhum imóvel criado até o momento...</th>
                                     </tr>
                                 @endforelse
                             </tbody>

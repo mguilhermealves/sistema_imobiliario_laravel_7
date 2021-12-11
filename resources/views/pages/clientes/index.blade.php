@@ -46,7 +46,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <th colspan="6" style="text-align: center">Nenhum cliente criado...</th>
+                                        <th colspan="6" style="text-align: center">Nenhum cliente criado até o momento...</th>
                                     </tr>
                                 @endforelse
                             </tbody>
