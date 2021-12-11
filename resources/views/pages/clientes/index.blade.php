@@ -34,32 +34,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th>1</th>
-                                    <th>Marcos Guilherme</th>
-                                    <th>380.447.918-92</th>
-                                    <th>
-                                        <a href="{{ route('clientes.show', 1) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
-                                        <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
-                                    </th>
-                                </tr>
-                                {{-- @forelse ($properties as $propertie)
+                                @forelse ($clients as $client)
                                     <tr>
-                                        <td scope="row">{{ $propertie->id }}</td>
-                                        <td>{{ $propertie->address . ', ' . $propertie->number_address}}</td>
-                                        <td>{{ $propertie->district }}</td>
-                                        <td>{{ $propertie->city }}</td>
-                                        <td>{{ $propertie->uf }}</td>
+                                        <td scope="row">{{ $client->id }}</td>
+                                        <td>{{ $client->first_name . ' ' . $client->last_name}}</td>
+                                        <td>{{ $client->cpf_cnpj }}</td>
                                         <td>
-                                            <a href="{{ route('imoveis.show', $propertie->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
+                                            <a href="{{ route('clientes.show', $client->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
                                             <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <th colspan="6" style="text-align: center">Nenhum imóvel criado...</th>
+                                        <th colspan="6" style="text-align: center">Nenhum cliente criado...</th>
                                     </tr>
-                                @endforelse --}}
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

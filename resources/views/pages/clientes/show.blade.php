@@ -4,11 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1 class="text-center mt-3 mb-5">Editar Imóvel Código N° <strong>{{ $propertie->id }} </strong> </h1>
+                <h1 class="text-center mt-3 mb-5">Editar Cliente Código N° <strong>{{ $client->id }} </strong> </h1>
 
-                {{-- @php
-                    dd($propertie->images);
-                @endphp --}}
+                @php
+                    dd($client);
+                @endphp
 
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">

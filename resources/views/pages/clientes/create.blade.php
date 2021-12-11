@@ -173,7 +173,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Nome</label>
-                                        <input type="text" name="first_name_partner" id="first_name" class="form-control"
+                                        <input type="text" name="first_name_partner" id="first_name_partner" class="form-control"
                                             autofocus>
                                     </div>
                                 </div>
@@ -181,7 +181,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Sobrenome</label>
-                                        <input type="text" name="last_name_partner" id="last_name" class="form-control"
+                                        <input type="text" name="last_name_partner" id="last_name_partner" class="form-control"
                                             autofocus>
                                     </div>
                                 </div>
@@ -189,7 +189,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CPF / CNPJ</label>
-                                        <input type="text" name="cpf_cnpj_partner" id="cpf_cnpj" class="form-control"
+                                        <input type="text" name="cpf_cnpj_partner" id="cpf_cnpj_partner" class="form-control"
                                             autofocus>
                                     </div>
                                 </div>
@@ -197,14 +197,14 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>RG</label>
-                                        <input type="text" name="rg_partner" id="rg" class="form-control" autofocus>
+                                        <input type="text" name="rg_partner" id="rg_partner" class="form-control" autofocus>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CNH</label>
-                                        <input type="text" name="cnh_partner" id="cnh" class="form-control" autofocus>
+                                        <input type="text" name="cnh_partner" id="cnh_partner" class="form-control" autofocus>
                                     </div>
                                 </div>
 
