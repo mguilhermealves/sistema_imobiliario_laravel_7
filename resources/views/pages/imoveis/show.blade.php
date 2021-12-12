@@ -1,5 +1,159 @@
 @extends('layouts.app')
 
+@section('script')
+    <script>
+        $(function($) {
+
+            $(document).ready(function() {
+
+                $('#phone').mask("(99) 9999-9999");
+                $('#celphone').mask("(99) 99999-9999");
+                $('#code_postal').mask("99999-999");
+                $('#cpf').mask("999.999.999-99");
+                $('#cpf_partner').mask("999.999.999-99");
+
+                var status = ($('#object_propertie').val());
+                var type_propertie = ($('#type_propertie').val());
+                var financial_propertie = ($('select[name="financial_propertie"]').val());
+                var isswap = ($('#isswap').val());
+
+                if (isswap == 'yes') {
+                    $('div[name="text_exchange"]').show();
+                } else {
+                    $('div[name="text_exchange"]').hide();
+                }
+
+                if (type_propertie == 'apartmant') {
+                    $('div[name="is_apartmant"]').show();
+                } else {
+                    $('div[name="is_apartmant"]').hide();
+                }
+
+                if (financial_propertie == 'yes') {
+                    $('div[name="is_financer"]').show();
+                } else {
+                    $('div[name="is_financer"]').hide();
+                }
+
+                if (status == 'Venda') {
+                    $('#configs').show();
+                    $('div[name="sale"]').show();
+                    $('div[name="location"]').hide();
+                } else if (status == 'Locação') {
+                    $('#configs').show();
+                    $('div[name="sale"]').hide();
+                    $('div[name="location"]').show();
+                } else {
+                    $('#configs').hide();
+                    $('div[name="sale"]').hide();
+                    $('div[name="location"]').hide();
+                }
+
+            });
+
+            $('#isswap').change(function() {
+                var isswap = ($(this).val());
+
+                if (isswap == 'yes') {
+                    $('div[name="text_exchange"]').show();
+                } else {
+                    $('div[name="text_exchange"]').hide();
+                }
+            });
+
+            $('#type_propertie').change(function() {
+                var type_propertie = ($(this).val());
+
+                if (type_propertie == 'apartmant') {
+                    $('div[name="is_apartmant"]').show();
+                } else {
+                    $('div[name="is_apartmant"]').hide();
+                }
+            });
+
+            $('select[name="financial_propertie"]').change(function() {
+                var financial_propertie = ($(this).val());
+
+                if (financial_propertie == 'yes') {
+                    $('div[name="is_financer"]').show();
+                } else {
+                    $('div[name="is_financer"]').hide();
+                }
+            });
+
+            $('#object_propertie').change(function() {
+                var status = ($(this).val());
+
+                if (status == 'sale') {
+                    $('#configs').show();
+                    $('div[name="sale"]').show();
+                    $('div[name="location"]').hide();
+                } else if (status == 'location') {
+                    $('#configs').show();
+                    $('div[name="sale"]').hide();
+                    $('div[name="location"]').show();
+                } else {
+                    $('#configs').hide();
+                    $('div[name="sale"]').hide();
+                    $('div[name="location"]').hide();
+                }
+            });
+
+            /* CONSULTA CEP */
+            $("#cep").change(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if (validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...");
+                        $("#bairro").val("...");
+                        $("#cidade").val("...");
+                        $("#uf").val("...");
+                        $("#ibge").val("...");
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                $("#ibge").val(dados.ibge);
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+    </script>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="row">
@@ -35,16 +189,17 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Código do Proprietário</label>
-                                        <input type="text"
-                                            class="form-control" value="{{ $propertie->client_properties->id }}" autofocus>
+                                        <input type="text" class="form-control"
+                                            value="{{ $propertie->client_properties->id }}" autofocus>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Nome do Proprietário</label>
-                                        <input type="text"
-                                            class="form-control" value="{{ $propertie->client_properties->first_name . ' ' . $propertie->client_properties->last_name }}" disabled>
+                                        <input type="text" class="form-control"
+                                            value="{{ $propertie->client_properties->first_name . ' ' . $propertie->client_properties->last_name }}"
+                                            disabled>
                                     </div>
                                 </div>
 
@@ -259,7 +414,8 @@
                                         @forelse ($propertie->images as $k => $image)
                                             <div class="col-lg-3 col-md-4 col-6">
                                                 <img class="img-fluid img-thumbnail"
-                                                    src="{{ url("storage/{$image->url}") }}" alt="" style="width: 30vw; height: 10vw; object-fit: contain;">
+                                                    src="{{ url("storage/{$image->url}") }}" alt=""
+                                                    style="width: 30vw; height: 10vw; object-fit: contain;">
                                             </div>
                                         @empty
                                             <p class="text-center">Nenhuma imagem cadastrada</p>
@@ -287,160 +443,3 @@
     </div>
     </div>
 @endsection
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js"></script>
-
-<script>
-    $(function() {
-
-        // $('input[name="phone"]').inputmask("(99) 9999-9999");
-        // $('input[name="celphone"]').inputmask("(99) 99999-9999");
-        // $('input[name="code_postal"]').inputmask("99999-999");
-        // $('input[name="cpf"]').inputmask("999.999.999-99");
-        // $('input[name="cpf_partner"]').inputmask("999.999.999-99");
-
-
-        $(document).ready(function() {
-
-            var status = ($('#object_propertie').val());
-            var type_propertie = ($('#type_propertie').val());
-            var financial_propertie = ($('select[name="financial_propertie"]').val());
-            var isswap = ($('#isswap').val());
-
-            if (isswap == 'yes') {
-                $('div[name="text_exchange"]').show();
-            } else {
-                $('div[name="text_exchange"]').hide();
-            }
-
-            if (type_propertie == 'apartmant') {
-                $('div[name="is_apartmant"]').show();
-            } else {
-                $('div[name="is_apartmant"]').hide();
-            }
-
-            if (financial_propertie == 'yes') {
-                $('div[name="is_financer"]').show();
-            } else {
-                $('div[name="is_financer"]').hide();
-            }
-
-            if (status == 'Venda') {
-                $('#configs').show();
-                $('div[name="sale"]').show();
-                $('div[name="location"]').hide();
-            } else if (status == 'Locação') {
-                $('#configs').show();
-                $('div[name="sale"]').hide();
-                $('div[name="location"]').show();
-            } else {
-                $('#configs').hide();
-                $('div[name="sale"]').hide();
-                $('div[name="location"]').hide();
-            }
-
-        });
-
-        $('#isswap').change(function() {
-            var isswap = ($(this).val());
-
-            if (isswap == 'yes') {
-                $('div[name="text_exchange"]').show();
-            } else {
-                $('div[name="text_exchange"]').hide();
-            }
-        });
-
-        $('#type_propertie').change(function() {
-            var type_propertie = ($(this).val());
-
-            if (type_propertie == 'apartmant') {
-                $('div[name="is_apartmant"]').show();
-            } else {
-                $('div[name="is_apartmant"]').hide();
-            }
-        });
-
-        $('select[name="financial_propertie"]').change(function() {
-            var financial_propertie = ($(this).val());
-
-            if (financial_propertie == 'yes') {
-                $('div[name="is_financer"]').show();
-            } else {
-                $('div[name="is_financer"]').hide();
-            }
-        });
-
-        $('#object_propertie').change(function() {
-            var status = ($(this).val());
-
-            if (status == 'sale') {
-                $('#configs').show();
-                $('div[name="sale"]').show();
-                $('div[name="location"]').hide();
-            } else if (status == 'location') {
-                $('#configs').show();
-                $('div[name="sale"]').hide();
-                $('div[name="location"]').show();
-            } else {
-                $('#configs').hide();
-                $('div[name="sale"]').hide();
-                $('div[name="location"]').hide();
-            }
-        });
-
-        /* CONSULTA CEP */
-        $("#cep").change(function() {
-
-            //Nova variável "cep" somente com dígitos.
-            var cep = $(this).val().replace(/\D/g, '');
-
-            //Verifica se campo cep possui valor informado.
-            if (cep != "") {
-
-                //Expressão regular para validar o CEP.
-                var validacep = /^[0-9]{8}$/;
-
-                //Valida o formato do CEP.
-                if (validacep.test(cep)) {
-
-                    //Preenche os campos com "..." enquanto consulta webservice.
-                    $("#rua").val("...");
-                    $("#bairro").val("...");
-                    $("#cidade").val("...");
-                    $("#uf").val("...");
-                    $("#ibge").val("...");
-
-                    //Consulta o webservice viacep.com.br/
-                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
-
-                        if (!("erro" in dados)) {
-                            //Atualiza os campos com os valores da consulta.
-                            $("#rua").val(dados.logradouro);
-                            $("#bairro").val(dados.bairro);
-                            $("#cidade").val(dados.localidade);
-                            $("#uf").val(dados.uf);
-                            $("#ibge").val(dados.ibge);
-                        } //end if.
-                        else {
-                            //CEP pesquisado não foi encontrado.
-                            limpa_formulário_cep();
-                            alert("CEP não encontrado.");
-                        }
-                    });
-                } //end if.
-                else {
-                    //cep é inválido.
-                    limpa_formulário_cep();
-                    alert("Formato de CEP inválido.");
-                }
-            } //end if.
-            else {
-                //cep sem valor, limpa formulário.
-                limpa_formulário_cep();
-            }
-        });
-    });
-</script>

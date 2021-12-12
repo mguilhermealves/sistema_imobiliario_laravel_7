@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Propertie;
 
 class LocatariosController extends Controller
 {
@@ -13,7 +14,7 @@ class LocatariosController extends Controller
      */
     public function index()
     {
-        //
+        return view('pages.locatarios.index');
     }
 
     /**
@@ -23,7 +24,7 @@ class LocatariosController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.locatarios.create');
     }
 
     /**
@@ -80,5 +81,20 @@ class LocatariosController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * autocomplete properties
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function autocomplete(Request $request)
+    {
+        $data = Propertie::where('id', $request->cod_propertie)
+            ->select('address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'type_propertie', 'object_propertie')
+            ->first();
+
+        return response()->json($data);
     }
 }
