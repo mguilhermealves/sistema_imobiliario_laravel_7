@@ -291,15 +291,15 @@
                         <button class="nav-link" id="info_financeiras_fiador-tab" data-toggle="tab"
                             data-target="#status" type="button" role="tab" aria-controls="status"
                             aria-selected="false">Status</button>
-                        <button class="nav-link" id="documentos-tab" data-toggle="tab" data-target="#documentos"
-                            type="button" role="tab" aria-controls="documentos" aria-selected="false">Documentos</button>
+                        <button class="nav-link" id="salvar-tab" data-toggle="tab" data-target="#salvar"
+                            type="button" role="tab" aria-controls="salvar" aria-selected="false">Ação</button>
                         <button class="nav-link" id="dados_conjuge-tab" data-toggle="tab" data-target="#dados_conjuge"
                             type="button" role="tab" aria-controls="dados_conjuge" aria-selected="false">Dados
                             Conjuge</button>
                     </div>
                 </nav>
 
-                <form action="{{ route('clientes.store') }}" method="post" enctype="multipart/form-data"
+                <form action="{{ route('locatarios.store') }}" method="post" enctype="multipart/form-data"
                     class="form">
                     @csrf
 
@@ -770,62 +770,6 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="endereco_client-tab">
-                            <div class="row mt-5">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Comprovante(s) de Renda</label>
-                                        <input type="file" name="cep" id="cep" placeholder="00000-000"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <label>Endereço</label>
-                                        <input type="text" name="address" id="rua" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Numero</label>
-                                        <input type="text" name="address_number" id="address_number" class="form-control"
-                                            autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Complemento</label>
-                                        <input type="text" name="address_complement" id="address_complement"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Bairro</label>
-                                        <input type="text" name="district" id="bairro" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Cidade</label>
-                                        <input type="text" name="city" id="cidade" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Estado</label>
-                                        <input type="text" name="uf" id="uf" class="form-control" autofocus>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="tab-pane fade" id="dados_conjuge" role="tabpanel" aria-labelledby="dados_conjuge-tab">
                             <div class="row mt-5">
                                 <div class="col-sm-4">
@@ -878,8 +822,10 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12 mt-5 mb-5">
-                            <button class="btn btn-success btn-sm" type="submit">Cadastrar Locátario</button>
+                        <div class="tab-pane fade" id="salvar" role="tabpanel" aria-labelledby="salvar-tab">
+                            <div class="col-sm-12 mt-5 mb-5">
+                                <button class="btn btn-success btn-sm" type="submit">Cadastrar Locátario</button>
+                            </div>
                         </div>
                     </div>
                 </form>
