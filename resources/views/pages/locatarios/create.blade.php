@@ -11,6 +11,9 @@
                 $('#code_postal').mask("99999-999");
                 $('#cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
+                $('.money').mask("#.##0,00", {
+                    reverse: true
+                });
 
                 var status = ($('#marital_status').val());
 
@@ -18,6 +21,74 @@
                     $("#dados_conjuge-tab").show();
                 } else if (status != 'married') {
                     $("#dados_conjuge-tab").hide();
+                }
+
+                var is_pet = ($('#is_pet').val());
+
+                if (is_pet == 'yes') {
+                    $("#type_pet").show();
+                } else if (is_pet != 'yes') {
+                    $("#type_pet").hide();
+                }
+
+                var work = ($('#type_work').val());
+
+                if (work == 'clt') {
+                    $('#clt').show();
+                    $('#pj').hide();
+                } else if (work == 'pj') {
+                    $('#pj').show();
+                    $('#clt').hide();
+                } else {
+                    $('#pj').hide();
+                    $('#clt').hide();
+                }
+
+                var guarantor = ($('#type_guarantor').val());
+
+                if (guarantor == 'guarantor') {
+                    $('#guarantor').show();
+                    $('#type_work_guarantor_div').show();
+                    $('#surety_bond').hide();
+                } else if (guarantor == 'surety_bond') {
+                    $('#surety_bond').show();
+                    $('#type_work_guarantor_div').hide();
+                    $('#guarantor').hide();
+                } else {
+                    $('#surety_bond').hide();
+                    $('#guarantor').hide();
+                    $('#type_work_guarantor_div').hide();
+                }
+
+                var type_work_guarantor = ($('#type_work_guarantor').val());
+
+                if (type_work_guarantor == 'clt') {
+                    $('#clt_guarantor').show();
+                    $('#pj_guarantor').hide();
+                } else if (type_work_guarantor == 'pj') {
+                    $('#pj_guarantor').show();
+                    $('#clt_guarantor').hide();
+                } else {
+                    $('#pj_guarantor').hide();
+                    $('#clt_guarantor').hide();
+                }
+
+                var is_aproved = ($('#is_aproved').val());
+
+                if (is_aproved == 'on_approval') {
+                    $('#number_contract_aproved').hide();
+                    $('#text_not_aproved').hide();
+                } else if (is_aproved == 'approved') {
+                    $('#number_contract_aproved').show();
+                    $('#n_contract').attr('disabled', 'disabled');
+                    $('#is_aproved').attr('disabled', 'disabled');
+                    $('#text_not_aproved').hide();
+                } else if (is_aproved == 'not_approved') {
+                    $('#text_not_aproved').show();
+                    $('#number_contract_aproved').hide();
+                } else {
+                    $('#text_not_aproved').hide();
+                    $('#number_contract_aproved').hide();
                 }
 
             });
@@ -31,6 +102,83 @@
                     $("#dados_conjuge-tab").show();
                 } else if (status != 'married') {
                     $("#dados_conjuge-tab").hide();
+                }
+            });
+
+            $('#is_pet').change(function() {
+                var status = ($(this).val());
+
+                if (status == 'yes') {
+                    $("#type_pet").show();
+                } else if (status != 'yes') {
+                    $('#type_pet').hide();
+                    $('#type_pet').val('');
+                }
+            });
+
+            $('#type_work').change(function() {
+                var status = ($(this).val());
+
+                if (status == 'clt') {
+                    $('#clt').show();
+                    $('#pj').hide();
+                } else if (status == 'pj') {
+                    $('#pj').show();
+                    $('#clt').hide();
+                } else {
+                    $('#pj').hide();
+                    $('#clt').hide();
+                }
+            });
+
+            $('#type_work_guarantor').change(function() {
+                var status = ($(this).val());
+
+                if (status == 'clt') {
+                    $('#clt_guarantor').show();
+                    $('#pj_guarantor').hide();
+                } else if (status == 'pj') {
+                    $('#pj_guarantor').show();
+                    $('#clt_guarantor').hide();
+                }
+                // else {
+                //     $('#pj_guarantor').hide();
+                //     $('#clt_guarantor').hide();
+                // }
+            });
+
+            $('#type_guarantor').change(function() {
+                var status = ($(this).val());
+
+                if (status == 'guarantor') {
+                    $('#guarantor').show();
+                    $('#type_work_guarantor_div').show();
+                    $('#surety_bond').hide();
+                } else if (status == 'surety_bond') {
+                    $('#surety_bond').show();
+                    $('#type_work_guarantor_div').hide();
+                    $('#guarantor').hide();
+                } else {
+                    $('#surety_bond').hide();
+                    $('#guarantor').hide();
+                    $('#type_work_guarantor_div').hide();
+                }
+            });
+
+            $('#is_aproved').change(function() {
+                var status = ($(this).val());
+
+                console.log(status);
+
+                if (status == 'on_approval') {
+                    $('#number_contract_aproved').hide();
+                    $('#text_not_aproved').hide();
+                } else if (status == 'approved') {
+                    $('#number_contract_aproved').hide();
+                    $('#text_not_aproved').hide();
+                } else if (status == 'not_approved') {
+                    $('#text_not_aproved').show();
+                    $('#number_contract_aproved').hide();
                 }
             });
 
@@ -133,9 +281,18 @@
                         <button class="nav-link" id="dados_locatario-tab" data-toggle="tab"
                             data-target="#dados_locatario" type="button" role="tab" aria-controls="dados_locatario"
                             aria-selected="false">Dados do Locátario</button>
+                        <button class="nav-link" id="info_financeiras-tab" data-toggle="tab"
+                            data-target="#info_financeiras" type="button" role="tab" aria-controls="info_financeiras"
+                            aria-selected="false">Informações Financeiras Locatário</button>
                         <button class="nav-link" id="endereco_client-tab" data-toggle="tab"
-                            data-target="#endereco_client" type="button" role="tab" aria-controls="endereco_client"
-                            aria-selected="false">Endereço</button>
+                            data-target="#info_financeiras_fiador" type="button" role="tab"
+                            aria-controls="info_financeiras_fiador" aria-selected="false">Informações Financeiras
+                            Fiador</button>
+                        <button class="nav-link" id="info_financeiras_fiador-tab" data-toggle="tab"
+                            data-target="#status" type="button" role="tab" aria-controls="status"
+                            aria-selected="false">Status</button>
+                        <button class="nav-link" id="documentos-tab" data-toggle="tab" data-target="#documentos"
+                            type="button" role="tab" aria-controls="documentos" aria-selected="false">Documentos</button>
                         <button class="nav-link" id="dados_conjuge-tab" data-toggle="tab" data-target="#dados_conjuge"
                             type="button" role="tab" aria-controls="dados_conjuge" aria-selected="false">Dados
                             Conjuge</button>
@@ -279,8 +436,9 @@
                                         <label>Sexo</label>
                                         <select class="custom-select" name="genre" id="genre">
                                             <option selected>Selecione...</option>
-                                            <option value="male">Masculino</option>
-                                            <option value="female">Feminino</option>
+                                            @foreach ($genres as $genre)
+                                                <option value="{{ $genre->slug }}"> {{ $genre->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -290,10 +448,9 @@
                                         <label>Estado Civil</label>
                                         <select class="custom-select" name="marital_status" id="marital_status">
                                             <option selected>Selecione...</option>
-                                            <option value="singer">Solteiro</option>
-                                            <option value="married">Casado</option>
-                                            <option value="divorced">Divorciado</option>
-                                            <option value="widower">Viúvo</option>
+                                            @foreach ($civil_states as $state)
+                                                <option value="{{ $state->slug }}"> {{ $state->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -312,8 +469,54 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12">
+                                <div class="col-sm-12 mt-3 mb-3">
                                     <hr>
+
+                                    <h4 class="display-4 text-center">Dados Adicionais</h4>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Possui Filhos</label>
+                                        <select class="custom-select" name="is_children" id="is_children">
+                                            <option selected>Selecione...</option>
+                                            <option value="yes">Sim</option>
+                                            <option value="no">Não</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Possui Animais de Estimação</label>
+                                        <select class="custom-select" name="is_pet" id="is_pet">
+                                            <option selected>Selecione...</option>
+                                            <option value="yes">Sim</option>
+                                            <option value="no">Não</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4" id="type_pet">
+                                    <div class="form-group">
+                                        <label>Especificar Espécie</label>
+                                        <input type="text" name="pet_species" id="pet_species" class="form-control"
+                                            autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Quantidade de Moradores</label>
+                                        <input type="number" min="1" name="number_residents" id="number_residents"
+                                            class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 mt-3 mb-3">
+                                    <hr>
+
+                                    <h4 class="display-4 text-center">Endereço</h4>
                                 </div>
 
                                 <div class="col-sm-4">
@@ -370,13 +573,209 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="endereco_client" role="tabpanel"
+                        <div class="tab-pane fade" id="info_financeiras" role="tabpanel"
+                            aria-labelledby="endereco_client-tab">
+                            <div class="row mt-5">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Tipo de Regime</label>
+                                        <select class="custom-select" name="offices[type_work]" id="type_work">
+                                            <option selected>Selecione...</option>
+                                            <option value="clt">CLT</option>
+                                            <option value="pj">PJ</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" id="clt">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Nome da Empresa</label>
+                                                <input type="text" name="offices[company_name_clt]" class="form-control"
+                                                    autofocus>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Cargo</label>
+                                                <input type="text" name="offices[office]" class="form-control" autofocus>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Tempo de Registro</label>
+                                                <input type="text" name="offices[registration_time]" class="form-control"
+                                                    autofocus>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Renda Mensal</label>
+                                                <input type="text" name="offices[rent_monthly]" class="form-control money"
+                                                    autofocus>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>3 Ultimos comprovantes de renda</label>
+                                                <input type="file" name="offices[image_file][]" class="form-control"
+                                                    multiple>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Comprovante IRPF</label>
+                                                <input type="file" name="offices[IRPF_file][]" class="form-control"
+                                                    multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" id="pj">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Razão Social</label>
+                                                <input type="text" name="offices[company_name_pj]" class="form-control"
+                                                    autofocus>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Endereço</label>
+                                                <input type="file" name="offices[address_file]" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>CNPJ</label>
+                                                <input type="file" name="offices[cnpj_file]" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Contrato Social</label>
+                                                <input type="file" name="offices[contract_file]" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>3 Ultimos comprovantes de renda</label>
+                                                <input type="file" name="offices[rent_file][]" class="form-control"
+                                                    multiple>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="info_financeiras_fiador" role="tabpanel"
                             aria-labelledby="endereco_client-tab">
                             <div class="row mt-5">
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CEP</label>
                                         <input type="text" name="cep" id="cep" placeholder="00000-000"
+                                            class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-5">
+                                    <div class="form-group">
+                                        <label>Endereço</label>
+                                        <input type="text" name="address" id="rua" class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Numero</label>
+                                        <input type="text" name="address_number" id="address_number" class="form-control"
+                                            autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Complemento</label>
+                                        <input type="text" name="address_complement" id="address_complement"
+                                            class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Bairro</label>
+                                        <input type="text" name="district" id="bairro" class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Cidade</label>
+                                        <input type="text" name="city" id="cidade" class="form-control" autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Estado</label>
+                                        <input type="text" name="uf" id="uf" class="form-control" autofocus>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="endereco_client-tab">
+                            <div class="row mt-5">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Cadastro Aprovado</label>
+                                        <select class="custom-select" name="is_aproved" id="is_aproved">
+                                            <option selected>Selecione...</option>
+                                            <option value="on_approval">Em Aprovação</option>
+                                            <option value="approved">Aprovado</option>
+                                            <option value="not_approved">Não Aprovado</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6" id="number_contract_aproved">
+                                    <div class="form-group">
+                                        <label>N° do Contrato</label>
+                                        <input type="text" name="n_contract" id="n_contract" class="form-control"
+                                            disabled>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12" id="text_not_aproved">
+                                    <div class="form-group">
+                                        <label>Texto</label>
+                                        <textarea class="form-control" name="comments" id="mytextarea"
+                                            rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="documentos" role="tabpanel" aria-labelledby="endereco_client-tab">
+                            <div class="row mt-5">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Comprovante(s) de Renda</label>
+                                        <input type="file" name="cep" id="cep" placeholder="00000-000"
                                             class="form-control" autofocus>
                                     </div>
                                 </div>
@@ -492,7 +891,3 @@
         </div>
     </div>
 @endsection
-
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js"></script> --}}

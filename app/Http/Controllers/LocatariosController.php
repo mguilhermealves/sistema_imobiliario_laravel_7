@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Propertie;
+use App\{Propertie, CivilState, Genre};
 
 class LocatariosController extends Controller
 {
@@ -24,7 +24,16 @@ class LocatariosController extends Controller
      */
     public function create()
     {
-        return view('pages.locatarios.create');
+        $civil_states = CivilState::where('active', 1)
+            ->get();
+
+        $genres = Genre::where('active', 1)
+            ->get();
+
+        return view('pages.locatarios.create', [
+            'civil_states' => $civil_states,
+            'genres' => $genres
+        ]);
     }
 
     /**
