@@ -165,8 +165,8 @@ class ContasReceberController extends Controller
 
         //GERENCIANET - BOLETO
         if ($request->payment_method == 'ticket') {
-            $clientId = 'Client_Id_8f31bad8f7b617e1dd8c3f90b004b3a8bae64ffe'; // insira seu Client_Id, conforme o ambiente (Des ou Prod)
-            $clientSecret = 'Client_Secret_0c6477c6f0e9bc98d107f99a68c428c6b8f5e4ea'; // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
+            $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
+            $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
 
             $options = [
                 'client_id' => $clientId,
@@ -190,24 +190,19 @@ class ContasReceberController extends Controller
                 'phone_number' => '5144916523', // telefone do cliente
                 'email' => 'teste@teste.com.br'
             ];
-            // $discount = [ // configuração de descontos
-            //     'type' => 'currency', // tipo de desconto a ser aplicado
-            //     'value' => 599 // valor de desconto
-            // ];
+
             $configurations = [ // configurações de juros e mora
                 'fine' => $feesFormat, // porcentagem de multa
                 'interest' => $fineFormat // porcentagem de juros
             ];
-            // $conditional_discount = [ // configurações de desconto condicional
-            //     'type' => 'percentage', // seleção do tipo de desconto
-            //     'value' => 500, // porcentagem de desconto
-            //     'until_date' => '2019-08-30' // data máxima para aplicação do desconto
-            // ];
+
             $bankingBillet = [
                 'expire_at' => $due_date, // data de vencimento do titulo
                 'message' => 'teste\nteste\nteste\nteste', // mensagem a ser exibida no boleto
                 'customer' => $customer,
+                'configurations' => $configurations
             ];
+
             $payment = [
                 'banking_billet' => $bankingBillet // forma de pagamento (banking_billet = boleto)
             ];
@@ -220,9 +215,6 @@ class ContasReceberController extends Controller
             try {
                 $api = new Gerencianet($options);
                 $pay_charge = $api->oneStep([], $body);
-                // echo '<pre>';
-                // print_r($pay_charge);
-                // echo '<pre>';
 
                 AccountReceivableBankSlip::create([
                     'barcode' => $pay_charge['data']['barcode'],
@@ -238,8 +230,6 @@ class ContasReceberController extends Controller
                 ]);
 
                 return redirect()->route('contas_receber')->with(['message' => 'Pagamento criado com sucesso...']);
-
-
             } catch (GerencianetException $e) {
                 print_r($e->code);
                 print_r($e->error);

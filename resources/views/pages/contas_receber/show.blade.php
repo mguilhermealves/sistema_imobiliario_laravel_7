@@ -223,7 +223,7 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{ route('contas_receber.edit', $payment->id) }}" type="button"
-                                                        class="btn btn-primary btn-sm">Editar</a>
+                                                        class="btn btn-primary btn-sm">Visualizar</a>
                                                 </td>
                                             </tr>
                                         @empty
