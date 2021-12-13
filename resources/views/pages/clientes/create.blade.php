@@ -317,12 +317,8 @@
             </div>
 
             <div class="col-sm-12 mt-5 text-right">
-                <a class="btn btn-default btn-sm" href="{{ url('clientes') }}">{{ __('Voltar para Listagem') }}</a>
+                <a class="btn btn-default btn-sm" href="{{ url('clientes') }}">{{ __('<< Voltar para Listagem') }}</a>
             </div>
         </div>
     </div>
 @endsection
-
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js"></script> --}}

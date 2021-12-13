@@ -839,7 +839,7 @@
             </div>
 
             <div class="col-sm-12 mt-5 text-right">
-                <a class="btn btn-default btn-sm" href="{{ url('locatarios') }}">{{ __('Voltar para Listagem') }}</a>
+                <a class="btn btn-default btn-sm" href="{{ url('locatarios') }}">{{ __('<< Voltar para Listagem') }}</a>
             </div>
         </div>
     </div>

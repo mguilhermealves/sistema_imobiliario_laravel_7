@@ -39,9 +39,9 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
+                    @guest
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Authentication Links -->
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
@@ -50,7 +50,10 @@
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
-                        @else
+
+                        </ul>
+                    @else
+                        <ul class="navbar-nav mr-auto">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
                             </li>
@@ -86,6 +89,9 @@
                                         href="{{ route('contas_receber') }}">{{ __('Consultar Recebimentos') }}</a>
                                 </div>
                             </li>
+
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -94,7 +100,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                            document.getElementById('logout-form').submit();">
+                                                    document.getElementById('logout-form').submit();">
                                         {{ __('Sair') }}
                                     </a>
 
@@ -104,8 +110,8 @@
                                     </form>
                                 </div>
                             </li>
-                        @endguest
-                    </ul>
+                        </ul>
+                    @endguest
                 </div>
             </div>
         </nav>
