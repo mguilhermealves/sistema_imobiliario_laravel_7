@@ -17,6 +17,7 @@ class CreateTenantFilesTable extends Migration
             $table->id();
             $table->string('image_file')->nullable()->default(NULL);
             $table->string('IRPF_file')->nullable()->default(NULL);
+            $table->string('certification_married_file')->nullable()->default(NULL);
             $table->string('active');
             $table->foreignId('tenant_id')->nullable();
             $table->foreign('tenant_id')->references('id')->on('tenants');

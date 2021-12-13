@@ -311,7 +311,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Código do Imóvel</label>
-                                        <input type="text" id="autocomplete" class="form-control">
+                                        <input type="text" id="autocomplete" name="cod_imovel" class="form-control">
                                     </div>
                                 </div>
 

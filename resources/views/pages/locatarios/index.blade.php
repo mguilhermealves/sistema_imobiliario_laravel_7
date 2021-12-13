@@ -36,32 +36,39 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Marcos Guilherme</td>
-                                    <td>006</td>
-                                    <td>Aprovado</td>
-                                    <td>20211212144000</td>
-                                    <td>
-                                        <a href="">BTN 1</a>
-                                        <a href="">BTN 2</a>
-                                    </td>
-                                </tr>
-                                {{-- @forelse ($clients as $client)
+                                @forelse ($tenants as $tenant)
                                     <tr>
-                                        <td scope="row">{{ $client->id }}</td>
-                                        <td>{{ $client->first_name . ' ' . $client->last_name}}</td>
-                                        <td>{{ $client->cpf_cnpj }}</td>
+                                        <td scope="row">{{ $tenant->id }}</td>
+                                        <td>{{ $tenant->first_name . ' ' . $tenant->last_name }}</td>
+                                        <td>{{ $tenant->propertie['id'] }}</td>
                                         <td>
-                                            <a href="{{ route('clientes.show', $client->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
+                                            @if ($tenant->is_aproved == 'on_approval')
+                                                {{ 'Em Aprovação' }}
+                                            @elseif ($tenant->is_aproved == 'approved')
+                                                {{ 'Aprovado' }}
+                                            @else
+                                                {{ 'Não Aprovado' }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($tenant->n_contract != null && $tenant->is_aproved == 'approved')
+                                                {{ $tenant->n_contract }}
+                                            @else
+                                                {{ 'Aguardando protocolo...' }}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('locatarios.show', $tenant->id) }}" type="button"
+                                                class="btn btn-primary btn-sm">Editar</a>
                                             <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <th colspan="6" style="text-align: center">Nenhum cliente criado até o momento...</th>
+                                        <th colspan="6" style="text-align: center">Nenhuma locação criada até o momento...
+                                        </th>
                                     </tr>
-                                @endforelse --}}
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

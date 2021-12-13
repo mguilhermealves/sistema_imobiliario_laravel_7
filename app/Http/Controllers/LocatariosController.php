@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\{Propertie, CivilState, Genre, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile};
+use App\{Propertie, CivilState, Genre, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile, TenantPropertie};
+use Carbon\Carbon;
 
 class LocatariosController extends Controller
 {
@@ -14,7 +15,13 @@ class LocatariosController extends Controller
      */
     public function index()
     {
-        return view('pages.locatarios.index');
+        $tenants = Tenant::where('active', 1)
+            ->with('address', 'partner', 'office', 'files', 'propertie')
+            ->get();
+
+        return view('pages.locatarios.index', [
+            'tenants' => $tenants,
+        ]);
     }
 
     /**
@@ -44,9 +51,11 @@ class LocatariosController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->toArray());
+        if ($request->is_aproved == 'approved') {
+            $protocolo = Carbon::now()->format('Ymdhis');
+        }
 
-        $isFiles = false;
+        $propertie = Propertie::where('id', $request->cod_imovel)->first();
 
         $tenant = Tenant::create([
             'first_name' => $request->first_name,
@@ -65,7 +74,21 @@ class LocatariosController extends Controller
             'number_residents' => $request->number_residents,
             'is_aproved' => $request->is_aproved,
             'comments' => $request->comments,
+            'n_contract' => $request->is_aproved == 'approved' ? $protocolo : null,
             'active' => 1
+        ]);
+
+        $tenant_address = TenantPropertie::create([
+            'address' => $propertie->address,
+            'number_address' => $propertie->number_address,
+            'complement' => $propertie->complement,
+            'code_postal' => $propertie->code_postal,
+            'district' => $propertie->district,
+            'city' => $propertie->city,
+            'uf' => $propertie->uf,
+            'active' => 1,
+            'tenant_id' => $tenant->id,
+            'propertie_id' => $propertie->id,
         ]);
 
         $tenant_address = TenantAddress::create([
@@ -81,54 +104,62 @@ class LocatariosController extends Controller
         ]);
 
         $tenant_partner = TenantPartner::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'mail' => $request->mail,
-            'cpf_cnpj' => $request->cpf_cnpj,
-            'rg' => $request->rg,
-            'cnh' => $request->cnh,
+            'first_name' => $request->first_name_partner,
+            'last_name' => $request->last_name_partner,
+            'cpf_cnpj' => $request->cpf_cnpj_partner,
+            'rg' => $request->rg_partner,
+            'cnh' => $request->cnh_partner,
             'tenant_id' => $tenant->id,
             'active' => 1
         ]);
 
         $tenant_office = TenantOffice::create([
-            'type_work' => $request->type_work,
-            'company_name_clt' => $request->company_name_clt,
-            'company_name_pj' => $request->company_name_pj,
-            'office' => $request->office,
-            'registration_time' => $request->registration_time,
-            'rent_monthly' => $request->rent_monthly,
-            'tenant_id' => $tenant->id,
-            'active' => 1
-        ]);
-
-        //VERIFICAR ANTES
-        $tenant_file = TenantFile::create([
-            'image_file' => $request->image_file,
-            'IRPF_file' => $request->IRPF_file,
+            'type_work' => $request->offices['type_work'],
+            'company_name_clt' => $request->offices['company_name_clt'],
+            'company_name_pj' => $request->offices['company_name_pj'],
+            'office' => $request->offices['office'],
+            'registration_time' => $request->offices['registration_time'],
+            'rent_monthly' => $request->offices['rent_monthly'],
             'tenant_id' => $tenant->id,
             'active' => 1
         ]);
 
         //quando existir a imagem na request
-        if ($request->hasFile('images')) {
-            for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
-                $file = $request->allFiles()['images'][$i];
+        if ($request->hasFile('certification_married')) {
+            $file_certification_married = $request['certification_married'];
 
-                $propertieImage = new TenantFile();
-                $propertieImage->properties_id = $tenant->id;
-                $propertieImage->url = $file->store('tenant/' . $tenant->id);
-                $propertieImage->save();
+            $tenant_certification_married = new TenantFile();
+            $tenant_certification_married->tenant_id = $tenant->id;
+            $tenant_certification_married->certification_married_file = $file_certification_married->store('tenant/certification_married/id/' . $tenant->id);
+            $tenant_certification_married->active = 1;
+            $tenant_certification_married->save();
+        }
+
+        if ($request->hasFile('offices')['image_file']) {
+            for ($i = 0; $i < count(array($request->file('offices')['image_file'])); $i++) {
+                $file_image_file = $request->file('offices')['image_file'][$i];
+
+                $tenant_image_file = new TenantFile();
+                $tenant_image_file->tenant_id = $tenant->id;
+                $tenant_image_file->image_file = $file_image_file->store('tenant/payment_voucher/id/' . $tenant->id);
+                $tenant_image_file->active = 1;
+                $tenant_image_file->save();
             }
-
-            $isImage = true;
         }
 
-        if (!$isImage) {
-            return redirect()->route('locatario')->with(['message' => 'Locatário criado com sucesso, imagens não adicionadas no locatário com o código N° ' . $tenant->id]);
-        } else {
-            return redirect()->route('locatario')->with(['message' => 'Locatário criado com sucesso...']);
+        if ($request->hasFile('offices')['IRPF_file']) {
+            for ($i = 0; $i < count(array($request->file('offices')['IRPF_file'])); $i++) {
+                $file_IRPF_file = $request->file('offices')['IRPF_file'][$i];
+
+                $tenant_IRPF_file = new TenantFile();
+                $tenant_IRPF_file->tenant_id = $tenant->id;
+                $tenant_IRPF_file->IRPF_file = $file_IRPF_file->store('tenant/IRPF_file/id/' . $tenant->id);
+                $tenant_IRPF_file->active = 1;
+                $tenant_IRPF_file->save();
+            }
         }
+
+        return redirect()->route('locatarios')->with(['message' => 'Locatário criado com sucesso...']);
     }
 
     /**

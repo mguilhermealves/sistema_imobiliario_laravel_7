@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class TenantFile extends Model
+class TenantPropertie extends Model
 {
     use Notifiable;
 
@@ -15,6 +15,6 @@ class TenantFile extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'image_file', 'IRPF_file', 'certification_married_file', 'tenant_id', 'active'
+        'id', 'address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'tenant_id', 'propertie_id', 'active'
     ];
 }
