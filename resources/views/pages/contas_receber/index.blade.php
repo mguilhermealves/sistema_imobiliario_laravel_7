@@ -25,7 +25,7 @@
                                 <tr>
                                     <th>Código do Locátario</th>
                                     <th>Nome do Locátario</th>
-                                    <th>N° Protocolo</th>
+                                    <th>N° Contrato</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>

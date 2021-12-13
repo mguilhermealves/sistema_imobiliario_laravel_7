@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Propertie;
 use App\Tenant;
 use Illuminate\Http\Request;
 use Gerencianet\Exception\GerencianetException;
@@ -58,8 +59,22 @@ class ContasReceberController extends Controller
     {
         $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
 
+        $propertie = Propertie::where('id', $received->propertie['propertie_id'])->first();
+
+        $obj_propertie = '';
+
+        if ($propertie['object_propertie'] == 'location') {
+            $value_propertie = $propertie['price_location'];
+            $obj_propertie = 'Locação';
+        } else {
+            $value_propertie = $propertie['price_sale'];
+            $obj_propertie = 'Venda';
+        }
+
         return view('pages.contas_receber.show', [
-            'received' => $received
+            'received' => $received,
+            'value_propertie' => $value_propertie,
+            'obj_propertie' => $obj_propertie
         ]);
     }
 
