@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Tenant;
 use Illuminate\Http\Request;
+use Gerencianet\Exception\GerencianetException;
+use Gerencianet\Gerencianet;
 
 class ContasReceberController extends Controller
 {
@@ -120,6 +122,79 @@ class ContasReceberController extends Controller
      */
     public function payment(Request $request)
     {
-        dd($request->toArray());
+        $value = str_replace(array('.', ','), '', $request->amount);
+        $fees = str_replace(array('.', ','), '', $request->fees);
+        $fine = str_replace(array('.', ','), '', $request->fine);
+
+        $valueFormat = intVal($value);
+        $feesFormat = intVal($fees);
+        $fineFormat = intVal($fine);
+
+        if ($request->payment_method == 'ticket') {
+            $clientId = 'Client_Id_8f31bad8f7b617e1dd8c3f90b004b3a8bae64ffe'; // insira seu Client_Id, conforme o ambiente (Des ou Prod)
+            $clientSecret = 'Client_Secret_0c6477c6f0e9bc98d107f99a68c428c6b8f5e4ea'; // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
+
+            $options = [
+                'client_id' => $clientId,
+                'client_secret' => $clientSecret,
+                'sandbox' => true // altere conforme o ambiente (true = homologação e false = producao)
+            ];
+
+            $item_1 = [
+                'name' => 'Referente - ' . $request->obj_propertie . ' do Imóvel pela SISMOB', // nome do item, produto ou serviço
+                'amount' => 1, // quantidade
+                'value' => $valueFormat // valor (1000 = R$ 10,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
+            ];
+
+            $items = [
+                $item_1
+            ];
+            //$metadata = array('notification_url' => 'sua_url_de_notificacao_.com.br'); //Url de notificações
+            $customer = [
+                'name' => 'Gorbadoc Oldbuck', // nome do cliente
+                'cpf' => '94271564656', // cpf válido do cliente
+                'phone_number' => '5144916523', // telefone do cliente
+            ];
+            // $discount = [ // configuração de descontos
+            //     'type' => 'currency', // tipo de desconto a ser aplicado
+            //     'value' => 599 // valor de desconto
+            // ];
+            $configurations = [ // configurações de juros e mora
+                'fine' => $feesFormat, // porcentagem de multa
+                'interest' => $fineFormat // porcentagem de juros
+            ];
+            // $conditional_discount = [ // configurações de desconto condicional
+            //     'type' => 'percentage', // seleção do tipo de desconto
+            //     'value' => 500, // porcentagem de desconto
+            //     'until_date' => '2019-08-30' // data máxima para aplicação do desconto
+            // ];
+            $bankingBillet = [
+                'expire_at' => $request->due_date, // data de vencimento do titulo
+                'message' => 'teste\nteste\nteste\nteste', // mensagem a ser exibida no boleto
+                'customer' => $customer,
+            ];
+            $payment = [
+                'banking_billet' => $bankingBillet // forma de pagamento (banking_billet = boleto)
+            ];
+
+            $body = [
+                'items' => $items,
+                'payment' => $payment
+            ];
+
+            try {
+                $api = new Gerencianet($options);
+                $pay_charge = $api->oneStep([], $body);
+                echo '<pre>';
+                print_r($pay_charge);
+                echo '<pre>';
+            } catch (GerencianetException $e) {
+                print_r($e->code);
+                print_r($e->error);
+                print_r($e->errorDescription);
+            } catch (Exception $e) {
+                print_r($e->getMessage());
+            }
+        }
     }
 }

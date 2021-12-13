@@ -1,5 +1,25 @@
 @extends('layouts.app')
 
+@section('script')
+    <script>
+        $(function($) {
+
+            $(document).ready(function() {
+
+                $('#phone').mask("(99) 9999-9999");
+                $('#celphone').mask("(99) 99999-9999");
+                $('#code_postal').mask("99999-999");
+                $('#cpf').mask("999.999.999-99");
+                $('#cpf_partner').mask("999.999.999-99");
+                $('.money').mask("#.##0,00", {
+                    reverse: true
+                });
+
+            });
+        });
+    </script>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="row">
@@ -15,8 +35,10 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Descrição do Imóvel</label>
-                                <input type="text" name="uf" id="uf" class="form-control"
+                                <input type="text" name="obj_propertie" id="obj_propertie" class="form-control"
                                     value="{{ $received->propertie['object_propertie'] }}" disabled>
+                                    <input type="hidden" name="obj_propertie" id="obj_propertie" class="form-control"
+                                    value="{{ $received->propertie['object_propertie'] }}">
                             </div>
                         </div>
 
@@ -34,7 +56,7 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-2">
                             <div class="form-group">
                                 <label>Data de Vencimento</label>
                                 <input type="date" name="due_date" id="due_date" class="form-control" autofocus>
@@ -44,14 +66,21 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>Juros</label>
-                                <input type="number" min="1" name="fees" id="fees" class="form-control" autofocus>
+                                <input type="text" name="fees" id="fees" class="form-control money" autofocus>
                             </div>
                         </div>
 
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label>Multa</label>
-                                <input type="number" min="1" name="fine" id="fine" class="form-control" autofocus>
+                                <input type="text" name="fine" id="fine" class="form-control money" autofocus>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label>Valor</label>
+                                <input type="text" name="amount" id="amount" class="form-control money" autofocus>
                             </div>
                         </div>
 
