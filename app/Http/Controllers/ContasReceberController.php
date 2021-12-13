@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\AccountReceivable;
+use App\AccountReceivableBankSlip;
 use App\Propertie;
 use App\Tenant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
@@ -57,7 +60,9 @@ class ContasReceberController extends Controller
      */
     public function show($id)
     {
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments')->find($id);
+
+        // dd($received->payments);
 
         $propertie = Propertie::where('id', $received->propertie['propertie_id'])->first();
 
@@ -122,8 +127,6 @@ class ContasReceberController extends Controller
     {
         $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
 
-        //dd($received);
-
         return view('pages.contas_receber.new_payment', [
             'received' => $received
         ]);
@@ -132,19 +135,35 @@ class ContasReceberController extends Controller
     /**
      * Payment for tenants.
      *
+     * @param  int  $id
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function payment(Request $request)
+    public function payment(Request $request, $id)
     {
+        // dd($request->toArray());
         $value = str_replace(array('.', ','), '', $request->amount);
         $fees = str_replace(array('.', ','), '', $request->fees);
         $fine = str_replace(array('.', ','), '', $request->fine);
+        $due_date = Carbon::now()->format('Y-m-') . $request->due_day;
 
         $valueFormat = intVal($value);
         $feesFormat = intVal($fees);
         $fineFormat = intVal($fine);
 
+        $account_receivable = AccountReceivable::create([
+            'description' => $request->description,
+            'status_payment' => $request->status_payment,
+            'day_due' => $request->day_due,
+            'fees' => $request->fees,
+            'fine' => $request->fine,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'tenant_id' => $id,
+            'active' => 1
+        ]);
+
+        //GERENCIANET - BOLETO
         if ($request->payment_method == 'ticket') {
             $clientId = 'Client_Id_8f31bad8f7b617e1dd8c3f90b004b3a8bae64ffe'; // insira seu Client_Id, conforme o ambiente (Des ou Prod)
             $clientSecret = 'Client_Secret_0c6477c6f0e9bc98d107f99a68c428c6b8f5e4ea'; // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
@@ -169,6 +188,7 @@ class ContasReceberController extends Controller
                 'name' => 'Gorbadoc Oldbuck', // nome do cliente
                 'cpf' => '94271564656', // cpf válido do cliente
                 'phone_number' => '5144916523', // telefone do cliente
+                'email' => 'teste@teste.com.br'
             ];
             // $discount = [ // configuração de descontos
             //     'type' => 'currency', // tipo de desconto a ser aplicado
@@ -184,7 +204,7 @@ class ContasReceberController extends Controller
             //     'until_date' => '2019-08-30' // data máxima para aplicação do desconto
             // ];
             $bankingBillet = [
-                'expire_at' => $request->due_date, // data de vencimento do titulo
+                'expire_at' => $due_date, // data de vencimento do titulo
                 'message' => 'teste\nteste\nteste\nteste', // mensagem a ser exibida no boleto
                 'customer' => $customer,
             ];
@@ -200,9 +220,26 @@ class ContasReceberController extends Controller
             try {
                 $api = new Gerencianet($options);
                 $pay_charge = $api->oneStep([], $body);
-                echo '<pre>';
-                print_r($pay_charge);
-                echo '<pre>';
+                // echo '<pre>';
+                // print_r($pay_charge);
+                // echo '<pre>';
+
+                AccountReceivableBankSlip::create([
+                    'barcode' => $pay_charge['data']['barcode'],
+                    'link' => $pay_charge['data']['link'],
+                    'pdf' => $pay_charge['data']['pdf']['charge'],
+                    'expire_at' => $pay_charge['data']['expire_at'],
+                    'charge_id' => $pay_charge['data']['charge_id'],
+                    'status' => $pay_charge['data']['status'],
+                    'total' => $pay_charge['data']['total'],
+                    'payment' => $pay_charge['data']['payment'],
+                    'account_receivables_id' => $account_receivable->id,
+                    'active' => 1
+                ]);
+
+                return redirect()->route('contas_receber')->with(['message' => 'Pagamento criado com sucesso...']);
+
+
             } catch (GerencianetException $e) {
                 print_r($e->code);
                 print_r($e->error);

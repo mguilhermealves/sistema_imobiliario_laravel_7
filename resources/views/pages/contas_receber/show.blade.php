@@ -24,7 +24,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1 class="text-center mt-3 mb-5">Editar Conta a Receber Código N° <strong>{{ $received->id }} </strong>
+                <h1 class="text-center mt-3 mb-5">Locatário - N° Contrato <strong>{{ $received->n_contract }} </strong>
                 </h1>
 
                 <nav>
@@ -180,7 +180,6 @@
                                         disabled>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -195,6 +194,8 @@
                             </div>
                             <div class="col-sm-12">
 
+                                <h1 class="text-center mb-5">Lista de Pagamentos</h1>
+
                                 <table class="table table-striped table-inverse">
                                     <thead class="thead-inverse">
                                         <tr>
@@ -206,17 +207,32 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td scope="row">222</td>
-                                            <td>Boleto Bancário</td>
-                                            <td>R$ 950,00</td>
-                                            <td>A vencer</td>
-                                            <td>
-                                                <a href="{{ route('imoveis.show', $received->id) }}" type="button"
-                                                    class="btn btn-primary btn-sm">Acessar
-                                                    Pagamento</a>
-                                            </td>
-                                        </tr>
+                                        @forelse ($received->payments as $payment)
+                                            <tr>
+                                                <td scope="row">{{ $payment->id }}</td>
+                                                <td>{{ $payment->payment_method }}</td>
+                                                <td>{{ $payment->amount }}</td>
+                                                <td>
+                                                    @if ($payment->status_payment == 'to_win')
+                                                        {{ 'Aguardando Pagamento' }}
+                                                    @elseif ($payment->status_payment == 'paid')
+                                                        {{ 'Pago' }}
+                                                    @else
+                                                        {{ 'Não Pago' }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}" type="button"
+                                                        class="btn btn-primary btn-sm">Editar</a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <th colspan="6" style="text-align: center">Nenhum pagamento criado até o
+                                                    momento...
+                                                </th>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -240,8 +256,8 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-sm-12">
-                                                    <form action="{{ route('contas_receber.payment') }}" method="post"
-                                                        enctype="multipart/form-data" class="form">
+                                                    <form action="{{ route('contas_receber.payment', $received->id) }}"
+                                                        method="post" enctype="multipart/form-data" class="form">
                                                         @csrf
 
                                                         <div class="row">
@@ -338,8 +354,8 @@
                                                             </div>
 
                                                             <div class="col-sm-12 mt-5 mb-5 text-right">
-                                                                <button class="btn btn-success btn-sm"
-                                                                    type="submit">Cadastrar Pagamento</button>
+                                                                <button class="btn btn-success btn-sm" type="submit">Gerar
+                                                                    Pagamento</button>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -363,7 +379,5 @@
                     href="{{ url('contas_receber') }}">{{ __('<< Voltar para Listagem') }}</a>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 @endsection

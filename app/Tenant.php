@@ -15,7 +15,7 @@ class Tenant extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'first_name', 'last_name', 'mail', 'cpf_cnpj', 'rg', 'cnh', 'phone', 'celphone', 'genre', 'marital_status', 'is_children', 'is_pet','pet_species', 'number_residents', 'is_aproved', 'comments', 'n_contract', 'active'
+        'id', 'first_name', 'last_name', 'mail', 'cpf_cnpj', 'rg', 'cnh', 'phone', 'celphone', 'genre', 'marital_status', 'is_children', 'is_pet','pet_species', 'number_residents', 'is_aproved', 'comments', 'n_contract', 'day_due', 'active'
     ];
 
     /**
@@ -56,5 +56,13 @@ class Tenant extends Model
     public function propertie()
     {
         return $this->hasOne('App\TenantPropertie', 'tenant_id', 'id');
+    }
+
+    /**
+     * Get for files for tenant.
+     */
+    public function payments()
+    {
+        return $this->hasMany('App\AccountReceivable', 'tenant_id', 'id');
     }
 }

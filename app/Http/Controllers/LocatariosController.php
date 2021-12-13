@@ -75,6 +75,7 @@ class LocatariosController extends Controller
             'is_aproved' => $request->is_aproved,
             'comments' => $request->comments,
             'n_contract' => $request->is_aproved == 'approved' ? $protocolo : null,
+            'day_due' => $request->day_due,
             'active' => 1
         ]);
 

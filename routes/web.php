@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes(['register' => false]);
@@ -48,6 +48,6 @@ Route::middleware(['auth'])->group(function () {
     /* Contas a Receber */
     Route::get('/contas_receber', 'ContasReceberController@index')->name('contas_receber');
     Route::get('/contas_receber/show/{id}', 'ContasReceberController@show')->name('contas_receber.show');
-    Route::get('/contas_receber/new_payment/{id}', 'ContasReceberController@new_payment')->name('contas_receber.new_payment');
-    Route::post('/contas_receber/payment', 'ContasReceberController@payment')->name('contas_receber.payment');
+    Route::get('/contas_receber/edit/{id}', 'ContasReceberController@edit')->name('contas_receber.edit');
+    Route::post('/contas_receber/payment/{id}', 'ContasReceberController@payment')->name('contas_receber.payment');
 });

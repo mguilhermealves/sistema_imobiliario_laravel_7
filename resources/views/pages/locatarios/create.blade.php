@@ -291,11 +291,11 @@
                         <button class="nav-link" id="info_financeiras_fiador-tab" data-toggle="tab"
                             data-target="#status" type="button" role="tab" aria-controls="status"
                             aria-selected="false">Status</button>
-                        <button class="nav-link" id="salvar-tab" data-toggle="tab" data-target="#salvar"
-                            type="button" role="tab" aria-controls="salvar" aria-selected="false">Ação</button>
                         <button class="nav-link" id="dados_conjuge-tab" data-toggle="tab" data-target="#dados_conjuge"
                             type="button" role="tab" aria-controls="dados_conjuge" aria-selected="false">Dados
                             Conjuge</button>
+                        <button class="nav-link" id="salvar-tab" data-toggle="tab" data-target="#salvar" type="button"
+                            role="tab" aria-controls="salvar" aria-selected="false">Ação</button>
                     </div>
                 </nav>
 
@@ -749,6 +749,13 @@
                                             <option value="approved">Aprovado</option>
                                             <option value="not_approved">Não Aprovado</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Dia do Vencimento</label>
+                                        <input type="text" name="due_day" id="due_day" class="form-control" autofocus>
                                     </div>
                                 </div>
 
