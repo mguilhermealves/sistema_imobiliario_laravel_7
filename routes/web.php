@@ -44,4 +44,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/locatarios/show/{id}', 'LocatariosController@show')->name('locatarios.show');
     Route::put('/locatarios/update/{id}', 'LocatariosController@update')->name('locatarios.update');
     Route::post('/locatarios/autocomplete', 'LocatariosController@autocomplete')->name('locatarios.autocomplete');
+
+    /* Contas a Receber */
+    Route::get('/contas_receber', 'ContasReceberController@index')->name('contas_receber');
+    Route::get('/contas_receber/show/{id}', 'ContasReceberController@show')->name('contas_receber.show');
+    Route::get('/contas_receber/new_payment/{id}', 'ContasReceberController@new_payment')->name('contas_receber.new_payment');
+    Route::post('/contas_receber/payment', 'ContasReceberController@payment')->name('contas_receber.payment');
 });

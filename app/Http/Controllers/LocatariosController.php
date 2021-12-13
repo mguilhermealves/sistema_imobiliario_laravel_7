@@ -78,7 +78,7 @@ class LocatariosController extends Controller
             'active' => 1
         ]);
 
-        $tenant_address = TenantPropertie::create([
+        TenantPropertie::create([
             'address' => $propertie->address,
             'number_address' => $propertie->number_address,
             'complement' => $propertie->complement,
@@ -86,12 +86,14 @@ class LocatariosController extends Controller
             'district' => $propertie->district,
             'city' => $propertie->city,
             'uf' => $propertie->uf,
+            'type_propertie' => $propertie->type_propertie,
+            'object_propertie' => $propertie->object_propertie,
             'active' => 1,
             'tenant_id' => $tenant->id,
             'propertie_id' => $propertie->id,
         ]);
 
-        $tenant_address = TenantAddress::create([
+        TenantAddress::create([
             'address' => $request->address,
             'number_address' => $request->address_number,
             'complement' => $request->address_complement,
@@ -103,7 +105,7 @@ class LocatariosController extends Controller
             'tenant_id' => $tenant->id,
         ]);
 
-        $tenant_partner = TenantPartner::create([
+        TenantPartner::create([
             'first_name' => $request->first_name_partner,
             'last_name' => $request->last_name_partner,
             'cpf_cnpj' => $request->cpf_cnpj_partner,
@@ -113,7 +115,7 @@ class LocatariosController extends Controller
             'active' => 1
         ]);
 
-        $tenant_office = TenantOffice::create([
+        TenantOffice::create([
             'type_work' => $request->offices['type_work'],
             'company_name_clt' => $request->offices['company_name_clt'],
             'company_name_pj' => $request->offices['company_name_pj'],

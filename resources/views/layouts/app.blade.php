@@ -82,7 +82,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="">Consultar Recebimentos</a>
+                                    <a class="dropdown-item"
+                                        href="{{ route('contas_receber') }}">{{ __('Consultar Recebimentos') }}</a>
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
@@ -92,9 +93,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                                             document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                            document.getElementById('logout-form').submit();">
                                         {{ __('Sair') }}
                                     </a>
 
@@ -113,8 +113,6 @@
         <main class="py-4">
             @yield('content')
         </main>
-
-
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

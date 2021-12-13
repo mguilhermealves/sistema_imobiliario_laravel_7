@@ -17,7 +17,7 @@ class CreateTenantPartnersTable extends Migration
             $table->id();
             $table->string('first_name')->nullable()->default(NULL);
             $table->string('last_name')->nullable()->default(NULL);
-            $table->string('cpf_cnpj')->unique();
+            $table->string('cpf_cnpj')->nullable()->unique();
             $table->string('rg')->nullable()->default(NULL);
             $table->string('cnh')->nullable()->unique();
             $table->string('active');

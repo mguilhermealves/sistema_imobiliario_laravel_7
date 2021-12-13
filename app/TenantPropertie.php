@@ -15,6 +15,6 @@ class TenantPropertie extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'tenant_id', 'propertie_id', 'active'
+        'id', 'address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf', 'tenant_id', 'propertie_id', 'type_propertie', 'object_propertie', 'active'
     ];
 }

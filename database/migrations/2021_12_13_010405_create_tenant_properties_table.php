@@ -22,6 +22,8 @@ class CreateTenantPropertiesTable extends Migration
             $table->string('district')->nullable()->default(NULL);
             $table->string('city')->nullable()->default(NULL);
             $table->string('uf')->nullable()->default(NULL);
+            $table->string('type_propertie')->nullable()->default(NULL);
+            $table->string('object_propertie')->nullable()->default(NULL);
             $table->string('active');
             $table->foreignId('tenant_id')->nullable();
             $table->foreignId('propertie_id')->nullable();
