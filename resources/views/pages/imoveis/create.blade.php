@@ -4,6 +4,28 @@
     <script>
         $(function($) {
 
+            $('form[name="form_create_propertie"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('imoveis.store') }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp === true) {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(' {{ route('imoveis') }}');
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -155,18 +177,10 @@
 @endsection
 
 @section('content')
-    @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            @foreach ($errors->all() as $error)
-                {{ $error }} <br />
-            @endforeach
-        </div>
-    @endif
-    @if (session('message'))
-        <div class="alert alert-success" role="alert">
-            {{ session('message') }}
-        </div>
-    @endif
+    <div class="alert alert-danger d-none message_box" role="alert">
+
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -185,8 +199,7 @@
                     </div>
                 </nav>
 
-                <form action="{{ route('imoveis.store') }}" method="post" enctype="multipart/form-data"
-                    class="form">
+                <form name="form_create_propertie" enctype="multipart/form-data" class="form">
                     @csrf
 
                     <div class="tab-content" id="nav-tabContent">
@@ -395,7 +408,5 @@
                 <a class="btn btn-default btn-sm" href="{{ url('imoveis') }}">{{ __('<< Voltar para Listagem') }}</a>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 @endsection

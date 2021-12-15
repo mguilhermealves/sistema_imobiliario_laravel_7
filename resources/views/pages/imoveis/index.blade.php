@@ -1,18 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            @foreach ($errors->all() as $error)
-                {{ $error }} <br />
-            @endforeach
-        </div>
-    @endif
-    @if (session('message'))
-        <div class="alert alert-success" role="alert">
-            {{ session('message') }}
-        </div>
-    @endif
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -40,19 +29,21 @@
                                 @forelse ($properties as $propertie)
                                     <tr>
                                         <td scope="row">{{ $propertie->id }}</td>
-                                        <td>{{ $propertie->address . ', ' . $propertie->number_address}}</td>
+                                        <td>{{ $propertie->address . ', ' . $propertie->number_address }}</td>
                                         <td>{{ $propertie->district }}</td>
                                         <td>{{ $propertie->city }}</td>
                                         <td>{{ $propertie->uf }}</td>
                                         <td>{{ $propertie->active == 1 ? 'Ativo' : 'Inativo' }}</td>
                                         <td>
-                                            <a href="{{ route('imoveis.show', $propertie->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
+                                            <a href="{{ route('imoveis.show', $propertie->id) }}" type="button"
+                                                class="btn btn-primary btn-sm">Editar</a>
                                             <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <th colspan="6" style="text-align: center">Nenhum imóvel criado até o momento...</th>
+                                        <th colspan="6" style="text-align: center">Nenhum imóvel criado até o momento...
+                                        </th>
                                     </tr>
                                 @endforelse
                             </tbody>
