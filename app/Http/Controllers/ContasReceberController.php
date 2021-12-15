@@ -141,7 +141,6 @@ class ContasReceberController extends Controller
      */
     public function payment(Request $request, $id)
     {
-        // dd($request->toArray());
         $value = str_replace(array('.', ','), '', $request->amount);
         $fees = str_replace(array('.', ','), '', $request->fees);
         $fine = str_replace(array('.', ','), '', $request->fine);

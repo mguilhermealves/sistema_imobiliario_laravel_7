@@ -4,6 +4,28 @@
     <script>
         $(function($) {
 
+            $('form[name="form_create_payment"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('contas_receber.payment', $received->id) }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp === true) {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(' {{ route('contas_receber') }}');
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -14,6 +36,9 @@
                 $('.money').mask("#.##0,00", {
                     reverse: true
                 });
+                $('.percent').mask('##0,00%', {
+                    reverse: true
+                });
 
             });
         });
@@ -21,6 +46,10 @@
 @endsection
 
 @section('content')
+    <div class="alert alert-danger d-none message_box" role="alert">
+
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -40,7 +69,12 @@
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="dados_locacao" role="tabpanel"
                         aria-labelledby="dados_cadastrais-tab">
-                        <div class="row mt-5">
+                        <div class="row">
+
+                            <div class="col-sm-12 mt-5 mb-5">
+                                <p class="h1 text-center">Dados do Cliente</p>
+                            </div>
+
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Nome</label>
@@ -89,8 +123,9 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-12 mt-5 mb-5">
                                 <hr>
+                                <p class="h1 text-center">Dados da Locação</p>
                             </div>
 
                             <div class="col-sm-4">
@@ -222,8 +257,8 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}" type="button"
-                                                        class="btn btn-primary btn-sm">Visualizar</a>
+                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}"
+                                                        type="button" class="btn btn-primary btn-sm">Visualizar</a>
                                                 </td>
                                             </tr>
                                         @empty
@@ -256,8 +291,8 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-sm-12">
-                                                    <form action="{{ route('contas_receber.payment', $received->id) }}"
-                                                        method="post" enctype="multipart/form-data" class="form">
+                                                    <form name="form_create_payment" enctype="multipart/form-data"
+                                                        class="form">
                                                         @csrf
 
                                                         <div class="row">
@@ -299,26 +334,18 @@
                                                             </div>
 
                                                             <div class="col-sm-4">
-                                                                <label>Juros</label>
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text"
-                                                                            id="basic-addon1">%</span>
-                                                                    </div>
+                                                                <div class="form-group">
+                                                                    <label>Juros</label>
                                                                     <input type="text" name="fees" id="fees"
-                                                                        class="form-control money" autofocus>
+                                                                        class="form-control percent" autofocus>
                                                                 </div>
                                                             </div>
 
                                                             <div class="col-sm-4">
-                                                                <label>Multa</label>
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text"
-                                                                            id="basic-addon1">%</span>
-                                                                    </div>
+                                                                <div class="form-group">
+                                                                    <label>Multa</label>
                                                                     <input type="text" name="fine" id="fine"
-                                                                        class="form-control money" autofocus>
+                                                                        class="form-control percent" autofocus>
                                                                 </div>
                                                             </div>
 
