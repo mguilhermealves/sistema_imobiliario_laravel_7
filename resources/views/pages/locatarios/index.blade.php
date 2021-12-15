@@ -1,18 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            @foreach ($errors->all() as $error)
-                {{ $error }} <br />
-            @endforeach
-        </div>
-    @endif
-    @if (session('message'))
-        <div class="alert alert-success" role="alert">
-            {{ session('message') }}
-        </div>
-    @endif
+
+    <div class="alert alert-danger d-none message_box" role="alert">
+
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">

@@ -162,7 +162,10 @@ class LocatariosController extends Controller
             }
         }
 
-        return redirect()->route('locatarios')->with(['message' => 'Locatário criado com sucesso...']);
+        return response()->json([
+            'sucesso' => true,
+            'message' => 'Locatário criado com sucesso...'
+        ]);
     }
 
     /**

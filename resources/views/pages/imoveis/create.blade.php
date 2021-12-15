@@ -214,11 +214,12 @@
                                             placeholder="Consultar Cliente" autofocus>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 mt-5">
+
+                                <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
-                                        <select class="custom-select" name="type_propertie" id="type_propertie">
-                                            <option selected>Selecione o tipo</option>
+                                        <select class="custom-select" name="type_propertie"
+                                            id="type_propertie">
                                             <option value="apartmant">Apartamento</option>
                                             <option value="comercial">Comercial</option>
                                             <option value="house">Casa Térrea</option>

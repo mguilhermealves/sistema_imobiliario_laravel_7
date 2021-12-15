@@ -93,6 +93,28 @@
 
             });
 
+            $('form[name="form_create_tenant"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('locatarios.store') }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp === true) {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(' {{ route('locatarios') }}');
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $('#marital_status').change(function() {
                 var status = ($(this).val());
 
@@ -268,6 +290,10 @@
 @endsection
 
 @section('content')
+    <div class="alert alert-danger d-none message_box" role="alert">
+
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -299,8 +325,7 @@
                     </div>
                 </nav>
 
-                <form action="{{ route('locatarios.store') }}" method="post" enctype="multipart/form-data"
-                    class="form">
+                <form name="form_create_tenant" enctype="multipart/form-data" class="form">
                     @csrf
 
                     <div class="tab-content" id="nav-tabContent">
@@ -469,10 +494,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12 mt-3 mb-3">
+                                <div class="col-sm-12 mt-5 mb-5">
                                     <hr>
-
-                                    <h4 class="display-4 text-center">Dados Adicionais</h4>
+                                    <p class="h1 text-center">Dados Adicionais</p>
                                 </div>
 
                                 <div class="col-sm-4">
@@ -513,10 +537,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-12 mt-3 mb-3">
+                                <div class="col-sm-12 mt-5 mb-5">
                                     <hr>
-
-                                    <h4 class="display-4 text-center">Endereço</h4>
+                                    <p class="h1 text-center">Endereço</p>
                                 </div>
 
                                 <div class="col-sm-4">
@@ -833,13 +856,14 @@
                             <div class="col-sm-12 mt-5 mb-5">
                                 <button class="btn btn-success btn-sm" type="submit">Cadastrar Locátario</button>
                             </div>
+
+                            <div class="col-sm-12 text-right">
+                                <a class="btn btn-default btn-sm"
+                                    href="{{ url('locatarios') }}">{{ __('<< Voltar para Listagem') }}</a>
+                            </div>
                         </div>
                     </div>
                 </form>
-            </div>
-
-            <div class="col-sm-12 mt-5 text-right">
-                <a class="btn btn-default btn-sm" href="{{ url('locatarios') }}">{{ __('<< Voltar para Listagem') }}</a>
             </div>
         </div>
     </div>
