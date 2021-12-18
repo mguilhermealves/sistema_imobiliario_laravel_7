@@ -93,7 +93,14 @@ class ContasReceberController extends Controller
      */
     public function edit($id)
     {
-        //
+        $payment = AccountReceivable::find($id);
+
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments', 'payments.historic_bank')->find($payment->tenant_id);
+
+        return view('pages.contas_receber.show_payment', [
+            'received' => $received,
+            'payment' => $payment
+        ]);
     }
 
     /**

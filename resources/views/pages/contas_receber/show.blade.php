@@ -257,10 +257,8 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}"
-                                                        type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        data-target="#modalShowPayment" data-backdrop="static"
-                                                        data-keyboard="false">Visualizar</a>
+                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}" type="button"
+                                                        class="btn btn-primary btn-sm">Visualizar</a>
                                                 </td>
                                             </tr>
                                         @empty
@@ -386,121 +384,6 @@
                                                                 <button class="btn btn-success btn-sm" type="submit">Gerar
                                                                     Pagamento</button>
                                                             </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary btn-sm"
-                                            data-dismiss="modal">Fechar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Modal Show Payment -->
-                        <div class="modal fade" id="modalShowPayment" tabindex="-1" role="dialog"
-                            aria-labelledby="modelTitleId" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Detalhes do Pagamento n°
-                                            <strong>{{ $payment->id }} </strong>
-                                        </h5>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="container-fluid">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <form name="form_create_payment" enctype="multipart/form-data"
-                                                        class="form">
-                                                        @csrf
-
-                                                        <div class="row">
-                                                            <div class="col-sm-12">
-                                                                <div class="form-group">
-                                                                    <label>Status</label>
-                                                                    <input type="text" name="" id="" class="form-control"
-                                                                        value="{{ $payment['status_payment'] }}"
-                                                                        disabled>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-12">
-                                                                <div class="form-group">
-                                                                    <label>Método de Pagamento</label>
-                                                                    <input type="text" name="" id="" class="form-control"
-                                                                        value="{{ $payment['payment_method'] }}"
-                                                                        disabled>
-                                                                </div>
-                                                            </div>
-
-                                                            @if ($payment['payment_method'] == 'ticket')
-                                                                <div class="col-sm-4">
-                                                                    <div class="form-group">
-                                                                        <label>Data do Vencimento do Boleto</label>
-                                                                        <input type="text" name="" id=""
-                                                                            class="form-control"
-                                                                            value="{{ $payment['day_due'] }}" disabled>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
-                                                                    <label>Juros</label>
-                                                                    <input type="text" name="fees" id="fees"
-                                                                        class="form-control percent"
-                                                                        value="{{ $payment['fees'] }}" disabled>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
-                                                                    <label>Multa</label>
-                                                                    <input type="text" name="fine" id="fine"
-                                                                        class="form-control percent"
-                                                                        value="{{ $payment['fine'] }}" disabled>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-4">
-                                                                <label>Valor</label>
-                                                                <div class="input-group mb-3">
-                                                                    <div class="input-group-prepend">
-                                                                        <span class="input-group-text"
-                                                                            id="basic-addon1">R$</span>
-                                                                    </div>
-                                                                    <input type="text" name="amount" id="amount"
-                                                                        class="form-control money"
-                                                                        value="{{ $payment['fine'] }}" disabled>
-                                                                </div>
-                                                            </div>
-
-                                                            @if ($payment['payment_method'] == 'ticket')
-
-                                                                <div class="col-sm-12">
-                                                                    <div class="form-group">
-                                                                        <label>Link do Boleto</label>
-                                                                        <iframe class="pdf"
-                                                                            src="{{ $payment['historic_bank']['pdf'] }}"
-                                                                            width="100%" height="200px"></iframe>
-                                                                        <a href="{{ $payment['historic_bank']['pdf'] }}"
-                                                                            download target="_blank">Download</a>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-
-                                                            {{-- <div class="col-sm-12 mt-5 mb-5 text-right">
-                                                                <button class="btn btn-success btn-sm" type="submit">Gerar
-                                                                    Pagamento</button>
-                                                            </div> --}}
                                                         </div>
                                                     </form>
                                                 </div>
