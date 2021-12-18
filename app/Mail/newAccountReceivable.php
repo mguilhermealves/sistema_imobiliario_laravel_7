@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Tenant;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -11,14 +12,16 @@ class newAccountReceivable extends Mailable
 {
     use Queueable, SerializesModels;
 
+    private $tenant;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Tenant $tenant)
     {
-        //
+        $this->tenant = $tenant;
     }
 
     /**
@@ -28,8 +31,8 @@ class newAccountReceivable extends Mailable
      */
     public function build()
     {
-        $this->subject('Novo Pagamento');
-        $this->to('marcosguilhermealves@gmail.com', 'Marcos Guilherme');
+        $this->subject('Novo Pagamento Gerado');
+        $this->to($this->tenant->mail, $this->tenant->first_name . ' ' . $this->tenant->last_name);
         return $this->markdown('mail.new_account_receivable');
     }
 }

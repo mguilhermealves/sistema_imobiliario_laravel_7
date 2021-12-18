@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\AccountReceivable;
 use App\AccountReceivableBankSlip;
-use App\Mail\newAccountReceivable;
+use App\Jobs\newAccountReceivable as JobsNewAccountReceivable;
 use App\Propertie;
 use App\Tenant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
@@ -148,97 +149,107 @@ class ContasReceberController extends Controller
         $fine = intVal(preg_replace('/[^0-9]/', '', $request->fine));
         $due_date = Carbon::now()->format('Y-m-') . $request->due_day;
 
-        Mail::send(new newAccountReceivable());
+        $tenant = Tenant::where('id', $id)->first();
 
-        $account_receivable = AccountReceivable::create([
-            'description' => $request->description,
-            'status_payment' => $request->status_payment,
-            'day_due' => $due_date,
-            'fees' => $fees,
-            'fine' => $fine,
-            'amount' => $value,
-            'payment_method' => $request->payment_method,
-            'tenant_id' => $id,
-            'active' => 1
-        ]);
+        DB::beginTransaction();
 
-        //GERENCIANET - BOLETO
-        if ($request->payment_method == 'ticket') {
-            $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
-            $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
+        try {
+            $account_receivable = AccountReceivable::create([
+                'description' => $request->description,
+                'status_payment' => $request->status_payment,
+                'day_due' => $due_date,
+                'fees' => $fees,
+                'fine' => $fine,
+                'amount' => $value,
+                'payment_method' => $request->payment_method,
+                'tenant_id' => $id,
+                'active' => 1
+            ]);
 
-            $options = [
-                'client_id' => $clientId,
-                'client_secret' => $clientSecret,
-                'sandbox' => true // altere conforme o ambiente (true = homologação e false = producao)
-            ];
+            //GERENCIANET - BOLETO
+            if ($request->payment_method == 'ticket') {
+                $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
+                $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
 
-            $item_1 = [
-                'name' => 'Referente - ' . $request->obj_propertie . ' do Imóvel pela SISMOB', // nome do item, produto ou serviço
-                'amount' => 1, // quantidade
-                'value' => intVal(str_replace('.', '', $value)) // valor (1000 = R$ 10,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
-            ];
+                $options = [
+                    'client_id' => $clientId,
+                    'client_secret' => $clientSecret,
+                    'sandbox' => true // altere conforme o ambiente (true = homologação e false = producao)
+                ];
 
-            $items = [
-                $item_1
-            ];
-            //$metadata = array('notification_url' => 'sua_url_de_notificacao_.com.br'); //Url de notificações
-            $customer = [
-                'name' => 'Gorbadoc Oldbuck', // nome do cliente
-                'cpf' => '94271564656', // cpf válido do cliente
-                'phone_number' => '5144916523', // telefone do cliente
-                'email' => 'teste@teste.com.br'
-            ];
+                $item_1 = [
+                    'name' => 'Referente - ' . $request->obj_propertie . ' do Imóvel pela SISMOB', // nome do item, produto ou serviço
+                    'amount' => 1, // quantidade
+                    'value' => intVal(str_replace('.', '', $value)) // valor (1000 = R$ 10,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
+                ];
 
-            $configurations = [ // configurações de juros e mora
-                'fine' => intVal(str_replace('.', '', $fine)), // porcentagem de multa
-                'interest' => intVal(str_replace('.', '', $fees)) // porcentagem de juros
-            ];
+                $items = [
+                    $item_1
+                ];
+                //$metadata = array('notification_url' => 'sua_url_de_notificacao_.com.br'); //Url de notificações
+                $customer = [
+                    'name' => 'Gorbadoc Oldbuck', // nome do cliente
+                    'cpf' => '94271564656', // cpf válido do cliente
+                    'phone_number' => '5144916523', // telefone do cliente
+                    'email' => 'teste@teste.com.br'
+                ];
 
-            $bankingBillet = [
-                'expire_at' => $due_date, // data de vencimento do titulo
-                'message' => '', // mensagem a ser exibida no boleto
-                'customer' => $customer,
-                'configurations' => $configurations
-            ];
+                $configurations = [ // configurações de juros e mora
+                    'fine' => intVal(str_replace('.', '', $fine)), // porcentagem de multa
+                    'interest' => intVal(str_replace('.', '', $fees)) // porcentagem de juros
+                ];
 
-            $payment = [
-                'banking_billet' => $bankingBillet // forma de pagamento (banking_billet = boleto)
-            ];
+                $bankingBillet = [
+                    'expire_at' => $due_date, // data de vencimento do titulo
+                    'message' => '', // mensagem a ser exibida no boleto
+                    'customer' => $customer,
+                    'configurations' => $configurations
+                ];
 
-            $body = [
-                'items' => $items,
-                'payment' => $payment
-            ];
+                $payment = [
+                    'banking_billet' => $bankingBillet // forma de pagamento (banking_billet = boleto)
+                ];
 
-            try {
-                $api = new Gerencianet($options);
-                $pay_charge = $api->oneStep([], $body);
+                $body = [
+                    'items' => $items,
+                    'payment' => $payment
+                ];
 
-                AccountReceivableBankSlip::create([
-                    'barcode' => $pay_charge['data']['barcode'],
-                    'link' => $pay_charge['data']['link'],
-                    'pdf' => $pay_charge['data']['pdf']['charge'],
-                    'expire_at' => $pay_charge['data']['expire_at'],
-                    'charge_id' => $pay_charge['data']['charge_id'],
-                    'status' => $pay_charge['data']['status'],
-                    'total' => $pay_charge['data']['total'],
-                    'payment' => $pay_charge['data']['payment'],
-                    'account_receivables_id' => $account_receivable->id,
-                    'active' => 1
-                ]);
+                try {
+                    $api = new Gerencianet($options);
+                    $pay_charge = $api->oneStep([], $body);
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Pagamento criado com sucesso...'
-                ]);
-            } catch (GerencianetException $e) {
-                print_r($e->code);
-                print_r($e->error);
-                print_r($e->errorDescription);
-            } catch (Exception $e) {
-                print_r($e->getMessage());
+                    AccountReceivableBankSlip::create([
+                        'barcode' => $pay_charge['data']['barcode'],
+                        'link' => $pay_charge['data']['link'],
+                        'pdf' => $pay_charge['data']['pdf']['charge'],
+                        'expire_at' => $pay_charge['data']['expire_at'],
+                        'charge_id' => $pay_charge['data']['charge_id'],
+                        'status' => $pay_charge['data']['status'],
+                        'total' => $pay_charge['data']['total'],
+                        'payment' => $pay_charge['data']['payment'],
+                        'account_receivables_id' => $account_receivable->id,
+                        'active' => 1
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Pagamento criado com sucesso...'
+                    ]);
+                } catch (GerencianetException $e) {
+                    print_r($e->code);
+                    print_r($e->error);
+                    print_r($e->errorDescription);
+                } catch (Exception $e) {
+                    print_r($e->getMessage());
+                }
             }
+
+            DB::commit();
+
+            JobsNewAccountReceivable::dispatch($tenant)->delay(now()->addSeconds('5'));
+        } catch (\Exception  $e) {
+            DB::rollback();
         }
     }
 }
