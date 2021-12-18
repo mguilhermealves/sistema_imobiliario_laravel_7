@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\AccountReceivable;
 use App\AccountReceivableBankSlip;
+use App\Mail\newAccountReceivable;
 use App\Propertie;
 use App\Tenant;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Gerencianet\Exception\GerencianetException;
 use Gerencianet\Gerencianet;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 
 class ContasReceberController extends Controller
 {
@@ -60,9 +63,7 @@ class ContasReceberController extends Controller
      */
     public function show($id)
     {
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments')->find($id);
-
-        // dd($received->payments);
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments', 'payments.historic_bank')->find($id);
 
         $propertie = Propertie::where('id', $received->propertie['propertie_id'])->first();
 
@@ -141,22 +142,21 @@ class ContasReceberController extends Controller
      */
     public function payment(Request $request, $id)
     {
-        $value = str_replace(array('.', ','), '', $request->amount);
-        $fees = str_replace(array('.', ','), '', $request->fees);
-        $fine = str_replace(array('.', ','), '', $request->fine);
+        $str = str_replace('.', '', $request->amount); // remove o ponto
+        $value = str_replace(',', '.', $str);
+        $fees = intVal(preg_replace('/[^0-9]/', '', $request->fees));
+        $fine = intVal(preg_replace('/[^0-9]/', '', $request->fine));
         $due_date = Carbon::now()->format('Y-m-') . $request->due_day;
 
-        $valueFormat = intVal($value);
-        $feesFormat = intVal($fees);
-        $fineFormat = intVal($fine);
+        Mail::send(new newAccountReceivable());
 
         $account_receivable = AccountReceivable::create([
             'description' => $request->description,
             'status_payment' => $request->status_payment,
-            'day_due' => $request->day_due,
-            'fees' => $request->fees,
-            'fine' => $request->fine,
-            'amount' => $request->amount,
+            'day_due' => $due_date,
+            'fees' => $fees,
+            'fine' => $fine,
+            'amount' => $value,
             'payment_method' => $request->payment_method,
             'tenant_id' => $id,
             'active' => 1
@@ -176,7 +176,7 @@ class ContasReceberController extends Controller
             $item_1 = [
                 'name' => 'Referente - ' . $request->obj_propertie . ' do Imóvel pela SISMOB', // nome do item, produto ou serviço
                 'amount' => 1, // quantidade
-                'value' => $valueFormat // valor (1000 = R$ 10,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
+                'value' => intVal(str_replace('.', '', $value)) // valor (1000 = R$ 10,00) (Obs: É possível a criação de itens com valores negativos. Porém, o valor total da fatura deve ser superior ao valor mínimo para geração de transações.)
             ];
 
             $items = [
@@ -191,13 +191,13 @@ class ContasReceberController extends Controller
             ];
 
             $configurations = [ // configurações de juros e mora
-                'fine' => $feesFormat, // porcentagem de multa
-                'interest' => $fineFormat // porcentagem de juros
+                'fine' => intVal(str_replace('.', '', $fine)), // porcentagem de multa
+                'interest' => intVal(str_replace('.', '', $fees)) // porcentagem de juros
             ];
 
             $bankingBillet = [
                 'expire_at' => $due_date, // data de vencimento do titulo
-                'message' => 'teste\nteste\nteste\nteste', // mensagem a ser exibida no boleto
+                'message' => '', // mensagem a ser exibida no boleto
                 'customer' => $customer,
                 'configurations' => $configurations
             ];
@@ -228,7 +228,10 @@ class ContasReceberController extends Controller
                     'active' => 1
                 ]);
 
-                return redirect()->route('contas_receber')->with(['message' => 'Pagamento criado com sucesso...']);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pagamento criado com sucesso...'
+                ]);
             } catch (GerencianetException $e) {
                 print_r($e->code);
                 print_r($e->error);
