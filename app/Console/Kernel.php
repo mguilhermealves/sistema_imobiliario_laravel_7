@@ -25,6 +25,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+
+        $schedule->call('App\Http\Controllers\ContasReceberController@consult_payment_slip')
+            ->everyMinute() //definir
+            ->name('consult_payment_slip')
+            ->withoutOverlapping()
+            ->appendOutputTo(storage_path('logs/consult_payment_slip.log'));
     }
 
     /**

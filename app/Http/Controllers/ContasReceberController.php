@@ -244,7 +244,6 @@ class ContasReceberController extends Controller
                         'account_receivables_id' => $account_receivable->id,
                         'active' => 1
                     ]);
-
                 } catch (GerencianetException $e) {
                     print_r($e->code);
                     print_r($e->error);
@@ -269,6 +268,55 @@ class ContasReceberController extends Controller
                 'success' => false,
                 'message' => 'Pagamento não foi criado com sucesso, refaça o processo...'
             ]);
+        }
+    }
+
+    /**
+     * Consultar Boletos CRON
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     */
+    public function consult_payment_slip()
+    {
+        $payments = AccountReceivableBankSlip::where('status', 'waiting')->get();
+
+        foreach ($payments as $payment) {
+            $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
+            $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
+
+            $options = [
+                'client_id' => $clientId,
+                'client_secret' => $clientSecret,
+                'sandbox' => true // altere conforme o ambiente (true = Homologação e false = producao)
+            ];
+
+            $params = [
+                'id' => $payment->charge_id // $charge_id refere-se ao ID da transação ("charge_id")
+            ];
+
+            try {
+                $api = new Gerencianet($options);
+                $charge = $api->detailCharge($params, []);
+
+                $historic_bank = array([
+                    'Obs_Interna' => $charge['data']['history'],
+                ]);
+
+                $payment->update([
+                    'historic_bank' => $historic_bank,
+                    'status' => $charge['data']['status']
+                ]);
+
+
+                print_r($charge);
+            } catch (GerencianetException $e) {
+                print_r($e->code);
+                print_r($e->error);
+                print_r($e->errorDescription);
+            } catch (Exception $e) {
+                print_r($e->getMessage());
+            }
         }
     }
 }
