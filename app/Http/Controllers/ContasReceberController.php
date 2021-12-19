@@ -64,7 +64,9 @@ class ContasReceberController extends Controller
      */
     public function show($id)
     {
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments', 'payments.historic_bank')->find($id);
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
+
+        $payments = AccountReceivable::with('historic_bank')->where('tenant_id', $received['id'])->get();
 
         $propertie = Propertie::where('id', $received->propertie['propertie_id'])->first();
 
@@ -80,6 +82,7 @@ class ContasReceberController extends Controller
 
         return view('pages.contas_receber.show', [
             'received' => $received,
+            'payments' => $payments,
             'value_propertie' => $value_propertie,
             'obj_propertie' => $obj_propertie
         ]);
@@ -158,6 +161,9 @@ class ContasReceberController extends Controller
 
         $tenant = Tenant::where('id', $id)->first();
 
+        $document_tenant = preg_replace('/[^0-9]/', '', $tenant->cpf_cnpj);
+        $cel_phone_tenant = preg_replace('/[^0-9]/', '', $tenant->celphone);
+
         DB::beginTransaction();
 
         try {
@@ -195,10 +201,10 @@ class ContasReceberController extends Controller
                 ];
                 //$metadata = array('notification_url' => 'sua_url_de_notificacao_.com.br'); //Url de notificações
                 $customer = [
-                    'name' => 'Gorbadoc Oldbuck', // nome do cliente
-                    'cpf' => '94271564656', // cpf válido do cliente
-                    'phone_number' => '5144916523', // telefone do cliente
-                    'email' => 'teste@teste.com.br'
+                    'name' => $tenant['first_name'] . ' ' . $tenant['last_name'], // nome do cliente
+                    'cpf' => $document_tenant, // cpf válido do cliente
+                    'phone_number' => $cel_phone_tenant, // telefone do cliente
+                    'email' => $tenant['mail']
                 ];
 
                 $configurations = [ // configurações de juros e mora
@@ -239,10 +245,6 @@ class ContasReceberController extends Controller
                         'active' => 1
                     ]);
 
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Pagamento criado com sucesso...'
-                    ]);
                 } catch (GerencianetException $e) {
                     print_r($e->code);
                     print_r($e->error);
@@ -255,8 +257,18 @@ class ContasReceberController extends Controller
             DB::commit();
 
             JobsNewAccountReceivable::dispatch($tenant)->delay(now()->addSeconds('5'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pagamento criado com sucesso...'
+            ]);
         } catch (\Exception  $e) {
             DB::rollback();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Pagamento não foi criado com sucesso, refaça o processo...'
+            ]);
         }
     }
 }

@@ -114,6 +114,14 @@
 
                         <div class="col-sm-12">
                             <div class="form-group">
+                                <label>Historico da Transação</label>
+                                <input type="text" name="historic_bank" id="historic_bank" class="form-control"
+                                    value="{{ $payment['historic_bank']['historic_bank'] }}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
                                 <label>Boleto</label>
                                 <iframe class="pdf" src="{{ $payment['historic_bank']['pdf'] }}" width="100%"
                                     height="400px"></iframe>

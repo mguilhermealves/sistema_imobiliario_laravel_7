@@ -7,6 +7,8 @@
             $('form[name="form_create_payment"]').submit(function(event) {
                 event.preventDefault();
 
+                $("#gerar_pagamento").attr("disabled", true)
+
                 $.ajax({
                     url: "{{ route('contas_receber.payment', $received->id) }}",
                     type: 'POST',
@@ -30,6 +32,17 @@
             });
 
             $(document).ready(function() {
+
+                $('#table-pagamentos').DataTable({
+                    "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": "Mostrando _MENU_ pagamentos por página",
+                        "zeroRecords": "Nada encontrado",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "Nenhum registro disponível",
+                        "infoFiltered": "(filtrado de _MAX_ pagamentos no total)"
+                    }
+                });
 
                 $('#phone').mask("(99) 9999-9999");
                 $('#celphone').mask("(99) 99999-9999");
@@ -231,7 +244,7 @@
 
                                 <h1 class="text-center mb-5">Lista de Pagamentos</h1>
 
-                                <table class="table table-striped table-inverse">
+                                <table class="table table-striped table-inverse" id="table-pagamentos">
                                     <thead class="thead-inverse">
                                         <tr>
                                             <th>Código de Pagamento</th>
@@ -242,7 +255,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($received->payments as $payment)
+                                        @forelse ($payments as $payment)
                                             <tr>
                                                 <td scope="row">{{ $payment->id }}</td>
                                                 <td>{{ $payment->payment_method }}</td>
@@ -257,8 +270,8 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}" type="button"
-                                                        class="btn btn-primary btn-sm">Visualizar</a>
+                                                    <a href="{{ route('contas_receber.edit', $payment->id) }}"
+                                                        type="button" class="btn btn-primary btn-sm">Visualizar</a>
                                                 </td>
                                             </tr>
                                         @empty
@@ -381,7 +394,7 @@
                                                             </div>
 
                                                             <div class="col-sm-12 mt-5 mb-5 text-right">
-                                                                <button class="btn btn-success btn-sm" type="submit">Gerar
+                                                                <button class="btn btn-success btn-sm" id="gerar_pagamento" type="submit">Gerar
                                                                     Pagamento</button>
                                                             </div>
                                                         </div>
