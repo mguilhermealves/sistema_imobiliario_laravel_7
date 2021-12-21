@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'name' => $user[0],
                 'email' => $user[1],
                 'password' => $user[2],
-            ]);
+            ])->givePermissionTo('user');
         }
     }
 }

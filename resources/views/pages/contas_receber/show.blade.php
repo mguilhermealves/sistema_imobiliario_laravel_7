@@ -34,7 +34,9 @@
             $(document).ready(function() {
 
                 $('#table-pagamentos').DataTable({
-                    "order": [[ 0, "desc" ]],
+                    "order": [
+                        [0, "desc"]
+                    ],
                     "language": {
                         "lengthMenu": "Mostrando _MENU_ pagamentos por página",
                         "zeroRecords": "Nada encontrado",
@@ -394,7 +396,8 @@
                                                             </div>
 
                                                             <div class="col-sm-12 mt-5 mb-5 text-right">
-                                                                <button class="btn btn-success btn-sm" id="gerar_pagamento" type="submit">Gerar
+                                                                <button class="btn btn-success btn-sm" id="gerar_pagamento"
+                                                                    type="submit">Gerar
                                                                     Pagamento</button>
                                                             </div>
                                                         </div>

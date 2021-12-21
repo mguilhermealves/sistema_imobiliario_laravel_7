@@ -142,6 +142,49 @@
                         </div>
                     @endif
 
+                    @can('admin')
+                        <div class="col-sm-12">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_edit_payment">
+                                Editar Pagamento
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modal_edit_payment" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+                                aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Editar Pagamento - N° {{ $payment->id }} </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container-fluid">
+                                                Add rows here
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                            <button type="button" class="btn btn-primary">Editar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                $('#exampleModal').on('show.bs.modal', event => {
+                                    var button = $(event.relatedTarget);
+                                    var modal = $(this);
+                                    // Use above variables to manipulate the DOM
+
+                                });
+                            </script>
+                        </div>
+                    @endcan
+
                     <div class="col-sm-12 mt-5 text-right">
                         <a class="btn btn-default btn-sm"
                             href="{{ url()->previous() }}">{{ __('<< Voltar para Listagem') }}</a>
