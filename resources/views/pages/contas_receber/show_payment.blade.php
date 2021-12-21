@@ -8,7 +8,7 @@
             //     event.preventDefault();
 
             //     $.ajax({
-            //         url: "{{ route('contas_receber.payment', $received->id) }}",
+            //         url: "{{ route('contas_receber.payment', 2) }}",
             //         type: 'POST',
             //         data: $(this).serialize(),
             //         dataType: 'json',
@@ -53,7 +53,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="col-sm-12 mt-5 mb-5">
-                    <p class="h1 text-center">Dados do Pagamento - {{ $payment->id }}</p>
+                    <p class="h1 text-center">Dados do Pagamento - N° {{ $payment->id }}</p>
                 </div>
 
                 <div class="row">
@@ -113,11 +113,23 @@
                     @if ($payment['payment_method'] == 'ticket')
 
                         <div class="col-sm-12">
-                            <div class="form-group">
-                                <label>Historico da Transação</label>
-                                <input type="text" name="historic_bank" id="historic_bank" class="form-control"
-                                    value="{{ $payment['historic_bank']['historic_bank'] }}" disabled>
-                            </div>
+                            <table class="table table-striped table-inverse">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Mensagem</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($json_historical_bank[0] as $history)
+                                        <tr>
+                                            <td scope="row">{{ $history->created_at }}</td>
+                                            <td>{{ $history->message }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="col-sm-12">

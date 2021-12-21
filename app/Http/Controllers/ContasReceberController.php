@@ -96,13 +96,13 @@ class ContasReceberController extends Controller
      */
     public function edit($id)
     {
-        $payment = AccountReceivable::find($id);
+        $payment = AccountReceivable::with('historic_bank')->find($id);
 
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'payments', 'payments.historic_bank')->find($payment->tenant_id);
+        $json_historical_bank = json_decode($payment->historic_bank->historic_bank);
 
         return view('pages.contas_receber.show_payment', [
-            'received' => $received,
-            'payment' => $payment
+            'payment' => $payment,
+            'json_historical_bank' => $json_historical_bank
         ]);
     }
 
@@ -299,9 +299,9 @@ class ContasReceberController extends Controller
                 $api = new Gerencianet($options);
                 $charge = $api->detailCharge($params, []);
 
-                $historic_bank = array([
-                    'Obs_Interna' => $charge['data']['history'],
-                ]);
+                $historic_bank = array(
+                    $charge['data']['history']
+                );
 
                 $payment->update([
                     'historic_bank' => $historic_bank,
