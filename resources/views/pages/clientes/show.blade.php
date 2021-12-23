@@ -160,10 +160,6 @@
             <div class="col-sm-12">
                 <h1 class="text-center mt-3 mb-5">Editar Cliente Código N° <strong>{{ $client->id }} </strong> </h1>
 
-                {{-- @php
-                    dd($client->partner->file->toArray());
-                @endphp --}}
-
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="dados_cadastrais-tab" data-toggle="tab"

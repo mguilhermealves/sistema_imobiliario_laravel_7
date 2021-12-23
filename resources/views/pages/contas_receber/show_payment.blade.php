@@ -2,32 +2,55 @@
 
 @section('script')
     <script>
+        $('#exampleModal').on('show.bs.modal', event => {
+            var button = $(event.relatedTarget);
+            var modal = $(this);
+            // Use above variables to manipulate the DOM
+
+        });
+
+        function editarPagamento() {
+            Swal.fire({
+                title: 'Tem Certeza que deseja alterar esse pagamento?',
+                text: "Você não poderá reverter isso!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim',
+                cancelButtonText: "Não",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.preventDefault();
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        url: "{{ route('contas_receber.payment', $payment->id) }}",
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        dataType: 'json',
+                        success: function(resp) {
+                            if (resp.success == true) {
+                                $('.message_box').removeClass('d-none').html(resp.message);
+
+                                // setTimeout(function() {
+
+                                //     window.location.replace(
+                                //         ' {{ route('contas_receber') }}'
+                                //         );
+                                // }, 1500);
+                            } else {
+                                // $('.message_box').html(resp.message).fadeIn( 300 ).delay( 1500 ).fadeOut( 400 );
+                                console.log('nao rolou');
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
         $(function($) {
-
-            // $('#disparar_email').click(function(event) {
-            //     event.preventDefault();
-
-            //     $.ajax({
-            //         url: "{{ route('contas_receber.payment', 2) }}",
-            //         type: 'POST',
-            //         data: $(this).serialize(),
-            //         dataType: 'json',
-            //         success: function(resp) {
-            //             if (resp.success == true) {
-            //                 $('.message_box').removeClass('d-none').html(resp.message);
-
-            //                 setTimeout(function() {
-
-            //                     window.location.replace(
-            //                         ' {{ route('contas_receber') }}');
-            //                 }, 1500);
-            //             } else {
-            //                 // $('.message_box').html(resp.message).fadeIn( 300 ).delay( 1500 ).fadeOut( 400 );
-            //                 console.log('nao rolou')
-            //             }
-            //         }
-            //     });
-            // });
 
             $(document).ready(function() {
 
@@ -55,6 +78,16 @@
                 <div class="col-sm-12 mt-5 mb-5">
                     <p class="h1 text-center">Dados do Pagamento - N° {{ $payment->id }}</p>
                 </div>
+
+                @can('admin')
+                    <div class="col-sm-12 mb-5 text-right">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#modal_edit_payment">
+                            Editar Pagamento
+                        </button>
+                    </div>
+                @endcan
 
                 <div class="row">
                     <div class="col-sm-4">
@@ -142,48 +175,67 @@
                         </div>
                     @endif
 
-                    @can('admin')
-                        <div class="col-sm-12">
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal_edit_payment">
-                                Editar Pagamento
-                            </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="modal_edit_payment" tabindex="-1" role="dialog"
+                        aria-labelledby="modelTitleId" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Editar Pagamento - N° {{ $payment->id }} </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form name="form_edit_payment" enctype="multipart/form-data" class="form">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Vencimento</label>
+                                                        <input type="number" class="form-control" name="day_due" id=""
+                                                            min="0" max="31">
+                                                    </div>
+                                                </div>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="modal_edit_payment" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
-                                aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                                <div class="modal-dialog modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Editar Pagamento - N° {{ $payment->id }} </h5>
-                                            <button type="button" class="close" data-dismiss="modal"
-                                                aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="container-fluid">
-                                                Add rows here
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Status</label>
+                                                        <input type="text" class="form-control" name="status" id=""
+                                                            placeholder="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Forma de Pagamento</label>
+                                                        <input type="text" class="form-control" name="method_payment"
+                                                            id="" placeholder="">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>Valor</label>
+                                                        <input type="text" class="form-control" name="value" id=""
+                                                            placeholder="">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                                            <button type="button" class="btn btn-primary">Editar</button>
-                                        </div>
                                     </div>
+                                </form>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                        data-dismiss="modal">Fechar</button>
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        onclick="editarPagamento()">Editar</button>
                                 </div>
+
                             </div>
-
-                            <script>
-                                $('#exampleModal').on('show.bs.modal', event => {
-                                    var button = $(event.relatedTarget);
-                                    var modal = $(this);
-                                    // Use above variables to manipulate the DOM
-
-                                });
-                            </script>
                         </div>
-                    @endcan
+                    </div>
 
                     <div class="col-sm-12 mt-5 text-right">
                         <a class="btn btn-default btn-sm"
