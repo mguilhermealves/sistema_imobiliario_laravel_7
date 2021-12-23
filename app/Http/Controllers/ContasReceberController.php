@@ -368,6 +368,7 @@ class ContasReceberController extends Controller
             AccountReceivableBankSlip::where('account_receivables_id', $payment->id)
                 ->update([
                     'expire_at' => $due_date,
+                    'status' => $request->status,
                 ]);
 
             return response()->json([

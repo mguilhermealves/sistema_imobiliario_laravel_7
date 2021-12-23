@@ -118,8 +118,8 @@
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Dias em Atraso</label>
-                                    <input type="text" class="form-control" name="" id=""
-                                        value="{{ $dias_em_atraso }}" disabled
+                                    <input type="text" class="form-control" name="" id="" value="{{ $dias_em_atraso }}"
+                                        disabled
                                         style="color: green; background-color: rgb(178, 253, 193); font-weight: bold;">
                                 </div>
                             </div>
@@ -138,7 +138,8 @@
                             <div class="form-group">
                                 <label>Data do Vencimento do Boleto</label>
                                 <input type="text" name="" id="" class="form-control"
-                                    value="{{ date('d/m/Y', strtotime( $payment->historic_bank['expire_at'] )) }}" disabled>
+                                    value="{{ date('d/m/Y', strtotime($payment->historic_bank['expire_at'])) }}"
+                                    disabled>
                             </div>
                         </div>
                     @endif
@@ -257,12 +258,12 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-
-                                                            <div class="col-sm-6">
-                                                                <a class="btn btn-primary btn-sm" href="#">Editar
-                                                                    Locátario</a>
-                                                            </div>
                                                         @endif
+
+                                                        <div class="col-sm-12 text-right">
+                                                            <a href="{{ route('locatarios.show', $payment['tenant_id']) }}" target="_blank">Editar Dados do
+                                                                Locátario</a>
+                                                        </div>
 
                                                         <div class="col-sm-12">
                                                             <button type="submit" class="btn btn-primary btn-sm"

@@ -283,9 +283,9 @@
                                                 <td>{{ $payment->payment_method }}</td>
                                                 <td>{{ $payment->amount }}</td>
                                                 <td>
-                                                    @if ($payment->status_payment == 'to_win')
+                                                    @if ($payment->historic_bank['status'] == 'waiting')
                                                         {{ 'Aguardando Pagamento' }}
-                                                    @elseif ($payment->status_payment == 'paid')
+                                                    @elseif ($payment->historic_bank['status'] == 'paid')
                                                         {{ 'Pago' }}
                                                     @else
                                                         {{ 'Não Pago' }}
