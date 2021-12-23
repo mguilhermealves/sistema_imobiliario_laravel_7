@@ -169,7 +169,7 @@ class ContasReceberController extends Controller
         try {
             $account_receivable = AccountReceivable::create([
                 'description' => $request->description,
-                'status_payment' => $request->status_payment,
+                'status_payment' => 'to_win',
                 'day_due' => $due_date,
                 'fees' => $fees,
                 'fine' => $fine,
@@ -251,6 +251,19 @@ class ContasReceberController extends Controller
                 } catch (Exception $e) {
                     print_r($e->getMessage());
                 }
+            } else {
+                AccountReceivableBankSlip::create([
+                    'barcode' => null,
+                    'link' => null,
+                    'pdf' => null,
+                    'expire_at' => null,
+                    'charge_id' => null,
+                    'status' => null,
+                    'total' => null,
+                    'payment' => null,
+                    'account_receivables_id' => $account_receivable->id,
+                    'active' => 1
+                ]);
             }
 
             DB::commit();
@@ -298,6 +311,12 @@ class ContasReceberController extends Controller
             try {
                 $api = new Gerencianet($options);
                 $charge = $api->detailCharge($params, []);
+
+                $acount_payment = AccountReceivable::where('id', $payment->account_receivables_id)->first();
+
+                $acount_payment->update([
+                    'status_payment' => $charge['data']['status']
+                ]);
 
                 $historic_bank = array(
                     $charge['data']['history']

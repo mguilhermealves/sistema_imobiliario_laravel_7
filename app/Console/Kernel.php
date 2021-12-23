@@ -27,9 +27,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         $schedule->call('App\Http\Controllers\ContasReceberController@consult_payment_slip')
-            ->dailyAt('00:00')
+            ->everyMinute()
             ->name('consult_payment_slip')
-            ->withoutOverlapping()
+            // ->withoutOverlapping()
             ->appendOutputTo(storage_path('logs/consult_payment_slip.log'));
     }
 

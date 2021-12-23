@@ -37,13 +37,29 @@
                     "order": [
                         [0, "desc"]
                     ],
-                    "language": {
-                        "lengthMenu": "Mostrando _MENU_ pagamentos por página",
-                        "zeroRecords": "Nada encontrado",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "Nenhum registro disponível",
-                        "infoFiltered": "(filtrado de _MAX_ pagamentos no total)"
-                    }
+                    language: {
+						pageLength: 100,
+						processing:     "Processando...",
+						search:         "Pesquisar",
+						lengthMenu:    "_MENU_ resultados por página",
+						info:           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+						infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+						infoFiltered:   "(Filtrados de _MAX_ registros)",
+						infoPostFix:    "",
+						loadingRecords: "Processando...",
+						zeroRecords:    "Nenhum registro encontrado",
+						emptyTable:     "Nenhum registro encontrado",
+						paginate: {
+							first:      "Primeiro",
+							previous:   "Anterior",
+							next:       "Próximo",
+							last:       "Último"
+						},
+						aria: {
+							sortAscending:  ": Ordenar colunas de forma ascendente",
+							sortDescending: ": Ordenar colunas de forma descendente"
+						}
+					},
                 });
 
                 $('#phone').mask("(99) 9999-9999");
@@ -226,7 +242,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Dia do Vencimento</label>
-                                    <input type="text" name="due_day" id="due_day" class="form-control" value="13"
+                                    <input type="text" name="due_day" id="due_day" class="form-control" value="{{ $received['day_due'] }}"
                                         disabled>
                                 </div>
                             </div>
@@ -326,25 +342,11 @@
 
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
-                                                                    <label>Status</label>
-                                                                    <select class="custom-select" name="status_payment">
-                                                                        <option selected>Selecione...</option>
-                                                                        <option value="to_win">A Vencer</option>
-                                                                        <option value="loser">Vencido</option>
-                                                                        <option value="paid">Pago</option>
-                                                                        <option value="according_to">Em Acordo</option>
-                                                                        <option value="judicial">Juridico</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
                                                                     <label>Dia do Vencimento</label>
                                                                     <input type="text" name="due_day" id="due_day"
-                                                                        class="form-control" value="20" disabled>
+                                                                        class="form-control" value="{{ $received['day_due'] }}" disabled>
                                                                     <input type="hidden" name="due_day" id="due_day"
-                                                                        class="form-control" value="20">
+                                                                        class="form-control" value="{{ $received['day_due'] }}">
                                                                 </div>
                                                             </div>
 
@@ -352,7 +354,9 @@
                                                                 <div class="form-group">
                                                                     <label>Juros</label>
                                                                     <input type="text" name="fees" id="fees"
-                                                                        class="form-control percent" autofocus>
+                                                                        class="form-control percent" value="1.00%" disabled>
+                                                                        <input type="hidden" name="fees" id="fees"
+                                                                        class="form-control" value="1.00%">
                                                                 </div>
                                                             </div>
 
@@ -360,7 +364,9 @@
                                                                 <div class="form-group">
                                                                     <label>Multa</label>
                                                                     <input type="text" name="fine" id="fine"
-                                                                        class="form-control percent" autofocus>
+                                                                        class="form-control percent" value="1.00%" disabled>
+                                                                        <input type="hidden" name="fine" id="fine"
+                                                                        class="form-control" value="1.00%">
                                                                 </div>
                                                             </div>
 

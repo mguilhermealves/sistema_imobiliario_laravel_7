@@ -173,6 +173,10 @@
                                 <a href="{{ $payment['historic_bank']['pdf'] }}" download target="_blank">Download</a>
                             </div>
                         </div>
+
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-primary btn-sm">Reenviar E-mail</button>
+                        </div>
                     @endif
 
                     <!-- Modal -->
