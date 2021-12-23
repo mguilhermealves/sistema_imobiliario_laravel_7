@@ -98,11 +98,16 @@ class ContasReceberController extends Controller
     {
         $payment = AccountReceivable::with('historic_bank')->find($id);
 
+        $dtNow = now();
+
+        $dias_em_atraso = $dtNow->diff($payment['day_due']);
+
         $json_historical_bank = json_decode($payment->historic_bank->historic_bank);
 
         return view('pages.contas_receber.show_payment', [
             'payment' => $payment,
-            'json_historical_bank' => $json_historical_bank
+            'json_historical_bank' => $json_historical_bank,
+            'dias_em_atraso' => $dias_em_atraso
         ]);
     }
 
@@ -282,6 +287,17 @@ class ContasReceberController extends Controller
                 'message' => 'Pagamento não foi criado com sucesso, refaça o processo...'
             ]);
         }
+    }
+
+    /**
+     * Editar Dados do Pagamento
+     *
+     * @param \Illuminate\Http\Request  $request
+     *
+     */
+    public function payment_edit(Request $request)
+    {
+        dd($request);
     }
 
     /**
