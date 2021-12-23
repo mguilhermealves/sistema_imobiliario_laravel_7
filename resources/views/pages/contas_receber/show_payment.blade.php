@@ -58,6 +58,53 @@
                 });
             });
 
+            $('form[name="form_send_mail_ticket"]').submit(function(event) {
+                event.preventDefault();
+
+                Swal.fire({
+                    title: 'Tem Certeza que deseja enviar o boleto por e-mail?',
+                    text: "O cliente receberá o email dentro de até 30 minutos após o envio.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim',
+                    cancelButtonText: "Não",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        event.preventDefault();
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            },
+                            url: "{{ route('contas_receber.send_email', $payment->id) }}",
+                            type: 'POST',
+                            data: $(this).serialize(),
+                            dataType: 'json',
+                            success: function(resp) {
+                                if (resp.error == false) {
+                                    $("#editar_pagamento").attr("disabled", true)
+                                    $('.message_box').removeClass('d-none').html(resp
+                                        .message);
+
+                                    // setTimeout(function() {
+
+                                    //     window.location.replace(
+                                    //         "{{ route('contas_receber.edit', $payment->id) }}"
+                                    //     );
+                                    // }, 1500);
+                                } else {
+                                    $('.message_box').removeClass('d-none').html(resp
+                                        .message).fadeIn(300).delay(2000).fadeOut(
+                                        600);
+                                    $("#editar_pagamento").attr("enabled", true)
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -138,8 +185,7 @@
                             <div class="form-group">
                                 <label>Data do Vencimento do Boleto</label>
                                 <input type="text" name="" id="" class="form-control"
-                                    value="{{ date('d/m/Y', strtotime($payment->historic_bank['expire_at'])) }}"
-                                    disabled>
+                                    value="{{ date('d/m/Y', strtotime($payment->historic_bank['expire_at'])) }}" disabled>
                             </div>
                         </div>
                     @endif
@@ -207,7 +253,12 @@
                         </div>
 
                         <div class="col-sm-12 text-right">
-                            <button type="button" class="btn btn-primary btn-sm">Reenviar E-mail</button>
+                            <form name="form_send_mail_ticket" enctype="multipart/form-data" class="form">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $payment->tenant_id }}">
+                                <button type="submit" class="btn btn-primary btn-sm">Reenviar E-mail</button>
+                            </form>
+
                         </div>
                     @endif
 
@@ -261,7 +312,8 @@
                                                         @endif
 
                                                         <div class="col-sm-12 text-right">
-                                                            <a href="{{ route('locatarios.show', $payment['tenant_id']) }}" target="_blank">Editar Dados do
+                                                            <a href="{{ route('locatarios.show', $payment['tenant_id']) }}"
+                                                                target="_blank">Editar Dados do
                                                                 Locátario</a>
                                                         </div>
 

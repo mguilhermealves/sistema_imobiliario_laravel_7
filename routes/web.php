@@ -51,4 +51,5 @@ Route::middleware(['auth'])->group(function () {
     Route::match(['get', 'post'], '/contas_receber/edit/{id}', 'ContasReceberController@edit')->name('contas_receber.edit');
     Route::post('/contas_receber/payment/{id}', 'ContasReceberController@payment')->name('contas_receber.payment');
     Route::post('/contas_receber/payment/edit/{id}', 'ContasReceberController@payment_edit')->name('contas_receber.payment_edit');
+    Route::post('/contas_receber/payment/send_email/{id}', 'ContasReceberController@sendEmail')->name('contas_receber.send_email');
 });

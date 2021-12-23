@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AccountReceivable;
 use App\AccountReceivableBankSlip;
 use App\Jobs\newAccountReceivable as JobsNewAccountReceivable;
+use App\Jobs\ResendTicket;
 use App\Propertie;
 use App\Tenant;
 use Carbon\Carbon;
@@ -103,7 +104,7 @@ class ContasReceberController extends Controller
         $dias_em_atraso = '';
         if ($payment->historic_bank['expire_at'] >= $dtNow) {
             $dias_em_atraso = 0;
-        }else {
+        } else {
             $dias_em_atraso = $dtNow->diff($payment->historic_bank['expire_at']);
         }
 
@@ -308,7 +309,7 @@ class ContasReceberController extends Controller
 
         $diff_date = $dtNow->diff($due_date);
 
-        if ( $diff_date->invert == 1 ) {
+        if ($diff_date->invert == 1) {
             return response()->json([
                 'error' => true,
                 'message' => 'A nova data de vencimento deve ser pelo menos maior que a data atual.'
@@ -431,5 +432,23 @@ class ContasReceberController extends Controller
                 print_r($e->getMessage());
             }
         }
+    }
+
+    /**
+     * Envio do boleto por email
+     *
+     * @param \Illuminate\Http\Request  $request
+     *
+     */
+    public function sendEmail(Request $request)
+    {
+        $tenant = Tenant::where('id', $request->id)->first();
+
+        ResendTicket::dispatch($tenant)->delay(now()->addSeconds('5'));
+
+        return response()->json([
+            'error' => false,
+            'message' => 'E-mail enviado com sucesso'
+        ]);
     }
 }
