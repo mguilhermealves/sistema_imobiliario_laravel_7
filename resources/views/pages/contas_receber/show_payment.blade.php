@@ -14,8 +14,6 @@
             $('form[name="form_edit_payment"]').submit(function(event) {
                 event.preventDefault();
 
-                $("#editar_pagamento").attr("disabled", true)
-
                 Swal.fire({
                     title: 'Tem Certeza que deseja alterar esse pagamento?',
                     text: "Você não poderá reverter isso!",
@@ -37,18 +35,21 @@
                             data: $(this).serialize(),
                             dataType: 'json',
                             success: function(resp) {
-                                if (resp.success == true) {
+                                if (resp.error == false) {
+                                    $("#editar_pagamento").attr("disabled", true)
                                     $('.message_box').removeClass('d-none').html(resp
                                         .message);
 
-                                    // setTimeout(function() {
+                                    setTimeout(function() {
 
-                                    //     window.location.replace(
-                                    //         ' {{ route('contas_receber') }}'
-                                    //         );
-                                    // }, 1500);
+                                        window.location.replace(
+                                            "{{ route('contas_receber.edit', $payment->id) }}"
+                                        );
+                                    }, 1500);
                                 } else {
-                                    // $('.message_box').html(resp.message).fadeIn( 300 ).delay( 1500 ).fadeOut( 400 );
+                                    $('.message_box').removeClass('d-none').html(resp
+                                        .message).fadeIn(300).delay(2000).fadeOut(
+                                        600);
                                     $("#editar_pagamento").attr("enabled", true)
                                 }
                             }
@@ -84,17 +85,15 @@
                     <p class="h1 text-center">Dados do Pagamento - N° {{ $payment->id }}</p>
                 </div>
 
-                @if ($payment['payment_method'] != 'ticket')
-                    @can('admin')
-                        <div class="col-sm-12 mb-5 text-right">
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
-                                data-target="#modal_edit_payment">
-                                Editar Pagamento
-                            </button>
-                        </div>
-                    @endcan
-                @endif
+                @can('admin')
+                    <div class="col-sm-12 mb-5 text-right">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#modal_edit_payment">
+                            Editar Pagamento
+                        </button>
+                    </div>
+                @endcan
 
                 <div class="row">
                     <div class="col-sm-4">
@@ -114,7 +113,17 @@
                     </div>
 
                     @if ($payment['payment_method'] == 'ticket')
-                        @if ($dias_em_atraso->days > 0)
+
+                        @if ($dias_em_atraso == 0)
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label>Dias em Atraso</label>
+                                    <input type="text" class="form-control" name="" id=""
+                                        value="{{ $dias_em_atraso }}" disabled
+                                        style="color: green; background-color: rgb(178, 253, 193); font-weight: bold;">
+                                </div>
+                            </div>
+                        @else
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Dias em Atraso</label>
@@ -129,7 +138,7 @@
                             <div class="form-group">
                                 <label>Data do Vencimento do Boleto</label>
                                 <input type="text" name="" id="" class="form-control"
-                                    value="{{ date('d/m/Y', strtotime($payment['day_due'])) }}" disabled>
+                                    value="{{ date('d/m/Y', strtotime( $payment->historic_bank['expire_at'] )) }}" disabled>
                             </div>
                         </div>
                     @endif
@@ -178,7 +187,8 @@
                                 <tbody>
                                     @foreach ($json_historical_bank[0] as $history)
                                         <tr>
-                                            <td scope="row">{{ date( 'd/m/Y h:i:s', strtotime( $history->created_at ) ) }}</td>
+                                            <td scope="row">
+                                                {{ date('d/m/Y h:i:s', strtotime($history->created_at)) }}</td>
                                             <td>{{ $history->message }}</td>
                                         </tr>
                                     @endforeach
@@ -217,46 +227,42 @@
                                     <div class="container-fluid">
                                         <div class="row">
                                             <div class="col-sm-12">
+                                                <div class="alert alert-danger d-none message_box" role="alert">
+
+                                                </div>
                                                 <form name="form_edit_payment" enctype="multipart/form-data"
                                                     class="form">
                                                     @csrf
+                                                    <input type="hidden" name="id" value="{{ $payment->id }}">
+
                                                     <div class="row">
                                                         <div class="col-sm-6">
                                                             <div class="form-group">
                                                                 <label>Vencimento</label>
                                                                 <input type="number" class="form-control" name="day_due"
-                                                                    id="" min="0" max="31">
+                                                                    id="" min="0" max="31" required>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-sm-6">
-                                                            <div class="form-group">
-                                                                <label>Status</label>
-                                                                <select class="form-control" name="status" id="">
-                                                                    <option value="" selected>Selecione...</option>
-                                                                    <option value="paid">Pago</option>
-                                                                    <option value="loser">Vencido</option>
-                                                                    <option value="judicial">Juridico</option>
-                                                                    <option value="according_to">Em Acordo</option>
-                                                                </select>
+                                                        @if ($payment['payment_method'] != 'ticket')
+                                                            <div class="col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label>Status</label>
+                                                                    <select class="form-control" name="status" id="">
+                                                                        <option value="" selected>Selecione...</option>
+                                                                        <option value="paid">Pago</option>
+                                                                        <option value="loser">Vencido</option>
+                                                                        <option value="judicial">Juridico</option>
+                                                                        <option value="according_to">Em Acordo</option>
+                                                                    </select>
+                                                                </div>
                                                             </div>
-                                                        </div>
 
-                                                        <div class="col-sm-6">
-                                                            <div class="form-group">
-                                                                <label>Forma de Pagamento</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="method_payment" id="" placeholder="">
+                                                            <div class="col-sm-6">
+                                                                <a class="btn btn-primary btn-sm" href="#">Editar
+                                                                    Locátario</a>
                                                             </div>
-                                                        </div>
-
-                                                        <div class="col-sm-6">
-                                                            <div class="form-group">
-                                                                <label>Valor</label>
-                                                                <input type="text" class="form-control" name="value" id=""
-                                                                    placeholder="">
-                                                            </div>
-                                                        </div>
+                                                        @endif
 
                                                         <div class="col-sm-12">
                                                             <button type="submit" class="btn btn-primary btn-sm"

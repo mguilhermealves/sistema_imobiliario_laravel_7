@@ -38,28 +38,28 @@
                         [0, "desc"]
                     ],
                     language: {
-						pageLength: 100,
-						processing:     "Processando...",
-						search:         "Pesquisar",
-						lengthMenu:    "_MENU_ resultados por página",
-						info:           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-						infoEmpty:      "Mostrando 0 até 0 de 0 registros",
-						infoFiltered:   "(Filtrados de _MAX_ registros)",
-						infoPostFix:    "",
-						loadingRecords: "Processando...",
-						zeroRecords:    "Nenhum registro encontrado",
-						emptyTable:     "Nenhum registro encontrado",
-						paginate: {
-							first:      "Primeiro",
-							previous:   "Anterior",
-							next:       "Próximo",
-							last:       "Último"
-						},
-						aria: {
-							sortAscending:  ": Ordenar colunas de forma ascendente",
-							sortDescending: ": Ordenar colunas de forma descendente"
-						}
-					},
+                        pageLength: 100,
+                        processing: "Processando...",
+                        search: "Pesquisar",
+                        lengthMenu: "_MENU_ resultados por página",
+                        info: "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        infoEmpty: "Mostrando 0 até 0 de 0 registros",
+                        infoFiltered: "(Filtrados de _MAX_ registros)",
+                        infoPostFix: "",
+                        loadingRecords: "Processando...",
+                        zeroRecords: "Nenhum registro encontrado",
+                        emptyTable: "Nenhum registro encontrado",
+                        paginate: {
+                            first: "Primeiro",
+                            previous: "Anterior",
+                            next: "Próximo",
+                            last: "Último"
+                        },
+                        aria: {
+                            sortAscending: ": Ordenar colunas de forma ascendente",
+                            sortDescending: ": Ordenar colunas de forma descendente"
+                        }
+                    },
                 });
 
                 $('#phone').mask("(99) 9999-9999");
@@ -80,6 +80,10 @@
 @endsection
 
 @section('content')
+
+    <div class="alert alert-danger d-none message_box" role="alert">
+
+    </div>
 
     <div class="container">
         <div class="row">
@@ -242,8 +246,8 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label>Dia do Vencimento</label>
-                                    <input type="text" name="due_day" id="due_day" class="form-control" value="{{ $received['day_due'] }}"
-                                        disabled>
+                                    <input type="text" name="due_day" id="due_day" class="form-control"
+                                        value="{{ $received['day_due'] }}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -344,9 +348,11 @@
                                                                 <div class="form-group">
                                                                     <label>Dia do Vencimento</label>
                                                                     <input type="text" name="due_day" id="due_day"
-                                                                        class="form-control" value="{{ $received['day_due'] }}" disabled>
+                                                                        class="form-control"
+                                                                        value="{{ $received['day_due'] }}" disabled>
                                                                     <input type="hidden" name="due_day" id="due_day"
-                                                                        class="form-control" value="{{ $received['day_due'] }}">
+                                                                        class="form-control"
+                                                                        value="{{ $received['day_due'] }}">
                                                                 </div>
                                                             </div>
 
@@ -355,7 +361,7 @@
                                                                     <label>Juros</label>
                                                                     <input type="text" name="fees" id="fees"
                                                                         class="form-control percent" value="1.00%" disabled>
-                                                                        <input type="hidden" name="fees" id="fees"
+                                                                    <input type="hidden" name="fees" id="fees"
                                                                         class="form-control" value="1.00%">
                                                                 </div>
                                                             </div>
@@ -364,8 +370,9 @@
                                                                 <div class="form-group">
                                                                     <label>Multa</label>
                                                                     <input type="text" name="fine" id="fine"
-                                                                        class="form-control percent" value="1.00%" disabled>
-                                                                        <input type="hidden" name="fine" id="fine"
+                                                                        class="form-control percent" value="1.00%"
+                                                                        disabled>
+                                                                    <input type="hidden" name="fine" id="fine"
                                                                         class="form-control" value="1.00%">
                                                                 </div>
                                                             </div>

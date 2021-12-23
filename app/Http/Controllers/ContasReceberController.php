@@ -100,7 +100,12 @@ class ContasReceberController extends Controller
 
         $dtNow = now();
 
-        $dias_em_atraso = $dtNow->diff($payment['day_due']);
+        $dias_em_atraso = '';
+        if ($payment->historic_bank['expire_at'] >= $dtNow) {
+            $dias_em_atraso = 0;
+        }else {
+            $dias_em_atraso = $dtNow->diff($payment->historic_bank['expire_at']);
+        }
 
         $json_historical_bank = json_decode($payment->historic_bank->historic_bank);
 
@@ -297,7 +302,79 @@ class ContasReceberController extends Controller
      */
     public function payment_edit(Request $request)
     {
-        dd($request);
+        $due_date = Carbon::now()->format('Y-m-') . $request->day_due;
+
+        $dtNow = now();
+
+        $diff_date = $dtNow->diff($due_date);
+
+        if ( $diff_date->invert == 1 ) {
+            return response()->json([
+                'error' => true,
+                'message' => 'A nova data de vencimento deve ser pelo menos maior que a data atual.'
+            ]);
+        }
+
+        $payment = AccountReceivable::with('historic_bank')->where('id', $request->id)->first();
+
+        if ($payment->payment_method == 'ticket') {
+            if ($payment->historic_bank->expire_at <= $due_date) {
+                $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
+                $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
+
+                $options = [
+                    'client_id' => $clientId,
+                    'client_secret' => $clientSecret,
+                    'sandbox' => true // altere conforme o ambiente (true = Homologação e false = producao)
+                ];
+
+                // $charge_id refere-se ao ID da transação gerada anteriormente
+                $params = [
+                    'id' => $payment->historic_bank['charge_id']
+                ];
+
+                $body = [
+                    'expire_at' => $due_date
+                ];
+
+                try {
+                    $api = new Gerencianet($options);
+                    $charge = $api->updateBillet($params, $body);
+
+                    AccountReceivableBankSlip::where('charge_id', $payment->historic_bank['charge_id'])
+                        ->update([
+                            'expire_at' => $due_date,
+                            'status' => 'waiting',
+                        ]);
+
+                    return response()->json([
+                        'error' => false,
+                        'message' => 'Vencimento atualizado com sucesso.'
+                    ]);
+                } catch (GerencianetException $e) {
+                    print_r($e->code);
+                    print_r($e->error);
+                    print_r($e->errorDescription);
+                } catch (Exception $e) {
+                    print_r($e->getMessage());
+                }
+            } else {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Boleto vencido, não é possivel alterar a data de pagamento.'
+                ]);
+            }
+        } else {
+            AccountReceivableBankSlip::where('account_receivables_id', $payment->id)
+                ->update([
+                    'expire_at' => $due_date,
+                ]);
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Vencimento atualizado com sucesso.'
+            ]);
+        }
     }
 
     /**
