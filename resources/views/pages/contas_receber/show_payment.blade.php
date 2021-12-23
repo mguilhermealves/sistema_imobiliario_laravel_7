@@ -26,7 +26,7 @@
                         headers: {
                             'X-CSRF-TOKEN': "{{ csrf_token() }}"
                         },
-                        url: "{{ route('contas_receber.payment', $payment->id) }}",
+                        url: "{{ route('contas_receber.payment_edit', $payment->id) }}",
                         type: 'POST',
                         data: $(this).serialize(),
                         dataType: 'json',
@@ -203,13 +203,20 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label>Status</label>
-                                                        <input type="text" class="form-control" name="status" id=""
-                                                            placeholder="">
+                                                @if ($payment['status_payment'] != 'ticket')
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>Status</label>
+                                                            <select class="form-control" name="status" id="">
+                                                                <option value="" selected>Selecione...</option>
+                                                                <option value="paid">Pago</option>
+                                                                <option value="loser">Vencido</option>
+                                                                <option value="judicial">Juridico</option>
+                                                                <option value="according_to">Em Acordo</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @endif
 
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
