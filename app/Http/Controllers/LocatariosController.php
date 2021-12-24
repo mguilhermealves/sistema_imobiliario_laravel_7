@@ -203,7 +203,35 @@ class LocatariosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ($request->is_aproved == 'approved') {
+        $tenant = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
+
+        //dd($request);
+
+        $tenant['first_name'] = $request->first_name;
+        $tenant['last_name'] = $request->last_name;
+        $tenant['mail'] = $request->mail;
+        $tenant['cpf_cnpj'] = $request->cpf_cnpj;
+        $tenant['rg'] = $request->rg;
+        $tenant['cnh'] = $request->cnh;
+        $tenant['phone'] = $request->phone;
+        $tenant['celphone'] = $request->celphone;
+        $tenant['genre'] = $request->genre;
+        $tenant['marital_status'] = $request->marital_status;
+        $tenant['is_children'] = $request->is_children;
+        $tenant['is_pet'] = $request->is_pet;
+        $tenant['pet_species'] = $request->pet_species;
+        $tenant['number_residents'] = $request->number_residents;
+        $tenant['is_aproved'] = $request->is_aproved;
+        $tenant['comments'] = $request->comments;
+        $tenant['n_contract'] = 'on_approval';
+        $tenant['day_due'] = $request->day_due;
+        $tenant['active'] = 1;
+
+        $tenant->save();
+
+        dd($tenant);
+
+        if ($request->is_aproved == 'approved' && $request->n_contract == null) {
             $protocolo = Carbon::now()->format('Ymdhis');
         }
     }

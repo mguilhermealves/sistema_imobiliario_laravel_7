@@ -350,7 +350,7 @@ class ContasReceberController extends Controller
 
                     return response()->json([
                         'error' => false,
-                        'message' => 'Vencimento atualizado com sucesso.'
+                        'message' => 'O vencimento para esse pagamento foi atualizado com sucesso.'
                     ]);
                 } catch (GerencianetException $e) {
                     print_r($e->code);
@@ -374,7 +374,7 @@ class ContasReceberController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => 'Vencimento atualizado com sucesso.'
+                'message' => 'Boleto vencido, não é possivel alterar a data de pagamento.'
             ]);
         }
     }

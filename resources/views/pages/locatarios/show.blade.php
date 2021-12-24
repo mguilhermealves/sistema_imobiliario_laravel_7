@@ -93,12 +93,12 @@
 
             });
 
-            $('form[name="form_create_tenant"]').submit(function(event) {
+            $('form[name="form_update_tenant"]').submit(function(event) {
                 event.preventDefault();
 
                 $.ajax({
-                    url: "{{ route('locatarios.store') }}",
-                    type: 'POST',
+                    url: "{{ route('locatarios.update', $tenant->id) }}",
+                    type: 'PUT',
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(resp) {
@@ -323,7 +323,7 @@
                     </div>
                 </nav>
 
-                <form name="form_create_tenant" enctype="multipart/form-data" class="form">
+                <form name="form_update_tenant" enctype="multipart/form-data" class="form">
                     @csrf
 
                     <div class="tab-content" id="nav-tabContent">
@@ -440,7 +440,7 @@
                                     <div class="form-group">
                                         <label>CPF / CNPJ</label>
                                         <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="form-control" autofocus
-                                            value="{{ $tenant->first_name }}">
+                                            value="{{ $tenant->cpf_cnpj }}">
                                     </div>
                                 </div>
 
@@ -456,7 +456,7 @@
                                     <div class="form-group">
                                         <label>CNH</label>
                                         <input type="text" name="cnh" id="cnh" class="form-control" autofocus
-                                            value="{{ $tenant->cpf_cnpj }}">
+                                            value="{{ $tenant->cnh }}">
                                     </div>
                                 </div>
 
