@@ -106,7 +106,7 @@
                             $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
 
                             setTimeout(function() {
-                                window.location.replace(' {{ route('locatarios.show'), $tenant->id) }}');
+                                window.location.replace("{{ route('locatarios.update', $tenant->id) }}");
                             }, 1500);
                         } else {
                             $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
