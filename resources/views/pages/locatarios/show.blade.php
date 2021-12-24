@@ -102,14 +102,15 @@
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(resp) {
-                        if (resp === true) {
-                            $('.message_box').removeClass('d-none').html(resp.message);
+                        console.log(resp);
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
 
-                            setTimeout(function() {
-                                window.location.replace(' {{ route('locatarios') }}');
-                            }, 1500);
+                            // setTimeout(function() {
+                            //     window.location.replace(' {{ route('locatarios') }}');
+                            // }, 1500);
                         } else {
-                            $('.message_box').removeClass('d-none').html(resp.message);
+                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
                         }
                     }
                 });
@@ -288,7 +289,7 @@
 @endsection
 
 @section('content')
-    <div class="alert alert-danger d-none message_box" role="alert">
+    <div class="alert d-none message_box" role="alert">
 
     </div>
 
@@ -868,23 +869,24 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Dia do Vencimento</label>
-                                        <input type="text" name="due_day" id="due_day" class="form-control" value="{{ $tenant->day_due }}" autofocus>
+                                        <input type="text" name="due_day" id="due_day" class="form-control"
+                                            value="{{ $tenant->day_due }}" autofocus>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6" id="number_contract_aproved">
                                     <div class="form-group">
                                         <label>N° do Contrato</label>
-                                        <input type="text" name="n_contract" id="n_contract" class="form-control" value="{{ $tenant->n_contract }}"
-                                            disabled>
+                                        <input type="text" name="n_contract" id="n_contract" class="form-control"
+                                            value="{{ $tenant->n_contract }}" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-12" id="text_not_aproved">
                                     <div class="form-group">
                                         <label>Texto</label>
-                                        <textarea class="form-control" name="comments" id="mytextarea" value="{{ $tenant->comments }}"
-                                            rows="3"></textarea>
+                                        <textarea class="form-control" name="comments" id="mytextarea"
+                                            value="{{ $tenant->comments }}" rows="3"></textarea>
                                     </div>
                                 </div>
                             </div>

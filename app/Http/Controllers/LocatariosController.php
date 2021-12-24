@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\{Propertie, CivilState, Genre, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile, TenantPropertie};
+use App\{Propertie, CivilState, Genre, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile, TenantPropertie, TenantContract};
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class LocatariosController extends Controller
 {
@@ -205,8 +207,6 @@ class LocatariosController extends Controller
     {
         $tenant = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
 
-        //dd($request);
-
         $tenant['first_name'] = $request->first_name;
         $tenant['last_name'] = $request->last_name;
         $tenant['mail'] = $request->mail;
@@ -223,16 +223,61 @@ class LocatariosController extends Controller
         $tenant['number_residents'] = $request->number_residents;
         $tenant['is_aproved'] = $request->is_aproved;
         $tenant['comments'] = $request->comments;
-        $tenant['n_contract'] = 'on_approval';
-        $tenant['day_due'] = $request->day_due;
+        $tenant['day_due'] = $request->due_day;
         $tenant['active'] = 1;
+
+        $tenant->address['address'] = $request->address;
+        $tenant->address['number_address'] = $request->address_number;
+        $tenant->address['complement'] = $request->address_complement;
+        $tenant->address['code_postal'] = $request->code_postal;
+        $tenant->address['district'] = $request->district;
+        $tenant->address['city'] = $request->city;
+        $tenant->address['uf'] = $request->uf;
+
+        $tenant->partner['first_name'] = $request->first_name_partner;
+        $tenant->partner['last_name'] = $request->last_name_partner;
+        $tenant->partner['cpf_cnpj'] = $request->cpf_cnpj_partner;
+        $tenant->partner['rg'] = $request->rg_partner;
+        $tenant->partner['cnh'] = $request->cnh_partner;
+
+        $tenant->office['type_work'] = $request->offices['type_work'];
+        $tenant->office['company_name_clt'] = $request->offices['company_name_clt'];
+        $tenant->office['company_name_pj'] = $request->offices['company_name_pj'];
+        $tenant->office['office'] = $request->offices['office'];
+        $tenant->office['registration_time'] = $request->offices['registration_time'];
+        $tenant->office['rent_monthly'] = $request->offices['rent_monthly'];
 
         $tenant->save();
 
-        dd($tenant);
-
-        if ($request->is_aproved == 'approved' && $request->n_contract == null) {
+        if ($request->is_aproved == 'Aprovado' && $request->n_contract == null) {
             $protocolo = Carbon::now()->format('Ymdhis');
+
+            $tenant['n_contract'] = $protocolo;
+            $tenant->save();
+
+            $pdf = PDF::loadView('pdf.tenant_locatatio', compact('tenant'));
+
+            $pdf->output();
+
+            $fileName =  'id_'. $tenant['id'] . Carbon::now()->format('Ymdhis') . '.pdf';
+
+            Storage::put('/tenant/pdf/id/' . $tenant['id'] . '/' . $fileName, $pdf->output());
+
+            //SALVAR NO BANCO
+            $link = '/tenant/pdf/id/' . $tenant['id'] . '/' . $fileName;
+
+            TenantContract::create([
+                'name' => 'Contrato de Locação',
+                'link' => $link,
+                'n_contract' => $protocolo,
+                'tenant_id' => $tenant['id'],
+                'active' => 1
+            ]);
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Contrato gerado com sucesso'
+            ]);
         }
     }
 
