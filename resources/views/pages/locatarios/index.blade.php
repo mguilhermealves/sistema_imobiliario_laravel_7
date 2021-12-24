@@ -91,7 +91,6 @@
                                         <td>
                                             <a href="{{ route('locatarios.show', $tenant->id) }}" type="button"
                                                 class="btn btn-primary btn-sm">Editar</a>
-                                            <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
                                         </td>
                                     </tr>
                                 @empty

@@ -33,6 +33,7 @@ class ResendTicket extends Mailable
     {
         $this->subject('Boleto Reenviado');
         $this->to($this->tenant->mail, $this->tenant->first_name . ' ' . $this->tenant->last_name);
+        // $this->attach(storage_path('app/image.jpg')); // passar o caminho do anexo
         return $this->markdown('mail.resend_mail_ticket');
     }
 }

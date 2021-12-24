@@ -51,10 +51,6 @@ class LocatariosController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->is_aproved == 'approved') {
-            $protocolo = Carbon::now()->format('Ymdhis');
-        }
-
         $propertie = Propertie::where('id', $request->cod_imovel)->first();
 
         $tenant = Tenant::create([
@@ -74,7 +70,7 @@ class LocatariosController extends Controller
             'number_residents' => $request->number_residents,
             'is_aproved' => $request->is_aproved,
             'comments' => $request->comments,
-            'n_contract' => $request->is_aproved == 'approved' ? $protocolo : null,
+            'n_contract' => 'on_approval',
             'day_due' => $request->day_due,
             'active' => 1
         ]);
@@ -176,7 +172,15 @@ class LocatariosController extends Controller
      */
     public function show($id)
     {
-        //
+        $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie')->first();
+        $civil_states = CivilState::where('active', 1)->get();
+        $genres = Genre::where('active', 1)->get();
+
+        return view('pages.locatarios.show', [
+            'tenant' => $tenant,
+            'civil_states' => $civil_states,
+            'genres' => $genres
+        ]);
     }
 
     /**
@@ -199,7 +203,9 @@ class LocatariosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->is_aproved == 'approved') {
+            $protocolo = Carbon::now()->format('Ymdhis');
+        }
     }
 
     /**

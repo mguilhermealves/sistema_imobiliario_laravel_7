@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     /* Locatarios */
     Route::get('/locatarios', 'LocatariosController@index')->name('locatarios');
     Route::get('/locatarios/create', 'LocatariosController@create')->name('locatarios.create');
+    Route::get('/locatarios/contract', 'LocatariosController@contract')->name('locatarios.contract');
     Route::post('/locatarios/store', 'LocatariosController@store')->name('locatarios.store');
     Route::get('/locatarios/show/{id}', 'LocatariosController@show')->name('locatarios.show');
     Route::put('/locatarios/update/{id}', 'LocatariosController@update')->name('locatarios.update');
