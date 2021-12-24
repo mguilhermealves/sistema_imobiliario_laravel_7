@@ -185,7 +185,8 @@
                             <div class="form-group">
                                 <label>Data do Vencimento do Boleto</label>
                                 <input type="text" name="" id="" class="form-control"
-                                    value="{{ date('d/m/Y', strtotime($payment->historic_bank['expire_at'])) }}" disabled>
+                                    value="{{ date('d/m/Y', strtotime($payment->historic_bank['expire_at'])) }}"
+                                    disabled>
                             </div>
                         </div>
                     @endif

@@ -65,4 +65,12 @@ class Tenant extends Model
     {
         return $this->hasMany('App\AccountReceivable', 'tenant_id', 'id');
     }
+
+    /**
+     * Get for files for tenant.
+     */
+    public function contract()
+    {
+        return $this->hasOne('App\TenantContract', 'tenant_id', 'id');
+    }
 }

@@ -26,7 +26,7 @@ class ContasReceberController extends Controller
     public function index()
     {
         $tenants = Tenant::where('active', 1)
-            ->where('is_aproved', 'approved')
+            ->where('is_aproved', 'Aprovado')
             ->with('address', 'partner', 'office', 'files', 'propertie')
             ->get();
 
@@ -65,7 +65,7 @@ class ContasReceberController extends Controller
      */
     public function show($id)
     {
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie')->find($id);
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'contract')->find($id);
 
         $payments = AccountReceivable::with('historic_bank')->where('tenant_id', $received['id'])->get();
 

@@ -102,13 +102,12 @@
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(resp) {
-                        console.log(resp);
                         if (resp.error == false) {
                             $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
 
-                            // setTimeout(function() {
-                            //     window.location.replace(' {{ route('locatarios') }}');
-                            // }, 1500);
+                            setTimeout(function() {
+                                window.location.replace(' {{ route('locatarios.show'), $tenant->id) }}');
+                            }, 1500);
                         } else {
                             $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
                         }
@@ -881,6 +880,21 @@
                                             value="{{ $tenant->n_contract }}" disabled>
                                     </div>
                                 </div>
+
+                                @if ($tenant['n_contract'] != null)
+                                    <div class="col-sm-12 mt-5 mb-5">
+                                        <div class="col-sm-4">
+                                            <label>Contrato de Locação</label>
+                                            <div class="form-group">
+                                                <iframe class="pdf"
+                                                    src="{{ url("storage{$tenant->contract['link']}") }}" width="100%"
+                                                    height="200px"></iframe>
+                                                <a href="{{ url("storage{$tenant->contract['link']}") }}"
+                                                    download>Download</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <div class="col-sm-12" id="text_not_aproved">
                                     <div class="form-group">

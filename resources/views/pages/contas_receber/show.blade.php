@@ -250,6 +250,19 @@
                                         value="{{ $received['day_due'] }}" disabled>
                                 </div>
                             </div>
+
+                            @if ($received['n_contract'] != null)
+                            <div class="col-sm-12">
+                                <label>Contrato de Locação</label>
+                                <div class="form-group">
+                                    <iframe class="pdf"
+                                        src="{{ url("storage{$received->contract['link']}") }}" width="100%"
+                                        height="200px"></iframe>
+                                    <a href="{{ url("storage{$received->contract['link']}") }}"
+                                        download>Download</a>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -360,7 +373,8 @@
                                                                 <div class="form-group">
                                                                     <label>Juros</label>
                                                                     <input type="text" name="fees" id="fees"
-                                                                        class="form-control percent" value="1.00%" disabled>
+                                                                        class="form-control percent" value="1.00%"
+                                                                        disabled>
                                                                     <input type="hidden" name="fees" id="fees"
                                                                         class="form-control" value="1.00%">
                                                                 </div>

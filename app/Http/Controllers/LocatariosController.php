@@ -174,7 +174,7 @@ class LocatariosController extends Controller
      */
     public function show($id)
     {
-        $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie')->first();
+        $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie', 'contract')->first();
         $civil_states = CivilState::where('active', 1)->get();
         $genres = Genre::where('active', 1)->get();
 
@@ -263,7 +263,6 @@ class LocatariosController extends Controller
 
             Storage::put('/tenant/pdf/id/' . $tenant['id'] . '/' . $fileName, $pdf->output());
 
-            //SALVAR NO BANCO
             $link = '/tenant/pdf/id/' . $tenant['id'] . '/' . $fileName;
 
             TenantContract::create([
@@ -277,6 +276,11 @@ class LocatariosController extends Controller
             return response()->json([
                 'error' => false,
                 'message' => 'Contrato gerado com sucesso'
+            ]);
+        } else {
+            return response()->json([
+                'error' => false,
+                'message' => 'Edição efetuada com sucesso'
             ]);
         }
     }
