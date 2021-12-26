@@ -220,7 +220,7 @@
 
                     @if ($payment['payment_method'] == 'ticket')
 
-                        <div class="col-sm-12">
+                        <div class="col-sm-12" style="overflow: scroll;">
                             <p class="lead text-muted text-center">
                                 Historico
                             </p>
@@ -257,6 +257,7 @@
                             <form name="form_send_mail_ticket" enctype="multipart/form-data" class="form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $payment->tenant_id }}">
+                                <input type="hidden" name="payment_id" value="{{ $payment->id }}">
                                 <button type="submit" class="btn btn-primary btn-sm">Reenviar E-mail</button>
                             </form>
 

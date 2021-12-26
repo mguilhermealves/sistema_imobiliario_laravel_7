@@ -171,6 +171,8 @@
                         <button class="nav-link" id="dados_conjuge-tab" data-toggle="tab" data-target="#dados_conjuge"
                             type="button" role="tab" aria-controls="dados_conjuge" aria-selected="false">Dados
                             Conjuge</button>
+                        <button class="nav-link" id="acao-tab" data-toggle="tab" data-target="#acao" type="button"
+                            role="tab" aria-controls="acao" aria-selected="false">Ação</button>
                     </div>
                 </nav>
 
@@ -407,8 +409,10 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12 mt-5 mb-5">
-                            <button class="btn btn-success btn-sm" type="submit">Editar Cliente</button>
+                        <div class="tab-pane fade" id="acao" role="tabpanel" aria-labelledby="acao-tab">
+                            <div class="col-sm-12 mt-5 mb-5">
+                                <button class="btn btn-success btn-sm" type="submit">Editar Cliente</button>
+                            </div>
                         </div>
                     </div>
                 </form>

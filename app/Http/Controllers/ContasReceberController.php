@@ -444,7 +444,9 @@ class ContasReceberController extends Controller
     {
         $tenant = Tenant::where('id', $request->id)->first();
 
-        ResendTicket::dispatch($tenant)->delay(now()->addSeconds('5'));
+        $payment = AccountReceivable::where('id', $request->payment_id)->with('historic_bank')->first();
+
+        ResendTicket::dispatch($tenant, $payment)->delay(now()->addSeconds('5'));
 
         return response()->json([
             'error' => false,

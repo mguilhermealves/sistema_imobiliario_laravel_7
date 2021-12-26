@@ -18,15 +18,17 @@ class ResendTicket implements ShouldQueue
     public $tries = 3;
 
     private $tenant;
+    private $payment;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Tenant $tenant)
+    public function __construct(Tenant $tenant, $payment)
     {
         $this->tenant = $tenant;
+        $this->payment = $payment;
     }
 
     /**
@@ -36,6 +38,6 @@ class ResendTicket implements ShouldQueue
      */
     public function handle()
     {
-        Mail::send(new MailResendTicket($this->tenant));
+        Mail::send(new MailResendTicket($this->tenant, $this->payment));
     }
 }
