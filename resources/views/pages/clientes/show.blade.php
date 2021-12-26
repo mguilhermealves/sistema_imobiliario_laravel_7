@@ -347,7 +347,7 @@
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" name="first_name_partner" id="first_name_partner"
-                                            class="form-control" value="{{ $client->partner->first_name_partner }}"
+                                            class="form-control" value="{{ $client->partner != null ? $client->partner->first_name_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -356,7 +356,7 @@
                                     <div class="form-group">
                                         <label>Sobrenome</label>
                                         <input type="text" name="last_name_partner" id="last_name_partner"
-                                            class="form-control" value="{{ $client->partner->last_name_partner }}"
+                                            class="form-control" value="{{ $client->partner != null ? $client->partner->last_name_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -365,7 +365,7 @@
                                     <div class="form-group">
                                         <label>CPF / CNPJ</label>
                                         <input type="text" name="cpf_cnpj_partner" id="cpf_cnpj_partner"
-                                            class="form-control" value="{{ $client->partner->cpf_cnpj_partner }}"
+                                            class="form-control" value="{{ $client->partner != null ? $client->partner->cpf_cnpj_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -374,7 +374,7 @@
                                     <div class="form-group">
                                         <label>RG</label>
                                         <input type="text" name="rg_partner" id="rg_partner" class="form-control"
-                                            value="{{ $client->partner->rg_partner }}" autofocus>
+                                            value="{{  $client->partner != null ? $client->partner->rg_partner : '' }}" autofocus>
                                     </div>
                                 </div>
 
@@ -382,7 +382,7 @@
                                     <div class="form-group">
                                         <label>CNH</label>
                                         <input type="text" name="cnh_partner" id="cnh_partner" class="form-control"
-                                            value="{{ $client->partner->cnh_partner }}" autofocus>
+                                            value="{{  $client->partner != null ? $client->partner->cnh_partner : '' }}" autofocus>
                                     </div>
                                 </div>
 

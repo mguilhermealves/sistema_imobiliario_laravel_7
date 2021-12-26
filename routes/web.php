@@ -53,4 +53,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contas_receber/payment/{id}', 'ContasReceberController@payment')->name('contas_receber.payment');
     Route::post('/contas_receber/payment/edit/{id}', 'ContasReceberController@payment_edit')->name('contas_receber.payment_edit');
     Route::post('/contas_receber/payment/send_email/{id}', 'ContasReceberController@sendEmail')->name('contas_receber.send_email');
+
+    /* EXPORT EXCEL */
+    route::get('export_client', 'ExportExcelController@export_client')->name('export_client');
 });
