@@ -79,6 +79,6 @@ class Tenant extends Model
      */
     public function status()
     {
-        return $this->hasOne('App\StatusTenant', 'is_aproved', 'slug');
+        return $this->hasOne('App\StatusTenant', 'slug', 'is_aproved');
     }
 }

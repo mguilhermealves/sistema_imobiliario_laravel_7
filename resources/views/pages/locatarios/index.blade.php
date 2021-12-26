@@ -72,15 +72,7 @@
                                         <td scope="row">{{ $tenant->id }}</td>
                                         <td>{{ $tenant->first_name . ' ' . $tenant->last_name }}</td>
                                         <td>{{ $tenant->propertie['id'] }}</td>
-                                        <td>
-                                            @if ($tenant->is_aproved == 'on_approval')
-                                                {{ 'Em Aprovação' }}
-                                            @elseif ($tenant->is_aproved == 'approved')
-                                                {{ 'Aprovado' }}
-                                            @else
-                                                {{ 'Não Aprovado' }}
-                                            @endif
-                                        </td>
+                                        <td>{{ $tenant->status['name'] }}</td>
                                         <td>
                                             @if ($tenant->n_contract != null && $tenant->is_aproved == 'approved')
                                                 {{ $tenant->n_contract }}

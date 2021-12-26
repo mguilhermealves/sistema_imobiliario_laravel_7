@@ -18,7 +18,7 @@ class LocatariosController extends Controller
     public function index()
     {
         $tenants = Tenant::where('active', 1)
-            ->with('address', 'partner', 'office', 'files', 'propertie')
+            ->with('address', 'partner', 'office', 'files', 'propertie', 'status')
             ->get();
 
         return view('pages.locatarios.index', [
