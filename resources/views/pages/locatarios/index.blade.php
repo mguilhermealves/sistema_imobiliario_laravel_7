@@ -90,7 +90,7 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('locatarios.show', $tenant->id) }}" type="button"
-                                                class="btn btn-primary btn-sm">Editar</a>
+                                                class="btn btn-primary btn-sm">Editar/Visualizar</a>
                                         </td>
                                     </tr>
                                 @empty

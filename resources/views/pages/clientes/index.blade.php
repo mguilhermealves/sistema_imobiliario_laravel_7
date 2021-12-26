@@ -65,7 +65,7 @@
                         <table class="table table-striped table-inverse" id="table-clientes">
                             <thead class="thead-inverse">
                                 <tr>
-                                    <th>Código do Cliente</th>
+                                    <th>Código</th>
                                     <th>Nome Completo</th>
                                     <th>CPF/CNPJ</th>
                                     <th>Ações</th>
@@ -78,8 +78,8 @@
                                         <td>{{ $client->first_name . ' ' . $client->last_name}}</td>
                                         <td>{{ $client->cpf_cnpj }}</td>
                                         <td>
-                                            <a href="{{ route('clientes.show', $client->id) }}" type="button" class="btn btn-primary btn-sm">Editar</a>
-                                            <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
+                                            <a href="{{ route('clientes.show', $client->id) }}" type="button" class="btn btn-primary btn-sm">Editar/Visualizar</a>
+                                            {{-- <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a> --}}
                                         </td>
                                     </tr>
                                 @empty
@@ -89,6 +89,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+
+                        @if ($clients != null)
+                            <a class="btn btn-primary btn-sm" href="{{ route('export_client') }}">Exportar Excel</a>
+                        @endif
                     </div>
                 </div>
             </div>

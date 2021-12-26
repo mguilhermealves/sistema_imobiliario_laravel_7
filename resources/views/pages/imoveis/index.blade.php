@@ -54,7 +54,7 @@
                         <table class="table table-striped table-inverse" id="table-imoveis">
                             <thead class="thead-inverse">
                                 <tr>
-                                    <th>Código do Imóvel</th>
+                                    <th>Código</th>
                                     <th>Endereco</th>
                                     <th>Bairro</th>
                                     <th>Cidade</th>
@@ -73,9 +73,8 @@
                                         <td>{{ $propertie->uf }}</td>
                                         <td>{{ $propertie->active == 1 ? 'Ativo' : 'Inativo' }}</td>
                                         <td>
-                                            <a href="{{ route('imoveis.show', $propertie->id) }}" type="button"
-                                                class="btn btn-primary btn-sm">Editar</a>
-                                            <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a>
+                                            <a href="{{ route('imoveis.show', $propertie->id) }}" type="button" class="btn btn-primary btn-sm">Editar/Visualizar</a>
+                                            {{-- <a href="http://" type="button" class="btn btn-danger btn-sm">Excluir</a> --}}
                                         </td>
                                     </tr>
                                 @empty
@@ -86,6 +85,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+
+                        @if ($properties != null)
+                            <a class="btn btn-primary btn-sm" href="{{ route('export_propertie') }}">Exportar Excel</a>
+                        @endif
                     </div>
                 </div>
             </div>
