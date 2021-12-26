@@ -73,4 +73,12 @@ class Tenant extends Model
     {
         return $this->hasOne('App\TenantContract', 'tenant_id', 'id');
     }
+
+    /**
+     * Get partner for client.
+     */
+    public function status()
+    {
+        return $this->hasOne('App\StatusTenant', 'is_aproved', 'slug');
+    }
 }

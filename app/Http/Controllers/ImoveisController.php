@@ -7,6 +7,8 @@ use App\Propertie;
 use App\PropertiesClients;
 use App\PropertiesImages;
 use App\Client;
+use App\ObjectivePropertie;
+use App\TypePropertie;
 
 class ImoveisController extends Controller
 {
@@ -31,7 +33,12 @@ class ImoveisController extends Controller
      */
     public function create()
     {
-        return view('pages.imoveis.create');
+        $type_propertie = TypePropertie::where('active', 1)->get();
+        $objective_properties = ObjectivePropertie::where('active', 1)->get();
+        return view('pages.imoveis.create', [
+            'type_propertie' => $type_propertie,
+            'objective_properties' => $objective_properties
+        ]);
     }
 
     /**

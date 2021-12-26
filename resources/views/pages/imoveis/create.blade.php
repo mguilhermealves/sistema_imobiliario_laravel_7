@@ -218,17 +218,11 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
-                                        <select class="custom-select" name="type_propertie"
-                                            id="type_propertie">
-                                            <option value="apartmant">Apartamento</option>
-                                            <option value="comercial">Comercial</option>
-                                            <option value="house">Casa Térrea</option>
-                                            <option value="soft">Sobrado</option>
-                                            <option value="haunted">Assobradado</option>
-                                            <option value="ground">Terreno</option>
-                                            <option value="place">Sitio</option>
-                                            <option value="farm">Chacára</option>
-                                            <option value="other">Outros</option>
+                                        <select class="custom-select" name="type_propertie" id="type_propertie">
+                                            <option selected>Selecione...</option>
+                                            @foreach ($type_propertie as $type)
+                                                <option value="{{ $type->slug }}"> {{ $type->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -294,8 +288,9 @@
                                         <label>Objetivo do Imovel</label>
                                         <select class="custom-select" name="object_propertie" id="object_propertie">
                                             <option selected>Selecione o objetivo</option>
-                                            <option value="sale">Venda</option>
-                                            <option value="location">Locação</option>
+                                            @foreach ($objective_properties as $objective)
+                                                <option value="{{ $objective->slug }}"> {{ $objective->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
