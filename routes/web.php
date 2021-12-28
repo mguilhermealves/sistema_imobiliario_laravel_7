@@ -57,4 +57,5 @@ Route::middleware(['auth'])->group(function () {
     /* EXPORT EXCEL */
     route::get('export_client', 'ExportExcelController@export_client')->name('export_client');
     route::get('export_propertie', 'ExportExcelController@export_propertie')->name('export_propertie');
+    route::get('export_tenants', 'ExportExcelController@export_tenants')->name('export_tenants');
 });

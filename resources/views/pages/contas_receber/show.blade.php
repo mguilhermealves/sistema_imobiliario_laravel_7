@@ -223,7 +223,7 @@
                                 <div class="form-group">
                                     <label>Tipo de Propriedade</label>
                                     <input type="text" name="uf" id="uf" class="form-control"
-                                        value="{{ $received->propertie['type_propertie'] }}" disabled>
+                                        value="{{ $received->propertie->type_properties['name'] }}" disabled>
                                 </div>
                             </div>
 
@@ -231,7 +231,7 @@
                                 <div class="form-group">
                                     <label>Objetivo do Imóvel</label>
                                     <input type="text" name="uf" id="uf" class="form-control"
-                                        value="{{ $received->propertie['object_propertie'] }}" disabled>
+                                        value="{{ $received->propertie->objetivie_properties['name'] }}" disabled>
                                 </div>
                             </div>
 
@@ -349,7 +349,7 @@
                                                                     <label>Descrição do Imóvel</label>
                                                                     <input type="text" name="obj_propertie"
                                                                         id="obj_propertie" class="form-control"
-                                                                        value="{{ $received->propertie['object_propertie'] }}"
+                                                                        value="{{ $received->propertie->objetivie_properties['name'] }}"
                                                                         disabled>
                                                                     <input type="hidden" name="obj_propertie"
                                                                         id="obj_propertie" class="form-control"
@@ -410,7 +410,7 @@
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label>Forma de Pagamento</label>
-                                                                    <select class="custom-select" name="payment_method">
+                                                                    <select class="custom-select" name="payment_method" required>
                                                                         <option selected>Selecione...</option>
                                                                         <option value="debit">Débito em conta</option>
                                                                         <option value="ticket">Boleto</option>

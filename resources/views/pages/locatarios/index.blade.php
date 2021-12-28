@@ -93,6 +93,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+
+                        @if ($tenants != null)
+                            <a class="btn btn-primary btn-sm" href="{{ route('export_tenants') }}">Exportar Excel</a>
+                        @endif
                     </div>
                 </div>
             </div>

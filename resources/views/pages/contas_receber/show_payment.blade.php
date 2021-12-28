@@ -147,7 +147,7 @@
                         <div class="form-group">
                             <label>Status</label>
                             <input type="text" name="" id="" class="form-control"
-                                value="{{ $payment['status_payment'] }}" disabled>
+                                value="{{ $status_payment }}" disabled>
                         </div>
                     </div>
 
@@ -261,6 +261,12 @@
                                 <button type="submit" class="btn btn-primary btn-sm">Reenviar E-mail</button>
                             </form>
 
+                        </div>
+                    @endif
+
+                    @if ($payment['payment_method'] != 'ticket')
+                        <div class="col-sm-12">
+                            <a class="btn btn-primary btn-sm" href="http://">Gerar Recibo</a>
                         </div>
                     @endif
 

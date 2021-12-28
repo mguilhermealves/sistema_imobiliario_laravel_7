@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\{Propertie, CivilState, Genre, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile, TenantPropertie, TenantContract};
+use App\{Propertie, CivilState, Genre, StatusTenant, Tenant, TenantAddress, TenantPartner, TenantOffice, TenantFile, TenantPropertie, TenantContract};
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -177,11 +177,13 @@ class LocatariosController extends Controller
         $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie', 'contract')->first();
         $civil_states = CivilState::where('active', 1)->get();
         $genres = Genre::where('active', 1)->get();
+        $status = StatusTenant::where('active', 1)->get();
 
         return view('pages.locatarios.show', [
             'tenant' => $tenant,
             'civil_states' => $civil_states,
-            'genres' => $genres
+            'genres' => $genres,
+            'status' => $status
         ]);
     }
 
@@ -249,7 +251,7 @@ class LocatariosController extends Controller
 
         $tenant->save();
 
-        if ($request->is_aproved == 'Aprovado' && $request->n_contract == null) {
+        if ($request->is_aproved == 'approved' && $request->n_contract == null) {
             $protocolo = Carbon::now()->format('Ymdhis');
 
             $tenant['n_contract'] = $protocolo;

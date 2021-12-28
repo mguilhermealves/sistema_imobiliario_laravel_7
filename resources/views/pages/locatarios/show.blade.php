@@ -75,15 +75,15 @@
 
                 var is_aproved = ($('#is_aproved').val());
 
-                if (is_aproved == 'Em Aprovação') {
+                if (is_aproved == 'on_approval') {
                     $('#number_contract_aproved').hide();
                     $('#text_not_aproved').hide();
-                } else if (is_aproved == 'Aprovado') {
+                } else if (is_aproved == 'approved') {
                     $('#number_contract_aproved').show();
                     $('#n_contract').attr('disabled', 'disabled');
                     $('#is_aproved').attr('disabled', 'disabled');
                     $('#text_not_aproved').hide();
-                } else if (is_aproved == 'Não Aprovado') {
+                } else if (is_aproved == 'not_approved') {
                     $('#text_not_aproved').show();
                     $('#number_contract_aproved').hide();
                 } else {
@@ -103,13 +103,15 @@
                     dataType: 'json',
                     success: function(resp) {
                         if (resp.error == false) {
-                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
+                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message).fadeIn(300).delay(2000).fadeOut(600);
 
                             setTimeout(function() {
-                                window.location.replace("{{ route('locatarios.update', $tenant->id) }}");
+                                window.location.replace(
+                                    "{{ route('locatarios.show', $tenant->id) }}"
+                                );
                             }, 1500);
                         } else {
-                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
+                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message).fadeIn(300).delay(2000).fadeOut(600);
                         }
                     }
                 });
@@ -190,13 +192,13 @@
             $('#is_aproved').change(function() {
                 var status = ($(this).val());
 
-                if (status == 'Em Aprovação') {
+                if (status == 'on_approval') {
                     $('#number_contract_aproved').hide();
                     $('#text_not_aproved').hide();
-                } else if (status == 'Aprovado') {
+                } else if (status == 'approved') {
                     $('#number_contract_aproved').hide();
                     $('#text_not_aproved').hide();
-                } else if (status == 'Não Aprovado') {
+                } else if (status == 'not_approved') {
                     $('#text_not_aproved').show();
                     $('#number_contract_aproved').hide();
                 }
@@ -288,7 +290,7 @@
 @endsection
 
 @section('content')
-    <div class="alert d-none message_box" role="alert">
+    <div class="d-none message_box" role="alert">
 
     </div>
 
@@ -855,12 +857,11 @@
                                     <div class="form-group">
                                         <label>Cadastro Aprovado</label>
                                         <select class="custom-select" name="is_aproved" id="is_aproved">
-                                            <option {{ $tenant->is_aproved == 'on_approval' ? 'selected' : '' }}>
-                                                Em Aprovação</option>
-                                            <option {{ $tenant->is_aproved == 'approved' ? 'selected' : '' }}>
-                                                Aprovado</option>
-                                            <option {{ $tenant->is_aproved == 'not_approved' ? 'selected' : '' }}>
-                                                Não Aprovado</option>
+                                            @foreach ($status as $stats)
+                                                <option value="{{ $stats->slug }}" @if ($stats->slug == $tenant->is_aproved)
+                                                    selected
+                                            @endif> {{ $stats->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>

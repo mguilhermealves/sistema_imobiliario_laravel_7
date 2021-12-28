@@ -11,7 +11,115 @@
 </head>
 
 <body>
-    TESTE
+    <p style="text-align: center;font-weight: 600">Contrato de Locação n° {{ $tenant->n_contract }}</p>
+
+    <table style="width:100%; padding: 0 3%;">
+        <tr>
+            <th style="background-color: 000080;color: #000080; text-align: center;">Dados do Locatário</th>
+        </tr>
+        <tr>
+            <td>
+                <strong>1. Contratante:</strong>
+                <p> Locatário denominado:
+
+                    {{ $tenant['first_name'] . ' ' . $tenant['last_name'] . ', ' }}
+
+                    {{ ' CPF/CNPJ: ' . $tenant['cpf_cnpj'] . ', ' }}
+
+                    {{ ' E-mail: ' . $tenant['mail'] . ', ' }}
+
+                    {{ ' RG: ' . $tenant['rg'] . ', ' }}
+
+                    {{ ' Telefone: ' . $tenant['phone'] . ', ' }}
+
+                    {{ ' Celular: ' . $tenant['celphone'] . ', ' }}
+
+                    {{ ' Genero: ' . $tenant['genre'] . ', ' }}
+
+                    {{ ' Estado Civil: ' . $tenant['marital_status'] . ', ' }}
+
+                    localizado(a) no endereço:
+
+                    {{ $tenant->address['address'] . ', ' }}
+
+                    {{ ' N°: ' . $tenant->address['number_address'] . ', ' }}
+
+                    {{ $tenant->address['complement'] ? ' N°: ' . $tenant->complement['address'] . ', ' : '' }}
+
+                    {{ ' CEP: ' . $tenant->address['code_postal'] . ', ' }}
+
+                    {{ ' Bairro: ' . $tenant->address['district'] . ', ' }}
+
+                    {{ ' Cidade: ' . $tenant->address['city'] . ', ' }}
+
+                    {{ ' UF: ' . $tenant->address['uf'] . ', ' }}
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>3. Dados do Proprietário:</strong>
+                <p>Inserir aqui...</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>2. Objeto do Contrato:</strong>
+                <p>Prestação de serviços de (i) marketing de relacionamento, incentivo e fidelização, mediante a
+                    utilização do Portal de Relacionamento Hot Shop Online ou outro site criado para tanto; (ii) criação
+                    e desenvolvimento de website exclusivo para a campanha, bem como sistemas específicos, com a
+                    possibilidade de upload de imagens/conteúdo e publicação de banners, (iii) criação e desenvolvimento
+                    de landing pages (páginas exclusivas de acesso ao site criado), e (iv) integração desses sistemas
+                    aos já existentes de propriedade da Contratante.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>4. Público:</strong>
+                <p>Inserir aqui...</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>5. Período de duração do contrato:</strong>
+                <p>Inserir aqui...</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>8. Forma de pagamento:</strong>
+                <p></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>9. Local e data:</strong>
+                <p>São Paulo,
+                    @php
+                        echo date('d');
+                    @endphp
+                    , de @php
+                        echo date('m');
+                    @endphp
+                    , de @php
+                    echo date('y');
+                @endphp
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Assinatura Locatário:</strong>
+                <p>________________________________________________</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Assinatura Proprietário:</strong>
+                <p>________________________________________________</p>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

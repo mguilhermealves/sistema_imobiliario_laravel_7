@@ -26,7 +26,7 @@ class ContasReceberController extends Controller
     public function index()
     {
         $tenants = Tenant::where('active', 1)
-            ->where('is_aproved', 'Aprovado')
+            ->where('is_aproved', 'approved')
             ->with('address', 'partner', 'office', 'files', 'propertie')
             ->get();
 
@@ -65,7 +65,7 @@ class ContasReceberController extends Controller
      */
     public function show($id)
     {
-        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'contract')->find($id);
+        $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'propertie.objetivie_properties', 'propertie.type_properties', 'contract')->where('id', $id)->first();
 
         $payments = AccountReceivable::with('historic_bank')->where('tenant_id', $received['id'])->get();
 
@@ -99,6 +99,15 @@ class ContasReceberController extends Controller
     {
         $payment = AccountReceivable::with('historic_bank')->find($id);
 
+        $status_payment = '';
+        if ($payment['status_payment'] == 'waiting') {
+            $status_payment = 'Aguardando Pagamento';
+        } elseif ($payment['status_payment'] == 'to_win') {
+            $status_payment = 'Pago';
+        } else {
+            $status_payment = 'Não Pago';
+        }
+
         $dtNow = now();
 
         $dias_em_atraso = '';
@@ -113,7 +122,8 @@ class ContasReceberController extends Controller
         return view('pages.contas_receber.show_payment', [
             'payment' => $payment,
             'json_historical_bank' => $json_historical_bank,
-            'dias_em_atraso' => $dias_em_atraso
+            'dias_em_atraso' => $dias_em_atraso,
+            'status_payment' => $status_payment
         ]);
     }
 
