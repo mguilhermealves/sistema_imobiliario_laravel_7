@@ -4,6 +4,28 @@
     <script>
         $(function($) {
 
+            $('form[name="form_update_propertie"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('imoveis.update', $propertie->id) }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace("{{ route('imoveis.show', $propertie->id) }}");
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -158,14 +180,13 @@
 @endsection
 
 @section('content')
+    <div class="alert d-none message_box" role="alert">
+
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
                 <h1 class="text-center mt-3 mb-5">Editar Imóvel Código N° <strong>{{ $propertie->id }} </strong> </h1>
-
-                {{-- @php
-                    dd($propertie->client_properties);
-                @endphp --}}
 
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -180,8 +201,7 @@
                     </div>
                 </nav>
 
-                <form action="{{ route('imoveis.update', $propertie->id) }}" method="post" enctype="multipart/form-data"
-                    class="form">
+                <form name="form_update_propertie" enctype="multipart/form-data" class="form">
                     @method('PUT')
                     @csrf
 
@@ -224,7 +244,8 @@
                                             </option>
                                             <option {{ $propertie->type_propertie == 'haunted' ? 'selected' : '' }}>
                                                 Assobradado</option>
-                                            <option {{ $propertie->type_propertie == 'ground' ? 'selected' : '' }}>Terreno
+                                            <option {{ $propertie->type_propertie == 'ground' ? 'selected' : '' }}>
+                                                Terreno
                                             </option>
                                             <option {{ $propertie->type_propertie == 'place' ? 'selected' : '' }}>Sitio
                                             </option>
@@ -320,7 +341,7 @@
 
                                         <div class="col-sm-4" name="location">
                                             <div class="form-group">
-                                                <label>Valor Locação</label>
+                                                <label>Valor Locação R$</label>
                                                 <input type="text" name="price_location" class="form-control money"
                                                     value="{{ $propertie->price_location }}" autofocus>
                                             </div>
@@ -328,7 +349,7 @@
 
                                         <div class="col-sm-4" name="sale">
                                             <div class="form-group">
-                                                <label>Valor Venda</label>
+                                                <label>Valor Venda R$</label>
                                                 <input type="text" name="price_sale" class="form-control money"
                                                     value="{{ $propertie->price_sale }}" autofocus>
                                             </div>
@@ -336,7 +357,7 @@
 
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label>Valor IPTU</label>
+                                                <label>Valor IPTU R$</label>
                                                 <input type="text" name="price_iptu" class="form-control money"
                                                     value="{{ $propertie->price_iptu }}" autofocus>
                                             </div>
@@ -344,7 +365,7 @@
 
                                         <div class="col-sm-4" name="is_apartmant">
                                             <div class="form-group">
-                                                <label>Valor do Condominio</label>
+                                                <label>Valor do Condominio R$</label>
                                                 <input type="text" name="price_condominium" class="form-control money"
                                                     value="{{ $propertie->price_condominium }}" autofocus>
                                             </div>

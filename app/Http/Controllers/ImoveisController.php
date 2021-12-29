@@ -151,7 +151,38 @@ class ImoveisController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
+        $type_propertie = TypePropertie::where('name', $request->type_propertie)->first();
+        $objective_propertie = ObjectivePropertie::where('name', $request->object_propertie)->first();
+
+        $propertie = Propertie::find($id);
+
+        // dd( $request->toArray() );
+
+        $propertie['address'] = $request['address'];
+        $propertie['number_address'] = $request['address_number'];
+        $propertie['complement'] = $request['address_complement'];
+        $propertie['code_postal'] = $request['cep'];
+        $propertie['district'] = $request['district'];
+        $propertie['city'] = $request['city'];
+        $propertie['uf'] = $request['uf'];
+        $propertie['type_propertie'] = $type_propertie['slug'];
+        $propertie['object_propertie'] = $objective_propertie['slug'];
+        $propertie['deadline_contract'] = $request['deadline_contract'];
+        $propertie['financial_propertie'] = $request['financial_propertie'];
+        $propertie['financer_name'] = $request['financer_name'];
+        $propertie['price_condominium'] = $request['price_condominium'];
+        $propertie['price_location'] = $request['price_location'];
+        $propertie['price_sale'] = $request['price_sale'];
+        $propertie['price_iptu'] = $request['price_iptu'];
+        $propertie['isswap'] = $request['isswap'];
+        $propertie['comments'] = $request['comments'];
+
+        $propertie->save();
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Imovel editada com sucesso'
+        ]);
     }
 
     /**

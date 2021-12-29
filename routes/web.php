@@ -34,7 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/clientes', 'ClientesController@index')->name('clientes');
     Route::get('/clientes/create', 'ClientesController@create')->name('clientes.create');
     Route::post('/clientes/store', 'ClientesController@store')->name('clientes.store');
-    Route::get('/clientes/show/{id}', 'ClientesController@show')->name('clientes.show');
+    Route::match(['get', 'post'], '/clientes/show/{id}', 'ClientesController@show')->name('clientes.show');
     Route::put('/clientes/update/{id}', 'ClientesController@update')->name('clientes.update');
 
     /* Locatarios */
