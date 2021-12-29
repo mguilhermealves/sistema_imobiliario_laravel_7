@@ -161,11 +161,11 @@
 
                     @if ($payment['payment_method'] == 'ticket')
 
-                        @if ($dias_em_atraso == 0)
+                        @if ($dias_em_atraso->invert == -1)
                             <div class="col-sm-4">
                                 <div class="form-group">
                                     <label>Dias em Atraso</label>
-                                    <input type="text" class="form-control" name="" id="" value="{{ $dias_em_atraso }}"
+                                    <input type="text" class="form-control" name="" id="" value="{{ $dias_em_atraso->days }}"
                                         disabled
                                         style="color: green; background-color: rgb(178, 253, 193); font-weight: bold;">
                                 </div>
@@ -264,11 +264,11 @@
                         </div>
                     @endif
 
-                    @if ($payment['payment_method'] != 'ticket')
+                    {{-- @if ($payment['payment_method'] != 'ticket')
                         <div class="col-sm-12">
                             <a class="btn btn-primary btn-sm" href="http://">Gerar Recibo</a>
                         </div>
-                    @endif
+                    @endif --}}
 
                     <!-- Modal -->
                     <div class="modal fade" id="modal_edit_payment" tabindex="-1" role="dialog"

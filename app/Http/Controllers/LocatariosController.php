@@ -174,7 +174,7 @@ class LocatariosController extends Controller
      */
     public function show($id)
     {
-        $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie', 'contract')->first();
+        $tenant = Tenant::where('id', $id)->with('address', 'partner', 'office', 'files', 'propertie', 'propertie.type_properties', 'propertie.objetivie_properties', 'contract')->first();
         $civil_states = CivilState::where('active', 1)->get();
         $genres = Genre::where('active', 1)->get();
         $status = StatusTenant::where('active', 1)->get();

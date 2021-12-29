@@ -8,8 +8,8 @@
 
                 $('#phone').mask("(99) 9999-9999");
                 $('#celphone').mask("(99) 99999-9999");
-                $('#code_postal').mask("99999-999");
-                $('#cpf').mask("999.999.999-99");
+                $('.cep').mask("99999-999");
+                $('.cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
 
                 var status = ($('#object_propertie').val());
@@ -204,7 +204,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CPF / CNPJ</label>
-                                        <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="form-control"
+                                        <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="form-control cpf"
                                             value="{{ $client->cpf_cnpj }}" autofocus>
                                     </div>
                                 </div>
@@ -286,7 +286,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CEP</label>
-                                        <input type="text" name="cep" id="cep" class="form-control"
+                                        <input type="text" name="cep" id="cep" class="form-control cep"
                                             value="{{ $client->code_postal }}" autofocus>
                                     </div>
                                 </div>
@@ -395,7 +395,7 @@
                                 </div>
 
                                 @if (!empty($client->partner->file))
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12">
                                         <label>Certidão de Casamento</label>
                                         <div class="form-group">
                                             <iframe class="pdf"

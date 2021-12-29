@@ -8,7 +8,7 @@
 
                 $('#phone').mask("(99) 9999-9999");
                 $('#celphone').mask("(99) 99999-9999");
-                $('#code_postal').mask("99999-999");
+                $('.cep').mask("99999-999");
                 $('#cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
                 $('.money').mask("#.##0,00", {
@@ -345,7 +345,7 @@
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
                                         <input type="text" name="type_propertie" id="type_propertie" class="form-control"
-                                            value="{{ $tenant->propertie['type_propertie'] }}" disabled>
+                                            value="{{ $tenant->propertie->type_properties['name'] }}" disabled>
                                     </div>
                                 </div>
 
@@ -353,7 +353,7 @@
                                     <div class="form-group">
                                         <label>Objetivo de Imóvel</label>
                                         <input type="text" name="object_propertie" id="object_propertie"
-                                            class="form-control" value="{{ $tenant->propertie['object_propertie'] }}"
+                                            class="form-control" value="{{ $tenant->propertie->objetivie_properties['name'] }}"
                                             disabled>
                                     </div>
                                 </div>
@@ -362,7 +362,7 @@
                                     <div class="form-group">
                                         <label>CEP</label>
                                         <input type="text" name="code_postal" id="code_postal" placeholder="00000-000"
-                                            class="form-control" value="{{ $tenant->propertie['code_postal'] }}"
+                                            class="form-control cep" value="{{ $tenant->propertie['code_postal'] }}"
                                             disabled>
                                     </div>
                                 </div>
@@ -568,7 +568,7 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>CEP</label>
-                                        <input type="text" name="cep" id="cep" class="form-control"
+                                        <input type="text" name="cep" id="cep" class="form-control cep"
                                             value="{{ $tenant->address['code_postal'] }}" autofocus>
                                     </div>
                                 </div>

@@ -14,7 +14,7 @@ class TenantsExport implements FromCollection, WithHeadings, WithColumnWidths
     */
     public function collection()
     {
-        return Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'status')->select('id', 'first_name', 'last_name', 'mail', 'cpf_cnpj', 'genre', 'marital_status', 'is_children', 'is_pet','pet_species', 'number_residents', 'is_aproved', 'comments', 'n_contract', 'day_due', 'active')->get();
+        return Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'status')->select('id', 'first_name', 'last_name', 'mail', 'cpf_cnpj', 'genre', 'marital_status', 'is_children', 'is_pet','pet_species', 'number_residents', 'is_aproved', 'n_contract', 'day_due', 'active')->get();
     }
 
     public function headings(): array

@@ -11,6 +11,9 @@
                 $('#code_postal').mask("99999-999");
                 $('#cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
+                $('.money').mask("#.##0,00", {
+                    reverse: true
+                });
 
                 var status = ($('#object_propertie').val());
                 var type_propertie = ($('#type_propertie').val());
@@ -194,7 +197,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-4">
+                                <div class="col-sm-8">
                                     <div class="form-group">
                                         <label>Nome do Proprietário</label>
                                         <input type="text" class="form-control"
@@ -318,7 +321,7 @@
                                         <div class="col-sm-4" name="location">
                                             <div class="form-group">
                                                 <label>Valor Locação</label>
-                                                <input type="text" name="price_location" class="form-control"
+                                                <input type="text" name="price_location" class="form-control money"
                                                     value="{{ $propertie->price_location }}" autofocus>
                                             </div>
                                         </div>
@@ -326,7 +329,7 @@
                                         <div class="col-sm-4" name="sale">
                                             <div class="form-group">
                                                 <label>Valor Venda</label>
-                                                <input type="text" name="price_sale" class="form-control"
+                                                <input type="text" name="price_sale" class="form-control money"
                                                     value="{{ $propertie->price_sale }}" autofocus>
                                             </div>
                                         </div>
@@ -334,7 +337,7 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Valor IPTU</label>
-                                                <input type="text" name="price_iptu" class="form-control"
+                                                <input type="text" name="price_iptu" class="form-control money"
                                                     value="{{ $propertie->price_iptu }}" autofocus>
                                             </div>
                                         </div>
@@ -342,7 +345,7 @@
                                         <div class="col-sm-4" name="is_apartmant">
                                             <div class="form-group">
                                                 <label>Valor do Condominio</label>
-                                                <input type="text" name="price_condominium" class="form-control"
+                                                <input type="text" name="price_condominium" class="form-control money"
                                                     value="{{ $propertie->price_condominium }}" autofocus>
                                             </div>
                                         </div>
@@ -373,8 +376,14 @@
                                                 <label>Aceita Financiamento</label>
                                                 <select class="custom-select" name="financial_propertie">
                                                     <option selected>Selecione o objetivo</option>
-                                                    <option value="yes">Sim</option>
-                                                    <option value="no">Não</option>
+                                                    <option value="{{ $propertie->financial_propertie }}"
+                                                        {{ $propertie->financial_propertie == 'yes' ? 'selected' : '' }}>
+                                                        Sim
+                                                    </option>
+                                                    <option value="{{ $propertie->financial_propertie }}"
+                                                        {{ $propertie->financial_propertie == 'no' ? 'selected' : '' }}>
+                                                        Não
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -391,9 +400,12 @@
                                             <div class="form-group">
                                                 <label>Aceita Troca</label>
                                                 <select class="custom-select" name="isswap" id="isswap">
-                                                    <option selected>Selecione</option>
-                                                    <option value="yes">Sim</option>
-                                                    <option value="no">Não</option>
+                                                    <option value="{{ $propertie->isswap }}"
+                                                        {{ $propertie->isswap == 'yes' ? 'selected' : '' }}>Sim
+                                                    </option>
+                                                    <option value="{{ $propertie->isswap }}"
+                                                        {{ $propertie->isswap == 'no' ? 'selected' : '' }}>Não
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
