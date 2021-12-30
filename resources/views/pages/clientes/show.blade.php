@@ -4,6 +4,37 @@
     <script>
         $(function($) {
 
+            $('form[name="form_update_client"]').submit(function(event) {
+                event.preventDefault();
+
+                var formData = new FormData($(this)[0]);
+
+                $.ajax({
+                    url: "{{ route('clientes.update', $client->id) }}",
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    processData: false,
+                    contentType: false,
+                    success: function(resp) {
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success')
+                                .html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(
+                                    "{{ route('clientes.show', $client->id) }}");
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').addClass('alert-danger')
+                                .html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -155,6 +186,9 @@
 @endsection
 
 @section('content')
+    <div class="alert d-none message_box" role="alert">
+
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
@@ -176,8 +210,7 @@
                     </div>
                 </nav>
 
-                <form action="{{ route('clientes.update', $client->id) }}" method="post" enctype="multipart/form-data"
-                    class="form">
+                <form id="form_update" name="form_update_client" enctype="multipart/form-data" class="form">
                     @method('PUT')
                     @csrf
 
@@ -347,7 +380,8 @@
                                     <div class="form-group">
                                         <label>Nome</label>
                                         <input type="text" name="first_name_partner" id="first_name_partner"
-                                            class="form-control" value="{{ $client->partner != null ? $client->partner->first_name_partner : '' }}"
+                                            class="form-control"
+                                            value="{{ $client->partner != null ? $client->partner->first_name_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -356,7 +390,8 @@
                                     <div class="form-group">
                                         <label>Sobrenome</label>
                                         <input type="text" name="last_name_partner" id="last_name_partner"
-                                            class="form-control" value="{{ $client->partner != null ? $client->partner->last_name_partner : '' }}"
+                                            class="form-control"
+                                            value="{{ $client->partner != null ? $client->partner->last_name_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -365,7 +400,8 @@
                                     <div class="form-group">
                                         <label>CPF / CNPJ</label>
                                         <input type="text" name="cpf_cnpj_partner" id="cpf_cnpj_partner"
-                                            class="form-control" value="{{ $client->partner != null ? $client->partner->cpf_cnpj_partner : '' }}"
+                                            class="form-control cpf"
+                                            value="{{ $client->partner != null ? $client->partner->cpf_cnpj_partner : '' }}"
                                             autofocus>
                                     </div>
                                 </div>
@@ -374,7 +410,8 @@
                                     <div class="form-group">
                                         <label>RG</label>
                                         <input type="text" name="rg_partner" id="rg_partner" class="form-control"
-                                            value="{{  $client->partner != null ? $client->partner->rg_partner : '' }}" autofocus>
+                                            value="{{ $client->partner != null ? $client->partner->rg_partner : '' }}"
+                                            autofocus>
                                     </div>
                                 </div>
 
@@ -382,7 +419,8 @@
                                     <div class="form-group">
                                         <label>CNH</label>
                                         <input type="text" name="cnh_partner" id="cnh_partner" class="form-control"
-                                            value="{{  $client->partner != null ? $client->partner->cnh_partner : '' }}" autofocus>
+                                            value="{{ $client->partner != null ? $client->partner->cnh_partner : '' }}"
+                                            autofocus>
                                     </div>
                                 </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CivilState;
 use Illuminate\Http\Request;
 use App\Client;
 use App\ClientPartner;
@@ -101,10 +102,17 @@ class ClientesController extends Controller
     public function show($id)
     {
         $client = Client::with([
-            'partner', 'partner.file'
+            'partner', 'partner.file' => function ($query) {
+                $query->orderBy('id', 'desc');
+            }
         ])->find($id);
 
-        return view('pages.clientes.show', compact('client'));
+        $civil_states = CivilState::where('active', 1);
+
+        return view('pages.clientes.show', [
+            'client' => $client,
+            'civil_states' => $civil_states
+        ]);
     }
 
     /**
@@ -127,8 +135,61 @@ class ClientesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $cpf_cnpj_formated = preg_replace('/[^0-9]/', '', $request->cpf_cnpj);
+        $phone_formated = preg_replace('/[^0-9]/', '', $request->phone);
+        $celphone_formated = preg_replace('/[^0-9]/', '', $request->celphone);
+        $cep_formated = preg_replace('/[^0-9]/', '', $request->cep);
+        $cpf_cnpj_partner_formated = preg_replace('/[^0-9]/', '', $request->cpf_cnpj_partner);
+
+        $client = Client::with('partner')->find($id);
+
+        $client['first_name'] = $request['first_name'];
+        $client['last_name'] = $request['last_name'];
+        $client['cpf_cnpj'] = $cpf_cnpj_formated;
+        $client['rg'] = $request['rg'];
+        $client['cnh'] = $request['cnh'];
+        $client['mail'] = $request['mail'];
+        $client['genre'] = $request['genre'];
+        $client['marital_status'] = $request['marital_status'];
+        $client['phone'] = $phone_formated;
+        $client['celphone'] = $celphone_formated;
+        $client['code_postal'] = $cep_formated;
+        $client['address'] = $request['address'];
+        $client['number_address'] = $request['address_number'];
+        $client['complement'] = $request['address_complement'];
+        $client['district'] = $request['district'];
+        $client['city'] = $request['city'];
+        $client['uf'] = $request['uf'];
+
+        if ($request['marital_status'] == "married") {
+            $client->partner['first_name_partner'] = $request['first_name_partner'];
+            $client->partner['last_name_partner'] = $request['last_name_partner'];
+            $client->partner['cpf_cnpj_partner'] = $cpf_cnpj_partner_formated;
+            $client->partner['rg_partner'] = $request['rg_partner'];
+            $client->partner['cnh_partner'] = $request['cnh_partner'];
+
+            if ($request['certification_married']) {
+                $file = $request['certification_married'];
+
+                $url = $file->store('client/partner/file/' . $client->id);
+
+                ClientPartnerFile::create([
+                    'url' => $url,
+                    'clients_partners_id' => $client->partner['id']
+                ]);
+            }
+        }
+
+        $client->save();
+        $client->partner->save();
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Cliente editado com sucesso...'
+        ]);
     }
+
+
 
     /**
      * Remove the specified resource from storage.
