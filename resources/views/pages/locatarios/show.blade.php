@@ -884,12 +884,12 @@
 
                                 @if ($tenant['n_contract'] != null)
                                     <div class="col-sm-12 mt-5 mb-5">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-12">
                                             <label>Contrato de Locação</label>
                                             <div class="form-group">
                                                 <iframe class="pdf"
                                                     src="{{ url("storage{$tenant->contract['link']}") }}" width="100%"
-                                                    height="200px"></iframe>
+                                                    height="400px"></iframe>
                                                 <a href="{{ url("storage{$tenant->contract['link']}") }}"
                                                     download>Download</a>
                                             </div>

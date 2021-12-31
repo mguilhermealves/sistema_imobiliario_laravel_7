@@ -156,8 +156,6 @@ class ImoveisController extends Controller
 
         $propertie = Propertie::find($id);
 
-        // dd( $request->toArray() );
-
         $propertie['address'] = $request['address'];
         $propertie['number_address'] = $request['address_number'];
         $propertie['complement'] = $request['address_complement'];
