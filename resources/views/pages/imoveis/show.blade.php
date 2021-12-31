@@ -4,28 +4,6 @@
     <script>
         $(function($) {
 
-            $('form[name="form_update_propertie"]').submit(function(event) {
-                event.preventDefault();
-
-                $.ajax({
-                    url: "{{ route('imoveis.update', $propertie->id) }}",
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    dataType: 'json',
-                    success: function(resp) {
-                        if (resp.error == false) {
-                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
-
-                            setTimeout(function() {
-                                window.location.replace("{{ route('imoveis.show', $propertie->id) }}");
-                            }, 1500);
-                        } else {
-                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
-                        }
-                    }
-                });
-            });
-
             $(document).ready(function() {
 
                 $('#phone').mask("(99) 9999-9999");
@@ -38,6 +16,7 @@
                 });
 
                 var status = ($('#object_propertie').val());
+                console.log(status);
                 var type_propertie = ($('#type_propertie').val());
                 var financial_propertie = ($('select[name="financial_propertie"]').val());
                 var isswap = ($('#isswap').val());
@@ -60,7 +39,7 @@
                     $('div[name="is_financer"]').hide();
                 }
 
-                if (status == 'Venda') {
+                if (status == 'sale') {
                     $('#configs').show();
                     $('div[name="sale"]').show();
                     $('div[name="location"]').hide();
@@ -74,6 +53,32 @@
                     $('div[name="location"]').hide();
                 }
 
+            });
+
+            $('form[name="form_update_propertie"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('imoveis.update', $propertie->id) }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass(
+                                'alert-success').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(
+                                    "{{ route('imoveis.show', $propertie->id) }}"
+                                );
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').addClass(
+                                'alert-danger').html(resp.message);
+                        }
+                    }
+                });
             });
 
             $('#isswap').change(function() {
@@ -123,58 +128,58 @@
                     $('div[name="location"]').hide();
                 }
             });
+        });
 
-            /* CONSULTA CEP */
-            $("#cep").change(function() {
+        /* CONSULTA CEP */
+        $("#cep").change(function() {
 
-                //Nova variável "cep" somente com dígitos.
-                var cep = $(this).val().replace(/\D/g, '');
+            //Nova variável "cep" somente com dígitos.
+            var cep = $(this).val().replace(/\D/g, '');
 
-                //Verifica se campo cep possui valor informado.
-                if (cep != "") {
+            //Verifica se campo cep possui valor informado.
+            if (cep != "") {
 
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
+                //Expressão regular para validar o CEP.
+                var validacep = /^[0-9]{8}$/;
 
-                    //Valida o formato do CEP.
-                    if (validacep.test(cep)) {
+                //Valida o formato do CEP.
+                if (validacep.test(cep)) {
 
-                        //Preenche os campos com "..." enquanto consulta webservice.
-                        $("#rua").val("...");
-                        $("#bairro").val("...");
-                        $("#cidade").val("...");
-                        $("#uf").val("...");
-                        $("#ibge").val("...");
+                    //Preenche os campos com "..." enquanto consulta webservice.
+                    $("#rua").val("...");
+                    $("#bairro").val("...");
+                    $("#cidade").val("...");
+                    $("#uf").val("...");
+                    $("#ibge").val("...");
 
-                        //Consulta o webservice viacep.com.br/
-                        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
+                    //Consulta o webservice viacep.com.br/
+                    $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
 
-                            if (!("erro" in dados)) {
-                                //Atualiza os campos com os valores da consulta.
-                                $("#rua").val(dados.logradouro);
-                                $("#bairro").val(dados.bairro);
-                                $("#cidade").val(dados.localidade);
-                                $("#uf").val(dados.uf);
-                                $("#ibge").val(dados.ibge);
-                            } //end if.
-                            else {
-                                //CEP pesquisado não foi encontrado.
-                                limpa_formulário_cep();
-                                alert("CEP não encontrado.");
-                            }
-                        });
-                    } //end if.
-                    else {
-                        //cep é inválido.
-                        limpa_formulário_cep();
-                        alert("Formato de CEP inválido.");
-                    }
+                        if (!("erro" in dados)) {
+                            //Atualiza os campos com os valores da consulta.
+                            $("#rua").val(dados.logradouro);
+                            $("#bairro").val(dados.bairro);
+                            $("#cidade").val(dados.localidade);
+                            $("#uf").val(dados.uf);
+                            $("#ibge").val(dados.ibge);
+                        } //end if.
+                        else {
+                            //CEP pesquisado não foi encontrado.
+                            limpa_formulário_cep();
+                            alert("CEP não encontrado.");
+                        }
+                    });
                 } //end if.
                 else {
-                    //cep sem valor, limpa formulário.
+                    //cep é inválido.
                     limpa_formulário_cep();
+                    alert("Formato de CEP inválido.");
                 }
-            });
+            } //end if.
+            else {
+                //cep sem valor, limpa formulário.
+                limpa_formulário_cep();
+            }
         });
     </script>
 @endsection
@@ -321,9 +326,9 @@
                                     <div class="form-group">
                                         <label>Objetivo do Imovel</label>
                                         <select class="custom-select" name="object_propertie" id="object_propertie">
-                                            <option {{ $propertie->object_propertie == 'sale' ? 'selected' : '' }}>Venda
+                                            <option {{ $propertie->object_propertie == 'sale' ? 'selected' : '' }} value="sale">Venda
                                             </option>
-                                            <option {{ $propertie->object_propertie == 'location' ? 'selected' : '' }}>
+                                            <option {{ $propertie->object_propertie == 'location' ? 'selected' : '' }} value="location">
                                                 Locação</option>
                                         </select>
                                     </div>
@@ -377,16 +382,20 @@
                                                 <select class="custom-select" name="deadline_contract"
                                                     id="deadline_contract">
                                                     <option
-                                                        {{ $propertie->deadline_contract == '12' ? 'selected' : '' }}>12
+                                                        {{ $propertie->deadline_contract == '12 Meses' ? 'selected' : '' }}>
+                                                        12
                                                         Meses</option>
                                                     <option
-                                                        {{ $propertie->deadline_contract == '24' ? 'selected' : '' }}>24
+                                                        {{ $propertie->deadline_contract == '24 Meses' ? 'selected' : '' }}>
+                                                        24
                                                         Meses</option>
                                                     <option
-                                                        {{ $propertie->deadline_contract == '36' ? 'selected' : '' }}>36
+                                                        {{ $propertie->deadline_contract == '36 Meses' ? 'selected' : '' }}>
+                                                        36
                                                         Meses</option>
                                                     <option
-                                                        {{ $propertie->deadline_contract == '48' ? 'selected' : '' }}>48
+                                                        {{ $propertie->deadline_contract == '48 Meses' ? 'selected' : '' }}>
+                                                        48
                                                         Meses</option>
                                                 </select>
                                             </div>
