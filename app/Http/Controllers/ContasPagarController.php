@@ -50,7 +50,8 @@ class ContasPagarController extends Controller
             $continue = false;
         }
 
-        $amount = str_replace(',', '.', $request->amount);
+        $str = str_replace('.', '', $request->amount);
+        $amount = str_replace(',', '.', $str);
 
         if ($continue) {
             AccountPay::create([
@@ -60,6 +61,7 @@ class ContasPagarController extends Controller
                 'day_due' => $request->day_due,
                 'payment_method' => $request->payment_method,
                 'comments' => $request->comments,
+                'status_payment' => 'to_win',
                 'account_category_id' => $account_category->id,
                 'active' => 1
             ]);
@@ -84,7 +86,11 @@ class ContasPagarController extends Controller
      */
     public function show($id)
     {
-        //
+        $account_pay = AccountPay::with('category')->where('id', $id)->first();
+
+        return view('pages.contas_pagar.show', [
+            'account_pay' => $account_pay
+        ]);
     }
 
     /**
@@ -107,7 +113,32 @@ class ContasPagarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $account_pay = AccountPay::where('id', $id)->first();
+
+        $str = str_replace('.', '', $request->amount);
+        $amount = str_replace(',', '.', $str);
+
+        $account_pay['company_beneficiary'] = $request->company_beneficiary;
+        $account_pay['amount'] = $amount;
+        $account_pay['payment_method'] = $request->payment_method;
+        $account_pay['comments'] = $request->comments;
+        $account_pay['active'] = 1;
+        $account_pay['account_category_id'] = $request->center_count;
+        $account_pay['is_recorrency'] = $request->is_recorrency;
+        $account_pay['status_payment'] = $request->status;
+
+        if ($request->is_recorrency == 'no') {
+            $account_pay['day_due'] = null;
+        } else {
+            $account_pay['day_due'] = $request->day_due;
+        }
+
+        $account_pay->save();
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Pagamento editado com sucesso.'
+        ]);
     }
 
     /**

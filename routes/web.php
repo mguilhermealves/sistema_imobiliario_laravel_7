@@ -64,6 +64,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contas_pagar/create', 'ContasPagarController@createAccountPays')->name('contas_pagar.contas.create');
     Route::post('/contas_pagar/autocomplete', 'ContasPagarController@autocomplete')->name('contas_pagar.contas.autocomplete');
     Route::post('/contas_pagar/store', 'ContasPagarController@store')->name('contas_pagar.contas.store');
+    Route::get('/contas_pagar/show/{id}', 'ContasPagarController@show')->name('contas_pagar.show');
+    Route::put('/contas_pagar/update/{id}', 'ContasPagarController@update')->name('contas_pagar.update');
 
     /* EXPORT EXCEL */
     route::get('export_client', 'ExportExcelController@export_client')->name('export_client');

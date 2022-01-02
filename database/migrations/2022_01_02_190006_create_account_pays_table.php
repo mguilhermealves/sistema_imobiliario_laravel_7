@@ -21,6 +21,7 @@ class CreateAccountPaysTable extends Migration
             $table->string('comments')->nullable()->default(NULL);
             $table->string('day_due')->nullable()->default(NULL);
             $table->enum('is_recorrency', ['yes', 'no'])->nullable()->default('no');
+            $table->string('status_payment')->nullable()->default(NULL);
             $table->enum('active', ['1', '0'])->nullable()->default('1');
             $table->foreignId('account_category_id')->nullable();
             $table->foreign('account_category_id')->references('id')->on('account_pay_categories');

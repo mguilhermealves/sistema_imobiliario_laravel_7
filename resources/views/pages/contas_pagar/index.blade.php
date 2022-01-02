@@ -63,6 +63,7 @@
                                     <th>Tipo de Pagamento</th>
                                     <th>Valor (R$)</th>
                                     <th>Categoria</th>
+                                    <th>status</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
@@ -74,8 +75,9 @@
                                         <td>{{ $account_pay->method_payment->name }}</td>
                                         <td class="money">{{ $account_pay->amount }}</td>
                                         <td>{{ $account_pay->category->type_category }}</td>
+                                        <td>{{ $account_pay->status_payment }}</td>
                                         <td>
-                                            <a href="{{ route('clientes.show', $account_pay->id) }}" type="button"
+                                            <a href="{{ route('contas_pagar.show', $account_pay->id) }}" type="button"
                                                 class="btn btn-primary btn-sm">Editar/Visualizar</a>
                                         </td>
                                     </tr>

@@ -15,7 +15,7 @@ class AccountPay extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'company_beneficiary', 'amount', 'is_recorrency', 'day_due', 'payment_method', 'comments', 'account_category_id', 'active'
+        'id', 'company_beneficiary', 'amount', 'is_recorrency', 'day_due', 'payment_method', 'status_payment', 'comments', 'account_category_id', 'active'
     ];
 
     /**
