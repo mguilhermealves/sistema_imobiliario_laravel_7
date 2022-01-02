@@ -54,6 +54,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/contas_receber/payment/edit/{id}', 'ContasReceberController@payment_edit')->name('contas_receber.payment_edit');
     Route::post('/contas_receber/payment/send_email/{id}', 'ContasReceberController@sendEmail')->name('contas_receber.send_email');
 
+    /* Contas a Pagar*/
+    Route::get('/contas_pagar', 'ContasPagarController@index')->name('contas_pagar');
+    Route::get('/contas_pagar/create', 'ContasPagarController@create')->name('contas_pagar.categoria.create');
+    Route::post('/contas_pagar/store', 'ContasPagarController@store')->name('contas_pagar.categoria.store');
+    Route::get('/contas_pagar/contas/create', 'ContasPagarController@createAccountPays')->name('contas_pagar.contas.create');
+    Route::post('/contas_pagar/contas/autocomplete', 'ContasPagarController@autocomplete')->name('contas_pagar.contas.autocomplete');
+    Route::post('/contas_pagar/contas/store', 'ContasPagarController@storeAccountPays')->name('contas_pagar.contas.store');
+
     /* EXPORT EXCEL */
     route::get('export_client', 'ExportExcelController@export_client')->name('export_client');
     route::get('export_propertie', 'ExportExcelController@export_propertie')->name('export_propertie');

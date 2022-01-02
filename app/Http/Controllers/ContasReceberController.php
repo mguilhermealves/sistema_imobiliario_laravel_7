@@ -117,10 +117,7 @@ class ContasReceberController extends Controller
             $dias_em_atraso = $dtNow->diff($payment->historic_bank['expire_at']);
         }
 
-        if ($payment['payment_method'] != 'ticket') {
-
-            $day_due = date("d", strtotime($payment['day_due']));
-        }
+        $day_due = date("d", strtotime($payment['day_due']));
 
         $json_historical_bank = json_decode($payment->historic_bank->historic_bank);
 
