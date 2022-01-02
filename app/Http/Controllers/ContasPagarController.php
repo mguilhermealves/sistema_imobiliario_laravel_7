@@ -15,13 +15,9 @@ class ContasPagarController extends Controller
      */
     public function index()
     {
-        $categories = AccountPayCategory::where('active', 1)->get();
         $account_pays = AccountPay::with('category', 'method_payment')->where('active', 1)->get();
 
-        // dd($account_pays);
-
         return view('pages.contas_pagar.index', [
-            'categories' => $categories,
             'account_pays' => $account_pays
         ]);
     }
@@ -33,7 +29,7 @@ class ContasPagarController extends Controller
      */
     public function create()
     {
-        return view('pages.contas_pagar.create_category');
+        return view('pages.contas_pagar.create');
     }
 
     /**
@@ -44,17 +40,40 @@ class ContasPagarController extends Controller
      */
     public function store(Request $request)
     {
-        AccountPayCategory::create([
-            'name_category' => $request->name_category,
-            'type_category' => $request->type_category,
-            'cost_center_category' => $request->cost_center_category,
-            'active' => 1
-        ]);
+        $continue = false;
 
-        return response()->json([
-            'error' => false,
-            'message' => 'Categoria criada com sucesso.'
-        ]);
+        $account_category = AccountPayCategory::where('id', $request->center_count)->first();
+
+        if (!empty($account_category) && $account_category->count() > 0) {
+            $continue = true;
+        } else {
+            $continue = false;
+        }
+
+        $amount = str_replace(',', '.', $request->amount);
+
+        if ($continue) {
+            AccountPay::create([
+                'company_beneficiary' => $request->company_beneficiary,
+                'amount' => $amount,
+                'is_recorrency' => $request->is_recorrency,
+                'day_due' => $request->day_due,
+                'payment_method' => $request->payment_method,
+                'comments' => $request->comments,
+                'account_category_id' => $account_category->id,
+                'active' => 1
+            ]);
+
+            return response()->json([
+                'error' => false,
+                'message' => 'Conta Cadastrada com sucesso.'
+            ]);
+        } else {
+            return response()->json([
+                'error' => true,
+                'message' => 'Ocorreu um erro ao Cadastrar a conta.'
+            ]);
+        }
     }
 
     /**
@@ -109,7 +128,7 @@ class ContasPagarController extends Controller
      */
     public function createAccountPays()
     {
-        return view('pages.contas_pagar.create_account_pay');
+        return view('pages.contas_pagar.create');
     }
 
     /**
@@ -125,49 +144,5 @@ class ContasPagarController extends Controller
             ->first();
 
         return response()->json($data);
-    }
-
-    /**
-     * Create Account payments
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function storeAccountPays(Request $request)
-    {
-        $continue = false;
-
-        $account_category = AccountPayCategory::where('id', $request->center_count)->first();
-
-        if (!empty($account_category) && $account_category->count() > 0) {
-            $continue = true;
-        } else {
-            $continue = false;
-        }
-
-        $amount = str_replace(',', '.', $request->amount);
-
-        if ($continue) {
-            AccountPay::create([
-                'company_beneficiary' => $request->company_beneficiary,
-                'amount' => $amount,
-                'is_recorrency' => $request->is_recorrency,
-                'day_due' => $request->day_due,
-                'payment_method' => $request->payment_method,
-                'comments' => $request->comments,
-                'account_category_id' => $account_category->id,
-                'active' => 1
-            ]);
-
-            return response()->json([
-                'error' => false,
-                'message' => 'Conta Cadastrada com sucesso.'
-            ]);
-        } else {
-            return response()->json([
-                'error' => true,
-                'message' => 'Ocorreu um erro ao Cadastrar a conta.'
-            ]);
-        }
     }
 }

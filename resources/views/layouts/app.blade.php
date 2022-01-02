@@ -79,8 +79,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('contas_pagar') }}">Categorias</a>
-                                    <a class="dropdown-item" href="">Consultar Pagamentos</a>
+                                    <a class="dropdown-item" href="{{ route('contas_pagar_categoria') }}">Categorias</a>
+                                    <a class="dropdown-item" href="{{ route('contas_pagar') }}">Consultar Pagamentos</a>
                                 </div>
                             </li>
 

@@ -16,7 +16,7 @@
                             $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
 
                             setTimeout(function() {
-                                window.location.replace(' {{ route('contas_pagar.categoria.create') }}');
+                                window.location.replace(' {{ route('contas_pagar_categoria') }}');
                             }, 1500);
                         } else {
                             $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);

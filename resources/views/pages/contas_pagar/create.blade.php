@@ -4,85 +4,72 @@
     <script>
         $(function($) {
 
+            //AUTOCOMPLETE PROPERTIES
+            var path = "{{ route('contas_pagar.contas.autocomplete') }}";
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $("#autocomplete").autocomplete({
+                source: function(request, response) {
+                    // Fetch data
+                    $.ajax({
+                        url: path,
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            _token: CSRF_TOKEN,
+                            cod_propertie: request.term
+                        },
+                        success: function(data) {
+                            $("#category").val(data.name_category);
+                            $("#type").val(data.type_category);
+                        }
+                    });
+                },
+            });
+
+            $('form[name="form_create_account_pay"]').submit(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: "{{ route('contas_pagar.contas.store') }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(resp) {
+                        if (resp.error === false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
+
+                            setTimeout(function() {
+                                window.location.replace(' {{ route('contas_pagar') }}');
+                            }, 1500);
+                        } else {
+                            $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp.message);
+                        }
+                    }
+                });
+            });
+
             $(document).ready(function() {
 
-                $('#phone').mask("(99) 9999-9999");
-                $('#celphone').mask("(99) 99999-9999");
-                $('#code_postal').mask("99999-999");
-                $('#cpf').mask("999.999.999-99");
-                $('#cpf_partner').mask("999.999.999-99");
+                $('.money').mask("#.##0,00", {
+                    reverse: true
+                });
 
-                var status = ($('#marital_status').val());
+                var status = ($('#is_recorrency').val());
 
-                if (status == 'married') {
-                    $("#dados_conjuge-tab").show();
-                } else if (status != 'married') {
-                    $("#dados_conjuge-tab").hide();
+                if (status == 'yes') {
+                    $("#show_day_due").show();
+                } else {
+                    $("#show_day_due").hide();
                 }
-
             });
 
-            $('#marital_status').change(function() {
+            $('#is_recorrency').change(function() {
                 var status = ($(this).val());
 
-                console.log(status);
-
-                if (status == 'married') {
-                    $("#dados_conjuge-tab").show();
-                } else if (status != 'married') {
-                    $("#dados_conjuge-tab").hide();
-                }
-            });
-
-            /* CONSULTA CEP */
-            $("#cep").change(function() {
-
-                //Nova variável "cep" somente com dígitos.
-                var cep = $(this).val().replace(/\D/g, '');
-
-                //Verifica se campo cep possui valor informado.
-                if (cep != "") {
-
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    //Valida o formato do CEP.
-                    if (validacep.test(cep)) {
-
-                        //Preenche os campos com "..." enquanto consulta webservice.
-                        $("#rua").val("...");
-                        $("#bairro").val("...");
-                        $("#cidade").val("...");
-                        $("#uf").val("...");
-                        $("#ibge").val("...");
-
-                        //Consulta o webservice viacep.com.br/
-                        $.getJSON("https://viacep.com.br/ws/" + cep + "/json/?callback=?", function(dados) {
-
-                            if (!("erro" in dados)) {
-                                //Atualiza os campos com os valores da consulta.
-                                $("#rua").val(dados.logradouro);
-                                $("#bairro").val(dados.bairro);
-                                $("#cidade").val(dados.localidade);
-                                $("#uf").val(dados.uf);
-                                $("#ibge").val(dados.ibge);
-                            } //end if.
-                            else {
-                                //CEP pesquisado não foi encontrado.
-                                limpa_formulário_cep();
-                                alert("CEP não encontrado.");
-                            }
-                        });
-                    } //end if.
-                    else {
-                        //cep é inválido.
-                        limpa_formulário_cep();
-                        alert("Formato de CEP inválido.");
-                    }
-                } //end if.
-                else {
-                    //cep sem valor, limpa formulário.
-                    limpa_formulário_cep();
+                if (status == 'yes') {
+                    $("#show_day_due").show();
+                } else {
+                    $("#show_day_due").hide();
                 }
             });
         });
@@ -91,223 +78,95 @@
 
 @section('content')
     <div class="container">
+        <div class="alert d-none message_box" role="alert">
+
+        </div>
         <div class="row">
             <div class="col-sm-12">
-                <h1 class="text-center mt-3 mb-5">Cadastro de Categorias</h1>
+                <h1 class="text-center mt-3 mb-5">Cadastro de Contas à Pagar</h1>
 
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link active" id="dados_cadastrais-tab" data-toggle="tab"
-                            data-target="#dados_cadastrais" type="button" role="tab" aria-controls="dados_cadastrais"
-                            aria-selected="true">Dados Cadastrais</button>
-                        <button class="nav-link" id="endereco_client-tab" data-toggle="tab"
-                            data-target="#endereco_client" type="button" role="tab" aria-controls="endereco_client"
-                            aria-selected="false">Listagem</button>
-                    </div>
-                </nav>
-
-                <form action="{{ route('clientes.store') }}" method="post" enctype="multipart/form-data"
+                <form name="form_create_account_pay" enctype="multipart/form-data"
                     class="form">
                     @csrf
 
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="dados_cadastrais" role="tabpanel"
-                            aria-labelledby="dados_cadastrais-tab">
-                            <div class="row mt-5">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Nome</label>
-                                        <input type="text" name="first_name" id="first_name" class="form-control"
-                                            autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Sobrenome</label>
-                                        <input type="text" name="last_name" id="last_name" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>CPF / CNPJ</label>
-                                        <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>RG</label>
-                                        <input type="text" name="rg" id="rg" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>CNH</label>
-                                        <input type="text" name="cnh" id="cnh" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>E-mail</label>
-                                        <input type="text" name="mail" id="mail" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Sexo</label>
-                                        <select class="custom-select" name="genre" id="genre">
-                                            <option selected>Selecione...</option>
-                                            <option value="male">Masculino</option>
-                                            <option value="female">Feminino</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Estado Civil</label>
-                                        <select class="custom-select" name="marital_status" id="marital_status">
-                                            <option selected>Selecione...</option>
-                                            <option value="singer">Solteiro</option>
-                                            <option value="married">Casado</option>
-                                            <option value="divorced">Divorciado</option>
-                                            <option value="widower">Viúvo</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Telefone</label>
-                                        <input type="text" name="phone" id="phone" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Celular</label>
-                                        <input type="text" name="celphone" id="celphone" class="form-control" autofocus>
-                                    </div>
-                                </div>
+                    <div class="row mt-5">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Empresa Beneficiária</label>
+                                <input type="text" name="company_beneficiary" id="company_beneficiary" class="form-control" autofocus>
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="endereco_client" role="tabpanel"
-                            aria-labelledby="endereco_client-tab">
-                            <div class="row mt-5">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>CEP</label>
-                                        <input type="text" name="cep" id="cep" placeholder="00000-000"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-5">
-                                    <div class="form-group">
-                                        <label>Endereço</label>
-                                        <input type="text" name="address" id="rua" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Numero</label>
-                                        <input type="text" name="address_number" id="address_number" class="form-control"
-                                            autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Complemento</label>
-                                        <input type="text" name="address_complement" id="address_complement"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Bairro</label>
-                                        <input type="text" name="district" id="bairro" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Cidade</label>
-                                        <input type="text" name="city" id="cidade" class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <div class="form-group">
-                                        <label>Estado</label>
-                                        <input type="text" name="uf" id="uf" class="form-control" autofocus>
-                                    </div>
-                                </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Centro de Custo</label>
+                                <input type="text" name="center_count" id="autocomplete" class="form-control" autofocus>
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="dados_conjuge" role="tabpanel" aria-labelledby="dados_conjuge-tab">
-                            <div class="row mt-5">
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Nome</label>
-                                        <input type="text" name="first_name_partner" id="first_name_partner"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Sobrenome</label>
-                                        <input type="text" name="last_name_partner" id="last_name_partner"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>CPF / CNPJ</label>
-                                        <input type="text" name="cpf_cnpj_partner" id="cpf_cnpj_partner"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>RG</label>
-                                        <input type="text" name="rg_partner" id="rg_partner" class="form-control"
-                                            autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>CNH</label>
-                                        <input type="text" name="cnh_partner" id="cnh_partner" class="form-control"
-                                            autofocus>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-4">
-                                    <div class="form-group">
-                                        <label>Certidão de Casamento</label>
-                                        <input type="file" name="certification_married" id="certification_married"
-                                            class="form-control" autofocus>
-                                    </div>
-                                </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <input type="text" name="category" id="category" class="form-control" disabled>
                             </div>
                         </div>
 
-                        <div class="col-sm-12 mt-5 mb-5">
-                            <button class="btn btn-success btn-sm" type="submit">Cadastrar Cliente</button>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <input type="text" name="type" id="type" class="form-control" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Valor (R$)</label>
+                                <input type="text" name="amount" id="amount" class="form-control money" autofocus>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Conta Recorrente</label>
+                                <select class="custom-select" name="is_recorrency" id="is_recorrency">
+                                    <option selected>Selecione...</option>
+                                    <option value="yes">Sim</option>
+                                    <option value="no">Nao</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4" id="show_day_due">
+                            <div class="form-group">
+                                <label>Dia</label>
+                                <input type="number" name="day_due" id="day_due" min="0" max="31" class="form-control" autofocus>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>Forma de Pagamento</label>
+                                <select class="custom-select" name="payment_method" required>
+                                    <option selected>Selecione...</option>
+                                    <option value="debit">Débito em conta</option>
+                                    <option value="ticket">Boleto</option>
+                                    <option value="transfer">Transferência</option>
+                                    <option value="pix">PIX</option>
+                                    <option value="cheque">Cheque</option>
+                                    <option value="others">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Observação</label>
+                                <textarea class="form-control" name="comments" id="comments" rows="5" style="resize: none;"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-primary btn-sm">Cadastrar Conta</button>
                         </div>
                     </div>
                 </form>
