@@ -60,7 +60,11 @@ class CategoriasContasPagarController extends Controller
      */
     public function show($id)
     {
-        //
+        $account_category = AccountPayCategory::where('id', $id)->first();
+
+        return view('pages.contas_pagar.categorias.show', [
+            'account_category' => $account_category
+        ]);
     }
 
     /**

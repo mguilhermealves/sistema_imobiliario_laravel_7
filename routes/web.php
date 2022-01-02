@@ -58,6 +58,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contas_pagar_categoria', 'CategoriasContasPagarController@index')->name('contas_pagar_categoria');
     Route::get('/contas_pagar/categoria/create', 'CategoriasContasPagarController@create')->name('contas_pagar.categoria.create');
     Route::post('/contas_pagar/categoria/store', 'CategoriasContasPagarController@store')->name('contas_pagar.categoria.store');
+    Route::get('/contas_pagar/categoria/show/{id}', 'CategoriasContasPagarController@show')->name('contas_pagar.categoria.show');
+    Route::put('/contas_pagar/categoria/update/{id}', 'CategoriasContasPagarController@update')->name('contas_pagar.categoria.update');
 
     /* Contas a Pagar*/
     Route::get('/contas_pagar', 'ContasPagarController@index')->name('contas_pagar');

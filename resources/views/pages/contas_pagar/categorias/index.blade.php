@@ -71,7 +71,7 @@
                                             <td>{{ $category->type_category }}</td>
                                             <td>{{ $category->cost_center_category }}</td>
                                             <td>
-                                                <a href="{{ route('clientes.show', $category->id) }}"
+                                                <a href="{{ route('contas_pagar.categoria.show', $category->id) }}"
                                                     type="button"
                                                     class="btn btn-primary btn-sm">Editar/Visualizar</a>
                                             </td>
