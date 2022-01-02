@@ -47,6 +47,7 @@
                 var type_propertie = ($('#type_propertie').val());
                 var financial_propertie = ($('select[name="financial_propertie"]').val());
                 var isswap = ($('#isswap').val());
+                var marital_status = ($('#marital_status').val());
 
                 if (isswap == 'yes') {
                     $('div[name="text_exchange"]').show();
@@ -66,7 +67,7 @@
                     $('div[name="is_financer"]').hide();
                 }
 
-                if (status == 'Venda') {
+                if (status == 'sale') {
                     $('#configs').show();
                     $('div[name="sale"]').show();
                     $('div[name="location"]').hide();
@@ -80,6 +81,11 @@
                     $('div[name="location"]').hide();
                 }
 
+                if (marital_status == 'married') {
+                    $("#dados_conjuge-tab").show();
+                } else {
+                    $("#dados_conjuge-tab").hide();
+                }
             });
 
             $('#isswap').change(function() {
@@ -270,9 +276,9 @@
                                     <div class="form-group">
                                         <label>Sexo</label>
                                         <select class="custom-select" name="genre" id="genre">
-                                            <option {{ $client->genre == 'male' ? 'selected' : '' }}>
+                                            <option {{ $client->genre == 'male' ? 'selected' : '' }} value="male">
                                                 Masculino</option>
-                                            <option {{ $client->genre == 'female' ? 'selected' : '' }}>
+                                            <option {{ $client->genre == 'female' ? 'selected' : '' }} value="female">
                                                 Feminino</option>
                                         </select>
                                     </div>
@@ -282,14 +288,14 @@
                                     <div class="form-group">
                                         <label>Estado Civil</label>
                                         <select class="custom-select" name="marital_status" id="marital_status">
-                                            <option {{ $client->marital_status == 'singer' ? 'selected' : '' }}>
+                                            <option {{ $client->marital_status == 'singer' ? 'selected' : '' }} value="singer">
                                                 Solteiro</option>
-                                            <option {{ $client->marital_status == 'married' ? 'selected' : '' }}>
+                                            <option {{ $client->marital_status == 'married' ? 'selected' : '' }} value="married">
                                                 Casado
                                             </option>
-                                            <option {{ $client->marital_status == 'divorced' ? 'selected' : '' }}>
+                                            <option {{ $client->marital_status == 'divorced' ? 'selected' : '' }} value="divorced">
                                                 Divorciado</option>
-                                            <option {{ $client->marital_status == 'widower' ? 'selected' : '' }}>
+                                            <option {{ $client->marital_status == 'widower' ? 'selected' : '' }} value="widower">
                                                 Viúvo</option>
                                         </select>
                                     </div>

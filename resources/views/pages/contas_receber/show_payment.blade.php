@@ -37,7 +37,7 @@
                             success: function(resp) {
                                 if (resp.error == false) {
                                     $("#editar_pagamento").attr("disabled", true)
-                                    $('.message_box').removeClass('d-none').html(resp
+                                    $('.message_box').removeClass('d-none').addClass('alert-success').html(resp
                                         .message);
 
                                     setTimeout(function() {
@@ -47,7 +47,7 @@
                                         );
                                     }, 1500);
                                 } else {
-                                    $('.message_box').removeClass('d-none').html(resp
+                                    $('.message_box').removeClass('d-none').addClass('alert-danger').html(resp
                                         .message).fadeIn(300).delay(2000).fadeOut(
                                         600);
                                     $("#editar_pagamento").attr("enabled", true)
@@ -287,7 +287,7 @@
                                     <div class="container-fluid">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <div class="alert alert-danger d-none message_box" role="alert">
+                                                <div class="alert d-none message_box" role="alert">
 
                                                 </div>
                                                 <form name="form_edit_payment" enctype="multipart/form-data"
@@ -300,7 +300,7 @@
                                                             <div class="form-group">
                                                                 <label>Vencimento</label>
                                                                 <input type="number" class="form-control" name="day_due"
-                                                                    id="" min="0" max="31" required>
+                                                                    id="" min="0" max="31" value="{{ $day_due }}" required>
                                                             </div>
                                                         </div>
 
@@ -309,11 +309,11 @@
                                                                 <div class="form-group">
                                                                     <label>Status</label>
                                                                     <select class="form-control" name="status" id="">
-                                                                        <option value="" selected>Selecione...</option>
-                                                                        <option value="paid">Pago</option>
-                                                                        <option value="loser">Vencido</option>
-                                                                        <option value="judicial">Juridico</option>
-                                                                        <option value="according_to">Em Acordo</option>
+                                                                        <option {{ $payment->status_payment == 'to_win' ? 'selected' : '' }} value="paid">A Pagar</option>
+                                                                        <option {{ $payment->status_payment == 'paid' ? 'selected' : '' }} value="paid">Pago</option>
+                                                                        <option {{ $payment->status_payment == 'loser' ? 'selected' : '' }} value="loser">Vencido</option>
+                                                                        <option {{ $payment->status_payment == 'judicial' ? 'selected' : '' }} value="judicial">Juridico</option>
+                                                                        <option {{ $payment->status_payment == 'according_to' ? 'selected' : '' }} value="according_to">Em Acordo</option>
                                                                     </select>
                                                                 </div>
                                                             </div>

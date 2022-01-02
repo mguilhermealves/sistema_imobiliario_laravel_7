@@ -56,7 +56,7 @@ class ImoveisController extends Controller
         if (!empty($client) && $client->count() > 0) {
             $continue = true;
         } else {
-            $continue= false;
+            $continue = false;
         }
 
         $isImage = false;
@@ -87,7 +87,7 @@ class ImoveisController extends Controller
 
             //quando existir a imagem na request
             if ($request->hasFile('images')) {
-                for ($i=0; $i < count($request->allFiles()['images']); $i++) {
+                for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
                     $file = $request->allFiles()['images'][$i];
 
                     $propertieImage = new PropertiesImages();
@@ -152,9 +152,17 @@ class ImoveisController extends Controller
     public function update(Request $request, $id)
     {
         $type_propertie = TypePropertie::where('name', $request->type_propertie)->first();
-        $objective_propertie = ObjectivePropertie::where('name', $request->object_propertie)->first();
+        $objective_propertie = ObjectivePropertie::where('slug', $request->object_propertie)->first();
 
         $propertie = Propertie::find($id);
+
+        if ($objective_propertie['slug'] == 'sale') {
+            $propertie['price_location'] = null;
+            $propertie['price_sale'] = $request['price_sale'];
+        } else {
+            $propertie['price_sale'] = null;
+            $propertie['price_location'] = $request['price_location'];
+        }
 
         $propertie['address'] = $request['address'];
         $propertie['number_address'] = $request['address_number'];
@@ -169,17 +177,27 @@ class ImoveisController extends Controller
         $propertie['financial_propertie'] = $request['financial_propertie'];
         $propertie['financer_name'] = $request['financer_name'];
         $propertie['price_condominium'] = $request['price_condominium'];
-        $propertie['price_location'] = $request['price_location'];
-        $propertie['price_sale'] = $request['price_sale'];
         $propertie['price_iptu'] = $request['price_iptu'];
         $propertie['isswap'] = $request['isswap'];
         $propertie['comments'] = $request['comments'];
+
+        //quando existir a imagem na request
+        if ($request->hasFile('images')) {
+            for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
+                $file = $request->allFiles()['images'][$i];
+
+                $propertieImage = new PropertiesImages();
+                $propertieImage->properties_id = $propertie->id;
+                $propertieImage->url = $file->store('propertie/' . $propertie->id);
+                $propertieImage->save();
+            }
+        }
 
         $propertie->save();
 
         return response()->json([
             'error' => false,
-            'message' => 'Imovel editada com sucesso'
+            'message' => 'Imovel editado com sucesso'
         ]);
     }
 

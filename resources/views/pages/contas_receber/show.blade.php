@@ -15,8 +15,8 @@
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(resp) {
-                        if (resp.success == true) {
-                            $('.message_box').removeClass('d-none').html(resp.message);
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success').html(resp.message);
 
                             setTimeout(function() {
 
@@ -24,8 +24,7 @@
                                     ' {{ route('contas_receber') }}');
                             }, 1500);
                         } else {
-                            // $('.message_box').html(resp.message).fadeIn( 300 ).delay( 1500 ).fadeOut( 400 );
-                            console.log('nao rolou')
+                            $('.message_box').html(resp.message).removeClass('d-none').addClass('alert-danger').fadeIn( 300 ).delay( 1500 ).fadeOut( 400 );
                         }
                     }
                 });
@@ -80,10 +79,6 @@
 @endsection
 
 @section('content')
-
-    <div class="alert alert-danger d-none message_box" role="alert">
-
-    </div>
 
     <div class="container">
         <div class="row">
@@ -339,6 +334,9 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-sm-12">
+                                                    <div class="alert d-none message_box" role="alert">
+
+                                                    </div>
                                                     <form name="form_create_payment" enctype="multipart/form-data"
                                                         class="form">
                                                         @csrf

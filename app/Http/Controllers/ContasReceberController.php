@@ -117,13 +117,19 @@ class ContasReceberController extends Controller
             $dias_em_atraso = $dtNow->diff($payment->historic_bank['expire_at']);
         }
 
+        if ($payment['payment_method'] != 'ticket') {
+
+            $day_due = date("d", strtotime($payment['day_due']));
+        }
+
         $json_historical_bank = json_decode($payment->historic_bank->historic_bank);
 
         return view('pages.contas_receber.show_payment', [
             'payment' => $payment,
             'json_historical_bank' => $json_historical_bank,
             'dias_em_atraso' => $dias_em_atraso,
-            'status_payment' => $status_payment
+            'status_payment' => $status_payment,
+            'day_due' => $day_due
         ]);
     }
 
@@ -292,15 +298,15 @@ class ContasReceberController extends Controller
             JobsNewAccountReceivable::dispatch($tenant)->delay(now()->addSeconds('5'));
 
             return response()->json([
-                'success' => true,
+                'error' => false,
                 'message' => 'Pagamento criado com sucesso...'
             ]);
         } catch (\Exception  $e) {
             DB::rollback();
 
             return response()->json([
-                'success' => false,
-                'message' => 'Pagamento não foi criado com sucesso, refaça o processo...'
+                'error' => true,
+                'message' => 'Erro ao processar o pagamento, refaça o processo...'
             ]);
         }
     }
@@ -376,6 +382,10 @@ class ContasReceberController extends Controller
                 ]);
             }
         } else {
+            $payment['day_due'] = $due_date;
+            $payment['status_payment'] = $request->status;
+            $payment->save();
+
             AccountReceivableBankSlip::where('account_receivables_id', $payment->id)
                 ->update([
                     'expire_at' => $due_date,
@@ -384,7 +394,7 @@ class ContasReceberController extends Controller
 
             return response()->json([
                 'error' => false,
-                'message' => 'Boleto vencido, não é possivel alterar a data de pagamento.'
+                'message' => 'Pagamento atualizado com sucesso.'
             ]);
         }
     }

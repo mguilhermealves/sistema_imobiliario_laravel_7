@@ -62,7 +62,7 @@ class ClientesController extends Controller
             'active' => 1
         ]);
 
-        if ($request->marital_status == "married") {
+        if ($request->marital_status == 'married') {
             $clientPartner = ClientPartner::create([
                 'first_name_partner' => $request->first_name_partner,
                 'last_name_partner' => $request->last_name_partner,
@@ -177,6 +177,12 @@ class ClientesController extends Controller
                     'url' => $url,
                     'clients_partners_id' => $client->partner['id']
                 ]);
+            }
+        } else {
+            $existClientPartner = ClientPartner::where('clients_id', $client->id)->first();
+
+            if (!empty($existClientPartner)) {
+                $existClientPartner['active'] = 0;
             }
         }
 

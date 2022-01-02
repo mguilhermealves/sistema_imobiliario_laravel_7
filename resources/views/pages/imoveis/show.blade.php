@@ -43,7 +43,7 @@
                     $('#configs').show();
                     $('div[name="sale"]').show();
                     $('div[name="location"]').hide();
-                } else if (status == 'Locação') {
+                } else if (status == 'location') {
                     $('#configs').show();
                     $('div[name="sale"]').hide();
                     $('div[name="location"]').show();
@@ -58,11 +58,17 @@
             $('form[name="form_update_propertie"]').submit(function(event) {
                 event.preventDefault();
 
+                var formData = new FormData($(this)[0]);
+
                 $.ajax({
                     url: "{{ route('imoveis.update', $propertie->id) }}",
                     type: 'POST',
-                    data: $(this).serialize(),
-                    dataType: 'json',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    processData: false,
+                    contentType: false,
                     success: function(resp) {
                         if (resp.error == false) {
                             $('.message_box').removeClass('d-none').addClass(

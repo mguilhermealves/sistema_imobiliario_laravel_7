@@ -65,12 +65,7 @@
         <tr>
             <td>
                 <strong>2. Objeto do Contrato:</strong>
-                <p>Prestação de serviços de (i) marketing de relacionamento, incentivo e fidelização, mediante a
-                    utilização do Portal de Relacionamento Hot Shop Online ou outro site criado para tanto; (ii) criação
-                    e desenvolvimento de website exclusivo para a campanha, bem como sistemas específicos, com a
-                    possibilidade de upload de imagens/conteúdo e publicação de banners, (iii) criação e desenvolvimento
-                    de landing pages (páginas exclusivas de acesso ao site criado), e (iv) integração desses sistemas
-                    aos já existentes de propriedade da Contratante.</p>
+                <p>Inserir aqui...</p>
             </td>
         </tr>
         <tr>
