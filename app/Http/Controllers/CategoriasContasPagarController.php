@@ -87,7 +87,17 @@ class CategoriasContasPagarController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $account_category = AccountPayCategory::where('id', $id)->first();
+
+        $account_category['name_category'] = $request->name_category;
+        $account_category['type_category'] = $request->type_category;
+
+        $account_category->save();
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Categoria atualizada com sucesso.'
+        ]);
     }
 
     /**
