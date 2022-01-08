@@ -25,4 +25,12 @@ class AccountReceivable extends Model
     {
         return $this->hasOne('App\AccountReceivableBankSlip', 'account_receivables_id', 'id');
     }
+
+    /**
+     * Get payment method for receivable.
+     */
+    public function method_payment()
+    {
+        return $this->hasOne('App\MethodPayment', 'slug', 'payment_method');
+    }
 }

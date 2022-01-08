@@ -288,14 +288,14 @@
                                         @forelse ($payments as $payment)
                                             <tr>
                                                 <td scope="row">{{ $payment->id }}</td>
-                                                <td>{{ $payment->payment_method }}</td>
+                                                <td>{{ $payment->method_payment['name'] }}</td>
                                                 <td>{{ $payment->amount }}</td>
                                                 <td>
-                                                    @if ($payment->historic_bank['status'] == 'waiting')
+                                                    @if ($payment['status_payment'] == 'waiting')
                                                         {{ 'Aguardando Pagamento' }}
-                                                    @elseif ($payment->historic_bank['status'] == 'paid')
+                                                    @elseif ($payment['status_payment'] == 'paid')
                                                         {{ 'Pago' }}
-                                                    @else
+                                                    @elseif ($payment['status_payment'] == 'unpaid')
                                                         {{ 'Não Pago' }}
                                                     @endif
                                                 </td>
@@ -409,7 +409,7 @@
                                                                 <div class="form-group">
                                                                     <label>Forma de Pagamento</label>
                                                                     <select class="custom-select" name="payment_method" required>
-                                                                        <option selected>Selecione...</option>
+                                                                        <option value="" selected>Selecione...</option>
                                                                         <option value="debit">Débito em conta</option>
                                                                         <option value="ticket">Boleto</option>
                                                                         <option value="transfer">Transferência</option>

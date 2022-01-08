@@ -67,7 +67,7 @@ class ContasReceberController extends Controller
     {
         $received = Tenant::with('address', 'partner', 'office', 'files', 'propertie', 'propertie.objetivie_properties', 'propertie.type_properties', 'contract')->where('id', $id)->first();
 
-        $payments = AccountReceivable::with('historic_bank')->where('tenant_id', $received['id'])->get();
+        $payments = AccountReceivable::with('historic_bank', 'method_payment')->where('tenant_id', $received['id'])->get();
 
         $propertie = Propertie::where('id', $received->propertie['propertie_id'])->first();
 
@@ -102,7 +102,7 @@ class ContasReceberController extends Controller
         $status_payment = '';
         if ($payment['status_payment'] == 'waiting') {
             $status_payment = 'Aguardando Pagamento';
-        } elseif ($payment['status_payment'] == 'to_win') {
+        } elseif ($payment['status_payment'] == 'paid') {
             $status_payment = 'Pago';
         } else {
             $status_payment = 'Não Pago';
@@ -177,6 +177,13 @@ class ContasReceberController extends Controller
      */
     public function payment(Request $request, $id)
     {
+        if ($request->payment_method == null) {
+            return response()->json([
+                'error' => true,
+                'message' => 'O campo método de pagamento é obrigatório.'
+            ]);
+        }
+
         $str = str_replace('.', '', $request->amount); // remove o ponto
         $value = str_replace(',', '.', $str);
         $fees = intVal(preg_replace('/[^0-9]/', '', $request->fees));
@@ -193,7 +200,7 @@ class ContasReceberController extends Controller
         try {
             $account_receivable = AccountReceivable::create([
                 'description' => $request->description,
-                'status_payment' => 'to_win',
+                'status_payment' => 'waiting',
                 'day_due' => $due_date,
                 'fees' => $fees,
                 'fine' => $fine,
@@ -331,7 +338,7 @@ class ContasReceberController extends Controller
 
         $payment = AccountReceivable::with('historic_bank')->where('id', $request->id)->first();
 
-        if ($payment->payment_method == 'ticket') {
+        if ($payment['payment_method'] == 'ticket') {
             if ($payment->historic_bank->expire_at <= $due_date) {
                 $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)
                 $clientSecret = env('CLIENTSECRET'); // insira seu Client_Secret, conforme o ambiente (Des ou Prod)
@@ -404,7 +411,8 @@ class ContasReceberController extends Controller
      */
     public function consult_payment_slip()
     {
-        $payments = AccountReceivableBankSlip::where('status', 'waiting')->get();
+        //Procura somento os boletos que estao com o status "Aguardando Pagamento"
+        $payments = AccountReceivableBankSlip::where('payment_method', 'ticket')->where('status', 'waiting')->get();
 
         foreach ($payments as $payment) {
             $clientId = env('CLIENTID'); // insira seu Client_Id, conforme o ambiente (Des ou Prod)

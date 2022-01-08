@@ -61,7 +61,7 @@ class ContasPagarController extends Controller
                 'day_due' => $request->day_due,
                 'payment_method' => $request->payment_method,
                 'comments' => $request->comments,
-                'status_payment' => 'to_win',
+                'status_payment' => 'waiting',
                 'account_category_id' => $account_category->id,
                 'active' => 1
             ]);

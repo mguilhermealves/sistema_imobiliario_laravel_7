@@ -309,7 +309,7 @@
                                                                 <div class="form-group">
                                                                     <label>Status</label>
                                                                     <select class="form-control" name="status" id="">
-                                                                        <option {{ $payment->status_payment == 'to_win' ? 'selected' : '' }} value="paid">A Pagar</option>
+                                                                        <option {{ $payment->status_payment == 'waiting' ? 'selected' : '' }} value="waiting">A Pagar</option>
                                                                         <option {{ $payment->status_payment == 'paid' ? 'selected' : '' }} value="paid">Pago</option>
                                                                         <option {{ $payment->status_payment == 'loser' ? 'selected' : '' }} value="loser">Vencido</option>
                                                                         <option {{ $payment->status_payment == 'judicial' ? 'selected' : '' }} value="judicial">Juridico</option>
