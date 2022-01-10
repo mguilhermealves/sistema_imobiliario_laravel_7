@@ -34,25 +34,23 @@
 
                     {{ ' Celular: ' . $tenant['celphone'] . ', ' }}
 
-                    {{ ' Genero: ' . $tenant['genre'] . ', ' }}
+                    {{ . $tenant['genre'] . '(a), ' }}
 
-                    {{ ' Estado Civil: ' . $tenant['marital_status'] . ', ' }}
+                    {{ . $tenant['marital_status'] . '(a), ' }}
 
                     localizado(a) no endereço:
 
-                    {{ $tenant->address['address'] . ', ' }}
+                    {{ $tenant->address->address . ', ' }}
 
-                    {{ ' N°: ' . $tenant->address['number_address'] . ', ' }}
+                    {{ $tenant->address->complement == null ? ' N°: ' . $tenant->complement->address . ', ' : ' N°: ' . $tenant->address->number_address . ', Complemento: ' . $tenant->address->complement . ', ' }}
 
-                    {{ $tenant->address['complement'] ? ' N°: ' . $tenant->complement['address'] . ', ' : '' }}
+                    {{ ' CEP: ' . $tenant->address->code_postal . ', ' }}
 
-                    {{ ' CEP: ' . $tenant->address['code_postal'] . ', ' }}
+                    {{ ' Bairro: ' . $tenant->address->district . ', ' }}
 
-                    {{ ' Bairro: ' . $tenant->address['district'] . ', ' }}
+                    {{ ' Cidade: ' . $tenant->address->city . ', ' }}
 
-                    {{ ' Cidade: ' . $tenant->address['city'] . ', ' }}
-
-                    {{ ' UF: ' . $tenant->address['uf'] . ', ' }}
+                    {{ ' UF: ' . $tenant->address->uf . ', ' }}
                 </p>
             </td>
         </tr>
