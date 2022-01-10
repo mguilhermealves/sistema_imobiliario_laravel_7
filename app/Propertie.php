@@ -19,6 +19,14 @@ class Propertie extends Model
     ];
 
     /**
+     * Order by ID
+     */
+    public function filters()
+    {
+        return $this->orderBy('id', 'DESC')->get();
+    }
+
+    /**
      * Get images for propertie.
      */
     public function images()

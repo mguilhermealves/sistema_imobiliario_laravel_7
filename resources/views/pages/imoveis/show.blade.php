@@ -8,7 +8,7 @@
 
                 $('#phone').mask("(99) 9999-9999");
                 $('#celphone').mask("(99) 99999-9999");
-                $('#code_postal').mask("99999-999");
+                $('.code_postal').mask("99999-999");
                 $('#cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
                 $('.money').mask("#.##0,00", {
@@ -223,16 +223,16 @@
                                 <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Código do Proprietário</label>
-                                        <input type="text" class="form-control"
+                                        <input type="text" class="form-control" name="cod_client"
                                             value="{{ $propertie->client_properties->id }}" autofocus>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-8">
                                     <div class="form-group">
-                                        <label>Nome do Proprietário</label>
+                                        <label>Dados do Proprietário Selecionado</label>
                                         <input type="text" class="form-control"
-                                            value="{{ $propertie->client_properties->first_name . ' ' . $propertie->client_properties->last_name }}"
+                                            value="{{ $propertie->client_properties->first_name . ' ' . $propertie->client_properties->last_name . ' | ' . $propertie->client_properties->cpf_cnpj }}"
                                             disabled>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@
                                     <div class="form-group">
                                         <label>CEP</label>
                                         <input type="text" name="cep" id="cep" placeholder="00000-000"
-                                            class="form-control" value="{{ $propertie->code_postal }}" autofocus>
+                                            class="form-control code_postal" value="{{ $propertie->code_postal }}" disabled>
                                     </div>
                                 </div>
 
@@ -280,7 +280,7 @@
                                     <div class="form-group">
                                         <label>Endereço</label>
                                         <input type="text" name="address" id="rua" class="form-control"
-                                            value="{{ $propertie->address }}" autofocus>
+                                            value="{{ $propertie->address }}" disabled>
                                     </div>
                                 </div>
 
@@ -288,7 +288,7 @@
                                     <div class="form-group">
                                         <label>Numero</label>
                                         <input type="text" name="address_number" id="address_number" class="form-control"
-                                            value="{{ $propertie->number_address }}" autofocus>
+                                            value="{{ $propertie->number_address }}" disabled>
                                     </div>
                                 </div>
 
@@ -296,7 +296,7 @@
                                     <div class="form-group">
                                         <label>Complemento</label>
                                         <input type="text" name="address_complement" id="address_complement"
-                                            class="form-control" value="{{ $propertie->complement }}" autofocus>
+                                            class="form-control" value="{{ $propertie->complement }}" disabled>
                                     </div>
                                 </div>
 
@@ -304,7 +304,7 @@
                                     <div class="form-group">
                                         <label>Bairro</label>
                                         <input type="text" name="district" id="bairro" class="form-control"
-                                            value="{{ $propertie->district }}" autofocus>
+                                            value="{{ $propertie->district }}" disabled>
                                     </div>
                                 </div>
 
@@ -312,7 +312,7 @@
                                     <div class="form-group">
                                         <label>Cidade</label>
                                         <input type="text" name="city" id="cidade" class="form-control"
-                                            value="{{ $propertie->city }}" autofocus>
+                                            value="{{ $propertie->city }}" disabled>
                                     </div>
                                 </div>
 
@@ -320,7 +320,7 @@
                                     <div class="form-group">
                                         <label>Estado</label>
                                         <input type="text" name="uf" id="uf" class="form-control"
-                                            value="{{ $propertie->uf }}" autofocus>
+                                            value="{{ $propertie->uf }}" disabled>
                                     </div>
                                 </div>
                             </div>

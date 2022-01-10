@@ -15,7 +15,7 @@ class ExportExcelController extends Controller
      */
     public function export_client(Request $request)
     {
-        return Excel::download(new ClientsExport, 'clientes.xlsx');
+        return Excel::download(new ClientsExport, 'relatorios-clientes.xlsx');
     }
 
     /**
@@ -25,7 +25,7 @@ class ExportExcelController extends Controller
      */
     public function export_propertie(Request $request)
     {
-        return Excel::download(new PropertiesExport, 'imoveis.xlsx');
+        return Excel::download(new PropertiesExport, 'relatorios-imoveis.xlsx');
     }
 
     /**
@@ -35,6 +35,6 @@ class ExportExcelController extends Controller
      */
     public function export_tenants(Request $request)
     {
-        return Excel::download(new TenantsExport, 'locatarios.xlsx');
+        return Excel::download(new TenantsExport, 'relatorios-locatarios.xlsx');
     }
 }

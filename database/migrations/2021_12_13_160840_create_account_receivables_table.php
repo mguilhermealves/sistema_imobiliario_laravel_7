@@ -17,10 +17,10 @@ class CreateAccountReceivablesTable extends Migration
             $table->id();
             $table->string('description')->nullable()->default(NULL);
             $table->string('status_payment')->nullable()->default(NULL);
+            $table->decimal('fees', 5, 2)->nullable()->default(NULL);
+            $table->decimal('fine', 5, 2)->nullable()->default(NULL);
+            $table->decimal('amount', 9, 2)->nullable()->default(NULL);
             $table->string('day_due')->nullable()->default(NULL);
-            $table->string('fees')->nullable()->default(NULL);
-            $table->string('fine')->nullable()->default(NULL);
-            $table->string('amount')->nullable()->default(NULL);
             $table->string('payment_method')->nullable()->default(NULL);
             $table->string('active');
             $table->foreignId('tenant_id')->nullable();

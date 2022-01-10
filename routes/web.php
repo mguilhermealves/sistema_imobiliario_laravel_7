@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/imoveis/store', 'ImoveisController@store')->name('imoveis.store');
     Route::get('/imoveis/show/{id}', 'ImoveisController@show')->name('imoveis.show');
     Route::put('/imoveis/update/{id}', 'ImoveisController@update')->name('imoveis.update');
+    Route::post('/imoveis/autocomplete', 'ImoveisController@autocomplete')->name('imoveis.autocomplete');
 
     /* Clientes */
     Route::get('/clientes', 'ClientesController@index')->name('clientes');

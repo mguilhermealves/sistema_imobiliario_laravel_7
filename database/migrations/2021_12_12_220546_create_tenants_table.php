@@ -31,6 +31,7 @@ class CreateTenantsTable extends Migration
             $table->string('number_residents')->nullable()->default(NULL);
             $table->string('is_aproved')->nullable()->default(NULL);
             $table->string('comments')->nullable()->default(NULL);
+            $table->string('day_due')->nullable()->default(NULL);
             $table->string('n_contract')->nullable()->default(NULL);
             $table->string('active');
             $table->timestamps();

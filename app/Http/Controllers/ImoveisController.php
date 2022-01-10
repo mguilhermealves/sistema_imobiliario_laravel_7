@@ -7,11 +7,22 @@ use App\Propertie;
 use App\PropertiesClients;
 use App\PropertiesImages;
 use App\Client;
+use App\Http\Requests\CreatedOrUpdatedPropertieRequest;
 use App\ObjectivePropertie;
 use App\TypePropertie;
+use Illuminate\Support\Str;
 
 class ImoveisController extends Controller
 {
+
+    private $propertie, $totalPage = 10;
+    private $path = 'propertie/';
+
+    public function __construct(Propertie $propertie)
+    {
+        $this->propertie = $propertie;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +30,7 @@ class ImoveisController extends Controller
      */
     public function index()
     {
-        $properties = Propertie::orderBy('id', 'DESC')->get();
+        $properties = $this->propertie->filters();
 
         return view('pages.imoveis.index', [
             'properties' => $properties
@@ -47,75 +58,60 @@ class ImoveisController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatedOrUpdatedPropertieRequest $request)
     {
-        $continue = false;
+        if (!$request->cod_client) {
+            return response()->json([
+                'error' => true,
+                'message' => 'O cliente não foi selecionado'
+            ]);
+        }
 
         $client = Client::where('id', $request->cod_client)->first();
 
-        if (!empty($client) && $client->count() > 0) {
-            $continue = true;
-        } else {
-            $continue = false;
-        }
+        $propertie = Propertie::create([
+            'address' => $client['address'],
+            'number_address' => $client['number_address'],
+            'complement' => $client['complement'],
+            'code_postal' => $client['code_postal'],
+            'district' => $client['district'],
+            'city' => $client['city'],
+            'uf' => $client['uf'],
+            'type_propertie' => $request->type_propertie,
+            'object_propertie' => $request->object_propertie,
+            'price_location' => $request->price_location,
+            'price_sale' => $request->price_sale,
+            'price_iptu' => $request->price_iptu,
+            'price_condominium' => $request->price_condominium,
+            'deadline_contract' => $request->deadline_contract,
+            'financial_propertie' => $request->financial_propertie,
+            'financer_name' => $request->financer_name,
+            'isswap' => $request->isswap,
+            'comments' => $request->comments,
+            'client_propertie_id' => $request->cod_client,
+            'active' => 1
+        ]);
 
-        $isImage = false;
+        //quando existir a imagem na request
+        if ($request->hasFile('images')) {
+            for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
+                $file = $request->allFiles()['images'][$i];
 
-        if ($continue) {
-            $propertie = Propertie::create([
-                'address' => $request->address,
-                'number_address' => $request->address_number,
-                'complement' => $request->address_complement,
-                'code_postal' => $request->cep,
-                'district' => $request->district,
-                'city' => $request->city,
-                'uf' => $request->uf,
-                'type_propertie' => $request->type_propertie,
-                'object_propertie' => $request->object_propertie,
-                'price_location' => $request->price_location,
-                'price_sale' => $request->price_sale,
-                'price_iptu' => $request->price_iptu,
-                'price_condominium' => $request->price_condominium,
-                'deadline_contract' => $request->deadline_contract,
-                'financial_propertie' => $request->financial_propertie,
-                'financer_name' => $request->financer_name,
-                'isswap' => $request->isswap,
-                'comments' => $request->comments,
-                'client_propertie_id' => $client['id'],
-                'active' => 1
-            ]);
+                $fileName = $file->getClientOriginalName();
+                $url = $file->store($this->path . $propertie->id);
 
-            //quando existir a imagem na request
-            if ($request->hasFile('images')) {
-                for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
-                    $file = $request->allFiles()['images'][$i];
-
-                    $propertieImage = new PropertiesImages();
-                    $propertieImage->properties_id = $propertie->id;
-                    $propertieImage->url = $file->store('propertie/' . $propertie->id);
-                    $propertieImage->save();
-                }
-
-                $isImage = true;
-            }
-
-            if (!$isImage) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Imovel criado com sucesso, imagens não adicionadas na propriedade com o código N° ' . $propertie->id
-                ]);
-            } else {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Imovel criado com sucesso..'
+                PropertiesImages::create([
+                    'name' => $fileName,
+                    'url' => $url,
+                    'properties_id' => $propertie->id
                 ]);
             }
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'O codigo do cliente não foi preenchido ou não foi encontrado, verifique novamente...'
-            ]);
         }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Imovel criado com sucesso...'
+        ]);
     }
 
     /**
@@ -149,12 +145,12 @@ class ImoveisController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreatedOrUpdatedPropertieRequest $request, $id)
     {
         $type_propertie = TypePropertie::where('name', $request->type_propertie)->first();
         $objective_propertie = ObjectivePropertie::where('slug', $request->object_propertie)->first();
 
-        $propertie = Propertie::find($id);
+        $propertie = Propertie::with('images')->find($id);
 
         if ($objective_propertie['slug'] == 'sale') {
             $propertie['price_location'] = null;
@@ -164,13 +160,15 @@ class ImoveisController extends Controller
             $propertie['price_location'] = $request['price_location'];
         }
 
-        $propertie['address'] = $request['address'];
-        $propertie['number_address'] = $request['address_number'];
-        $propertie['complement'] = $request['address_complement'];
-        $propertie['code_postal'] = $request['cep'];
-        $propertie['district'] = $request['district'];
-        $propertie['city'] = $request['city'];
-        $propertie['uf'] = $request['uf'];
+        $client = Client::where('id', $request->cod_client)->first();
+
+        $propertie['address'] = $client['address'];
+        $propertie['number_address'] = $client['number_address'];
+        $propertie['complement'] = $client['complement'];
+        $propertie['code_postal'] = $client['code_postal'];
+        $propertie['district'] = $client['district'];
+        $propertie['city'] = $client['city'];
+        $propertie['uf'] = $client['uf'];
         $propertie['type_propertie'] = $type_propertie['slug'];
         $propertie['object_propertie'] = $objective_propertie['slug'];
         $propertie['deadline_contract'] = $request['deadline_contract'];
@@ -186,10 +184,14 @@ class ImoveisController extends Controller
             for ($i = 0; $i < count($request->allFiles()['images']); $i++) {
                 $file = $request->allFiles()['images'][$i];
 
-                $propertieImage = new PropertiesImages();
-                $propertieImage->properties_id = $propertie->id;
-                $propertieImage->url = $file->store('propertie/' . $propertie->id);
-                $propertieImage->save();
+                $fileName = $file->getClientOriginalName();
+                $url = $file->store($this->path . $propertie->id);
+
+                PropertiesImages::create([
+                    'name' => $fileName,
+                    'url' => $url,
+                    'properties_id' => $propertie->id
+                ]);
             }
         }
 
@@ -210,5 +212,20 @@ class ImoveisController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * autocomplete properties
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function autocomplete(Request $request)
+    {
+        $data = Client::where('id', $request->cod_client)
+            ->select('address', 'number_address', 'complement', 'code_postal', 'district', 'city', 'uf')
+            ->first();
+
+        return response()->json($data);
     }
 }

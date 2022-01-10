@@ -7,20 +7,44 @@
             $('form[name="form_create_propertie"]').submit(function(event) {
                 event.preventDefault();
 
+                var formData = new FormData($(this)[0]);
+
                 $.ajax({
                     url: "{{ route('imoveis.store') }}",
                     type: 'POST',
-                    data: $(this).serialize(),
-                    dataType: 'json',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    processData: false,
+                    contentType: false,
                     success: function(resp) {
-                        if (resp === true) {
-                            $('.message_box').removeClass('d-none').html(resp.message);
+                        if (resp.error == false) {
+                            $('.message_box').removeClass('d-none').addClass('alert-success')
+                                .html(resp.message);
 
                             setTimeout(function() {
                                 window.location.replace(' {{ route('imoveis') }}');
                             }, 1500);
-                        } else {
-                            $('.message_box').removeClass('d-none').html(resp.message);
+                        }
+                    },
+                    error: function(err) {
+                        if (err.status ==
+                            422) { // when status code is 422, it's a validation issue
+                            console.log(err.responseJSON);
+                            $('.message_box').removeClass('d-none').addClass('alert-danger')
+                                .html(
+                                    'Erro ao cadastrar o Imóvel, confira os campos marcados em vermelho.'
+                                    );
+
+                            // you can loop through the errors object and show it to the user
+                            console.warn(err.responseJSON.errors);
+                            // display errors on each form field
+                            $.each(err.responseJSON.errors, function(i, error) {
+                                var el = $(document).find('[id="' + i + '"]');
+                                el.after($('<span style="color: red;">' + error[
+                                    0] + '</span>'));
+                            });
                         }
                     }
                 });
@@ -33,6 +57,9 @@
                 $('#code_postal').mask("99999-999");
                 $('#cpf').mask("999.999.999-99");
                 $('#cpf_partner').mask("999.999.999-99");
+                $('.money').mask("#.##0,00", {
+                    reverse: true
+                });
 
                 var status = ($('#object_propertie').val());
                 var type_propertie = ($('#type_propertie').val());
@@ -172,12 +199,39 @@
                     limpa_formulário_cep();
                 }
             });
+
+            //AUTOCOMPLETE PROPERTIES
+            var path = "{{ route('imoveis.autocomplete') }}";
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            $("#id_client").autocomplete({
+                source: function(request, response) {
+                    // Fetch data
+                    $.ajax({
+                        url: path,
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            _token: CSRF_TOKEN,
+                            cod_client: request.term
+                        },
+                        success: function(data) {
+                            $("#rua").val(data.address);
+                            $("#address_number").val(data.number_address);
+                            $("#address_complement").val(data.number_address);
+                            $("#cep").val(data.code_postal);
+                            $("#bairro").val(data.district);
+                            $("#cidade").val(data.city);
+                            $("#uf").val(data.uf);
+                        }
+                    });
+                }
+            });
         });
     </script>
 @endsection
 
 @section('content')
-    <div class="alert alert-danger d-none message_box" role="alert">
+    <div class="alert d-none message_box" role="alert">
 
     </div>
 
@@ -210,7 +264,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Código do Cliente</label>
-                                        <input type="text" name="cod_client" class="form-control"
+                                        <input type="text" id="id_client" name="cod_client" class="form-control"
                                             placeholder="Consultar Cliente" autofocus>
                                     </div>
                                 </div>
@@ -219,7 +273,7 @@
                                     <div class="form-group">
                                         <label>Tipo de Imóvel</label>
                                         <select class="custom-select" name="type_propertie" id="type_propertie">
-                                            <option selected>Selecione...</option>
+                                            <option value="" selected>Selecione...</option>
                                             @foreach ($type_propertie as $type)
                                                 <option value="{{ $type->slug }}"> {{ $type->name }}</option>
                                             @endforeach
@@ -231,14 +285,14 @@
                                     <div class="form-group">
                                         <label>CEP</label>
                                         <input type="text" name="cep" id="cep" placeholder="00000-000"
-                                            class="form-control" autofocus>
+                                            class="form-control" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-5">
                                     <div class="form-group">
                                         <label>Endereço</label>
-                                        <input type="text" name="address" id="rua" class="form-control" autofocus>
+                                        <input type="text" name="address" id="rua" class="form-control" disabled>
                                     </div>
                                 </div>
 
@@ -246,7 +300,7 @@
                                     <div class="form-group">
                                         <label>Numero</label>
                                         <input type="text" name="address_number" id="address_number" class="form-control"
-                                            autofocus>
+                                            disabled>
                                     </div>
                                 </div>
 
@@ -254,28 +308,28 @@
                                     <div class="form-group">
                                         <label>Complemento</label>
                                         <input type="text" name="address_complement" id="address_complement"
-                                            class="form-control" autofocus>
+                                            class="form-control" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Bairro</label>
-                                        <input type="text" name="district" id="bairro" class="form-control" autofocus>
+                                        <input type="text" name="district" id="bairro" class="form-control" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Cidade</label>
-                                        <input type="text" name="city" id="cidade" class="form-control" autofocus>
+                                        <input type="text" name="city" id="cidade" class="form-control" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Estado</label>
-                                        <input type="text" name="uf" id="uf" class="form-control" autofocus>
+                                        <input type="text" name="uf" id="uf" class="form-control" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -287,7 +341,7 @@
                                     <div class="form-group">
                                         <label>Objetivo do Imovel</label>
                                         <select class="custom-select" name="object_propertie" id="object_propertie">
-                                            <option selected>Selecione o objetivo</option>
+                                            <option value="" selected>Selecione o objetivo</option>
                                             @foreach ($objective_properties as $objective)
                                                 <option value="{{ $objective->slug }}"> {{ $objective->name }}</option>
                                             @endforeach
@@ -308,28 +362,29 @@
                                         <div class="col-sm-4" name="location">
                                             <div class="form-group">
                                                 <label>Valor Locação</label>
-                                                <input type="text" name="price_location" class="form-control" autofocus>
+                                                <input type="text" name="price_location" class="form-control money"
+                                                    autofocus>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-4" name="sale">
                                             <div class="form-group">
                                                 <label>Valor Venda</label>
-                                                <input type="text" name="price_sale" class="form-control" autofocus>
+                                                <input type="text" name="price_sale" class="form-control money" autofocus>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Valor IPTU</label>
-                                                <input type="text" name="price_iptu" class="form-control" autofocus>
+                                                <input type="text" name="price_iptu" class="form-control money" autofocus>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-4" name="is_apartmant">
                                             <div class="form-group">
                                                 <label>Valor do Condominio</label>
-                                                <input type="text" name="price_condominium" class="form-control"
+                                                <input type="text" name="price_condominium" class="form-control money"
                                                     autofocus>
                                             </div>
                                         </div>
@@ -339,7 +394,7 @@
                                                 <label>Prazo Contrato</label>
                                                 <select class="custom-select" name="deadline_contract"
                                                     id="deadline_contract">
-                                                    <option selected>Selecione o objetivo</option>
+                                                    <option value="" selected>Selecione o objetivo</option>
                                                     <option value="12">12 Meses</option>
                                                     <option value="24">24 Meses</option>
                                                     <option value="36">36 Meses</option>
@@ -352,7 +407,7 @@
                                             <div class="form-group">
                                                 <label>Aceita Financiamento</label>
                                                 <select class="custom-select" name="financial_propertie">
-                                                    <option selected>Selecione o objetivo</option>
+                                                    <option value="" selected>Selecione o objetivo</option>
                                                     <option value="yes">Sim</option>
                                                     <option value="no">Não</option>
                                                 </select>
@@ -370,7 +425,7 @@
                                             <div class="form-group">
                                                 <label>Aceita Troca</label>
                                                 <select class="custom-select" name="isswap" id="isswap">
-                                                    <option selected>Selecione</option>
+                                                    <option value="" selected>Selecione</option>
                                                     <option value="yes">Sim</option>
                                                     <option value="no">Não</option>
                                                 </select>
